@@ -1,0 +1,174 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime
+
+@using Microsoft.AspNetCore.Mvc
+@using MailKit.Security
+@using Microsoft.AspNetCore.Components
+@using Kvota.Data
+
+<PageTitle>Квота</PageTitle>
+
+<div class="home_body">
+    <div class="row home_images">
+        <div class="col home_image">
+
+            <h1 class="home_image_text1">КВОТА</h1>
+            <h2 class="home_image_text2">ЭЛЕКТРОННЫЕ КОМПОНЕНТЫ</h2>
+        </div>
+
+    </div>
+
+    <div class="partner">
+        <h2 class="home_image_text1">Поставщики</h2>
+        <div class="row partner__lables">
+            <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
+            <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
+        </div>
+
+
+
+    </div>
+
+    <div class="company">
+        <div class="text_col company__text" style="background-image:url(/wwwroot/image/feedback.jpg)">
+            <h2>Текст о компании</h2> <br /> <p>
+                Текст о компанииТекст о компанииТекст о компанииТекст
+                о компанииТекст о компанииТекст о компанииТекст о
+                Текст о компании
+                Текст о компанииТекст о компанииТекст о компании
+                компанииТекст о компанииТекст о компании
+                
+                Текст о компанииТекст о компанииТекст о компанииТекст
+                о компанииТекст о компанииТекст о компанииТекст о
+                Текст о компании
+                Текст о компанииТекст о компанииТекст о компании
+                компанииТекст о компанииТекст о компании
+                Текст о компанииТекст о компанииТекст о компанииТекст
+                о компанииТекст о компанииТекст о компанииТекст о
+                Текст о компании
+                Текст о компанииТекст о компанииТекст о компании
+                компанииТекст о компанииТекст о компании
+                Текст о компанииТекст о компанииТекст о компанииТекст
+                о компанииТекст о компанииТекст о компанииТекст о
+                Текст о компании
+                Текст о компанииТекст о компанииТекст о компании
+                компанииТекст о компанииТекст о компании
+            </p>
+        </div>
+        <div class="home__form">
+            <h2>Форма обратной связи</h2> <br />
+            <EditForm Model="feedback" OnSubmit="Submit" class="home__form_body">
+                <DataAnnotationsValidator />
+
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <label for="name" class="col-sm-2 col-form-label">Имя</label>
+                    <div class="col-sm-10">
+                        <InputText @bind-Value="feedback.Name" class="form-control" id="name" />
+                        <ValidationMessage For="@(() => feedback.Name)" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="email" class="col-sm-2 col-form-label">E-mail</label>
+                    <div class="col-sm-10">
+                        <InputText type="email" @bind-Value="feedback.Email" class="form-control" id="email" />
+                        <ValidationMessage For="@(() => feedback.Email)" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="phone" class="col-sm-2 col-form-label">Телефон</label>
+                    <div class="col-sm-10">
+                        <InputText type="phone" @bind-Value="feedback.PhoneNumber" class="form-control" id="phone" />
+                        <ValidationMessage For="@(() => feedback.PhoneNumber)" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="partNumber" class="col-sm-2 col-form-label">Парт номер</label>
+                    <div class="col-sm-10">
+                        <InputText @bind-Value="feedback.PartNumber" class="form-control" id="partNumber" />
+                        <ValidationMessage For="@(() => feedback.PartNumber)" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="comment" class="col-sm-2 col-form-label">Комментарий</label>
+                    <div class="col-sm-10">
+                        <InputTextArea @bind-Value="feedback.Comment" class="form-control" id="comment" />
+                        <ValidationMessage For="@(() => feedback.Comment)" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </EditForm>
+
+            @code {
+
+            }
+        </div>
+        <Modal @ref="modal" title="Сообщение отправлено">
+            <BodyTemplate>
+                Мы свяжемся с вами "@feedback.Name"
+            </BodyTemplate>
+        </Modal>
+    </div>
+    
+
+    
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+@code {
+    Feedback feedback = new();
+    private Modal modal;
+
+    async void  Submit()
+    {
+        var fb = await feedback.SendEmailCustom(feedback);
+        if (fb)
+            modal?.ShowAsync();
+
+
+    }
+
+    
+
+
+
+
+
+
+}
+
+

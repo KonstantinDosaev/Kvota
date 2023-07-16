@@ -1,0 +1,83 @@
+﻿.row {
+    --bs-gutter-x: 0;
+    flex: 1 1 auto;
+}
+.home_body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.home_images {
+    flex: 1 1 auto;
+}
+.home_image {
+    background: url(/image/vishnu-mohanan-pfR18JNEMv8-unsplash.jpg) 50%/cover no-repeat;
+    padding:0 1rem;
+}
+.home_image_text1 {
+    margin-top: 1rem;
+    color: azure;
+    background-color: rgba(178,34,34,0.8);
+    border-radius: 5px;
+    padding: 0 1rem;
+  
+    max-width: fit-content;
+}
+.home_image_text2 {
+    margin-top: 1rem;
+    color: azure;
+    background-color: rgba(178,34,34,0.8);
+    border-radius: 5px;
+    padding: 0 1rem;
+    max-width: fit-content;
+}
+
+.partner {
+   
+    padding: 1rem;
+    background: url(/image/manufbg.jpg)0 0/cover no-repeat;
+    
+}
+
+.partner__lables {
+    padding-top: 1rem;
+    text-align: center;
+    justify-content: center;
+}
+
+.partner__lable {
+    /*    display: inline-block;
+    position: relative;*/
+    padding: 10px 4px;
+    border-radius: 3px;
+    margin: 0 14px 14px 0;
+    text-align: center;
+    width: 86px;
+    height: 46px;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70px 30px;
+}
+.company {
+    display: flex;
+    
+}
+.company__text {
+    flex: 1 1 50%;
+    padding: 1rem;
+}
+.home__form {
+    flex: 1 1 50%;
+    padding: 1rem;
+    background: url(/image/feedback.jpg)0 60%/cover no-repeat;
+}
+.home__form_body {
+    color: black;
+}
+
+@media (max-width: 1296px) {
+    .company{
+        display: block;
+    }
+}
