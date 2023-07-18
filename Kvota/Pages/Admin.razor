@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Kvota.Areas.Identity.Data
+@using Kvota.Components.Admin
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@using Kvota.Repositories
+@page "/admin"
+
+
+<h3>Admin</h3>
+
+<AuthorizeView>
+    <Authorized>
+        @if (@context.User.IsInRole("Administrators"))
+        {
+            <Nav></Nav>
+        }
+        else
+        {
+            <p>Вы не имеете прав администратора</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>Вы не вошли как пользователь</p>
+        <NavLink href="/identity/account/login">Войти</NavLink>
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    
+}
+<style>
+    .admin_body {
+        padding: 1rem;
+    }
+</style>

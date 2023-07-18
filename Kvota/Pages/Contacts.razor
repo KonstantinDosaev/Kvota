@@ -1,20 +1,56 @@
 ﻿@page "/contacts"
-
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject IRepo<ContactsModel> ContactRepo
 
 
 
 <PageTitle>Контакты</PageTitle>
 
-<h1>Контакты</h1>
+@if ( Contact!= null){
+    <h1 class="contact_title">КОНТАКТЫ</h1>
+    <div class="contact_body">
+        
+        <div class="contact_row">
+            <p class="contact_subtitle">ПИШИТЕ</p>
+            <div class="item_row">
+                <a class="contact_item" href="mailto:@Contact.EmailOne">
+                    <i class="bi bi-envelope-at"></i>@Contact.EmailOne
+                </a>
+                <a class="contact_item" href="mailto:@Contact.EmailTwo">
+                    <i class="bi bi-envelope-at"></i>@Contact.EmailTwo
+                </a>
+            </div>
+        </div>
+        <div class="contact_row">
+            <p class="contact_subtitle">ЗВОНИТЕ</p>
+            <div class="item_row">
+                <a class="contact_item" href="tel:@Contact.PhoneOne" target="_blank">
+                    <i class="bi bi-telephone" ></i>@Contact.PhoneOne
+                </a>
+                <a class="contact_item" href="tel:@Contact.PhoneTwo" target="_blank">
+                    <i class="bi bi-telephone"></i>@Contact.PhoneTwo
+                </a>
+            </div>
+        </div>
+        <div class="contact_row">
+            <p class="contact_subtitle">ПРИЕЗЖАЙТЕ</p>
+            <div class="item_row">
+                <p class="contact_item">@Contact.AddressOne</p>
+            </div>
+        </div>
+    </div>
+}
+@code
+{
+    [Inject]
+    protected IRepo<ContactsModel> ContactServ { get; set; }
 
-
-<p>
-    Текст Текст ТекстТекстТекстТекстТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-</p>
+    private ContactsModel Contact { get; set; }
+  
+    protected override async Task OnInitializedAsync()
+    {
+        
+        Contact= await ContactServ.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
+    }
+}

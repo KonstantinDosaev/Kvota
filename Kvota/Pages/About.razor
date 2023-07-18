@@ -1,21 +1,75 @@
 ﻿@page "/about"
+@using Kvota.Models.Content
+@using Kvota.Interfaces
+@inject IRepo<Home> HomeRepo
+
 
 <PageTitle>О компании</PageTitle>
 
+@if ( Content!= null){
+<div class="about_body">
+    <h1 class="about_title">Компания Квота</h1>
+    <div class="about_row">
+        <div class="about_image1"></div>
+        <p class="about_text">@Content.AboutText </p>
+            <div class="about_image2"></div>
+    </div>
+    
+</div>
+}
 
 
 
-<h1>О компании</h1>
-
-<p> Текст ТекстТекстТекстТекстТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-</p>
 
 
+@code
+{
+    [Inject]
+    protected IRepo<Home> HomeServ { get; set; }
 
+    private Home? Content { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Content = await HomeServ.GetOneAsync(new Guid("7c7ed7ca-fda1-4449-8637-c403c61957eb"));
+    }
+}
+
+<style>
+    .about_body {
+        
+        
+    }
+    .about_title {
+        padding: 1rem 1rem 0 5rem;
+        color: brown;
+        font-weight: bolder;
+        margin: 0;
+    }
+    .about_row { 
+        display: flex;
+
+                       }
+    .about_image1 {
+        background: url(/image/aboutbg1.jpg)80%/cover no-repeat;
+        flex: 0 1 20%;
+        margin-right: 1.5rem;
+        filter: brightness(70%)
+    }
+    .about_text {
+        background-color: black;
+        color: white;
+        min-height: 90VH;
+        flex: 0 1 60%;
+        margin-bottom: 0px;
+        padding: 9rem 5rem;
+        font-size: 1.5rem;
+
+    }
+    .about_image2 {
+        background: url(/image/aboutbg2.jpg)50%/cover no-repeat;
+        flex: 0 1 20%;
+        margin-left: 1.5rem;
+        filter: brightness(70%)
+    }
+</style>

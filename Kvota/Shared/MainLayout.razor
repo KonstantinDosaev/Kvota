@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject IRepo<ContactsModel> ContactRepo
 
 <PageTitle>VpShop.UI</PageTitle>
 
@@ -8,24 +11,45 @@
     </div>
 
     <main>
-        <div class="top-row px-4" >
-            
-            <div>
-                <a href="tel:+79998887766" target="_blank">
-                    <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>8-911-111-11-11
-                </a>
-            </div>
-            <div>
-                <a href="mailto:dosaevk@yandex.ru">
-                    <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>shop@mail.ru</a>
-            </div>
-            <span class=" text-wrap" style="font-weight: bold; margin-left:1rem;">Адрес: г.Город ул.Улица д.1fffffffffffffffffffff</span>
+        @if (Contact != null)
+        {
+            <div class="top-row px-4">
 
-        </div>
+                <div>
+                    <a href="tel:@Contact.PhoneOne" target="_blank">
+                        <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.PhoneOne
+                    </a>
+                </div>
+                <div>
+                    <a href="mailto:@Contact.EmailOne">
+                        <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.EmailOne
+                    </a>
+                </div>
+                <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem;">@Contact.AddressOne</span>
 
+            </div>
+        }
         <article>
             @Body
         </article>
     </main>
 </div>
 
+@code
+{
+    [Inject]
+    protected IRepo<ContactsModel> ContactServ { get; set; }
+
+    private ContactsModel Contact { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        Contact = await ContactServ.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
+    }
+
+    ContactsModel PushContent()
+    {
+        return Contact;
+    }
+}

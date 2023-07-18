@@ -1,23 +1,38 @@
-﻿body {
-    background: #3498db;
-    color: #fff;
-    height: 100%;
+﻿.contact_body {
+    padding: 5rem
 }
-
-.content {
-  
+.contact_title {
+    color: brown;
+    font-weight: bold;
+    padding: 4rem 5rem; 
 }
+.contact_row {
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+    border-bottom: medium dashed brown;
+    padding: 2rem 0;
 
-h3 {
-    background: #fff;
-    color: #3498db;
-    font-size: 36px;
-    line-height: 100px;
-    margin: 10px;
-    padding: 2%;
-    position: relative;
-    text-align: center;
+    
 }
+.contact_subtitle {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: dimgray;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    text-align: center
 
-
-
+}
+.item_row {
+    display: flex;
+    flex-direction: column;
+    
+    align-items: flex-end;
+}
+.contact_item {
+    color: dimgray;
+    font-size: 1.3rem;
+    padding: 0.5rem 0;
+}

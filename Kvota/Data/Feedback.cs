@@ -8,18 +8,18 @@ namespace Kvota.Data
     {
         [Required]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Имя должно быть не менее 2-х символов и не более 50-ти")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
 
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Phone]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
-        public string PartNumber { get; set; }
+        public string? PartNumber { get; set; }
 
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
 
         public async Task<bool> SendEmailCustom(Feedback feedback)

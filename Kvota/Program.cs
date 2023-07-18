@@ -1,15 +1,31 @@
 using BlazorBootstrap;
+using Kvota.Areas.Identity.Data;
 using Kvota.Data;
+using Kvota.Interfaces;
+using Kvota.Models.Content;
+using Kvota.Repositories;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("KvotaContextConnection") ?? throw new InvalidOperationException("Connection string 'KvotaContextConnection' not found.");
+builder.Services.AddTransient<IRepo<Home>, HomeRepo>();
+builder.Services.AddTransient<IRepo<ContactsModel>, ContactRepo>();
+builder.Services.AddDbContext<KvotaContext>(options =>
+    options.UseNpgsql(connectionString), ServiceLifetime.Scoped);
+
+builder.Services.AddDefaultIdentity<KvotaUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<KvotaContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazorBootstrap();
+
 
 
 var app = builder.Build();
@@ -27,8 +43,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
 
 app.Run();

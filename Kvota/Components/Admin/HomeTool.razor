@@ -1,0 +1,41 @@
+﻿@using Kvota.Models.Content
+@using Kvota.Interfaces
+@using Kvota.Repositories
+@inject IRepo<Home> HomeRepo
+@page "/hometool"
+@if (Tools != null)
+{
+    <Nav></Nav>
+    <div class ="admin_body" style="padding: 1rem;">
+    <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
+        <div class="form-group">
+            <label>Титульник на изображении</label>
+            <InputText class="form-control" @bind-Value="Tools.HomeImageTextOne" />
+        </div>
+        <div class="form-group">
+            <label>Саб-Титульник на изображдении</label>
+            <InputText class="form-control" @bind-Value="Tools.HomeImageTextTwo" />
+        </div>
+
+        <div class="form-group">
+            <label>Титульник производителей</label>
+            <InputText class="form-control" @bind-Value="Tools.PartnerTitle" />
+        </div>
+        <div class="form-group">
+            <label>Текст о компании на главной странице</label>
+            <InputTextArea class="form-control" @bind-Value="Tools.AboutHomeText" />
+        </div>
+        
+        <div class="form-group">
+            <label>Текст: страница О компании</label>
+            <InputTextArea class="form-control" @bind-Value="Tools.AboutText" />
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </EditForm>
+    <Modal @ref="modal" title="ОК">
+        <BodyTemplate>
+            Изменения сохранены
+        </BodyTemplate>
+    </Modal>
+    </div>
+}
