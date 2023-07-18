@@ -66,16 +66,8 @@ namespace Kvota.Repositories
         private object locker = new();
         public virtual async Task<T> GetOneAsync(Guid id)
         {
-            try
-            {
+            
                 return (await Task.Run(() => Table.FirstOrDefault(entity => entity.Id == id)))!;
-            }
-            catch
-            {
-                return Table.FirstOrDefault(e => e.Id == id)!;
-            }
-            
-            
 
         }
  

@@ -5,7 +5,8 @@
 @using Kvota.Models.Content
 @using Kvota.Repositories
 @page "/admin"
-
+@inject SignInManager<KvotaUser> SignInManager
+@inject UserManager<KvotaUser> UserManager
 
 <h3>Admin</h3>
 
@@ -22,7 +23,7 @@
     </Authorized>
     <NotAuthorized>
         <p>Вы не вошли как пользователь</p>
-        <NavLink href="/identity/account/login">Войти</NavLink>
+        <NavLink href="/login">Войти</NavLink>
     </NotAuthorized>
 </AuthorizeView>
 @code {

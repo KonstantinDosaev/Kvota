@@ -7,16 +7,12 @@ namespace Kvota.Components.Admin
 {
     partial class ContactTool
     {
-        [Inject]
-        protected IRepo<ContactsModel> ContactServ { get; set; }
+        [Inject] protected IRepo<ContactsModel> ContactServ { get; set; } = default!;
 
-        private ContactsModel Tools { get; set; }
+        private ContactsModel Tools { get; set; } = default!;
 
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-        private Modal modal;
-        [Parameter]
-        public Guid Id { get; set; } = new Guid("80beea30-3f74-42f3-812b-561cea25ec32");
+        private Modal? modal;
+
 
 
         protected override async Task OnInitializedAsync()

@@ -111,15 +111,9 @@
 
             </div>
             <Modal @ref="modal" title="Сообщение отправлено">
-                <BodyTemplate>
-                    Мы свяжемся с вами "@feedback.Name"
-                </BodyTemplate>
+                <BodyTemplate>Мы свяжемся с вами "@feedback.Name"</BodyTemplate>
             </Modal>
         </div>
-
-
-
-
     </div>
 
 }
@@ -134,8 +128,9 @@
 
 
 @code {
+
     [Inject]
-    protected IRepo<Home> HomeServ { get; set; }
+    protected IRepo<Home> HomeServ { get; set; } = default!;
 
     private Home Content { get; set; } = null!;
 
@@ -146,7 +141,7 @@
 
     
     Feedback feedback = new();
-    private Modal modal;
+    private Modal? modal;
 
     async void  Submit()
     {

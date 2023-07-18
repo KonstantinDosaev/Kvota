@@ -46,7 +46,7 @@ namespace Kvota.Data
                     return true;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }

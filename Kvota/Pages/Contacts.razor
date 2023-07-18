@@ -2,7 +2,7 @@
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @inject IRepo<ContactsModel> ContactRepo
-
+@inject IServiceScopeFactory serviceScopeFactory
 
 
 <PageTitle>Контакты</PageTitle>
@@ -43,14 +43,5 @@
 }
 @code
 {
-    [Inject]
-    protected IRepo<ContactsModel> ContactServ { get; set; }
 
-    private ContactsModel Contact { get; set; }
-  
-    protected override async Task OnInitializedAsync()
-    {
-        
-        Contact= await ContactServ.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
-    }
 }

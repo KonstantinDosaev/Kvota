@@ -12,10 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("KvotaContextConnection") ?? throw new InvalidOperationException("Connection string 'KvotaContextConnection' not found.");
-builder.Services.AddTransient<IRepo<Home>, HomeRepo>();
-builder.Services.AddTransient<IRepo<ContactsModel>, ContactRepo>();
+
+builder.Services.AddScoped<IRepo<Home>, HomeRepo>();
+builder.Services.AddScoped<IRepo<ContactsModel>, ContactRepo>();
+
 builder.Services.AddDbContext<KvotaContext>(options =>
-    options.UseNpgsql(connectionString), ServiceLifetime.Scoped);
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddDefaultIdentity<KvotaUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
