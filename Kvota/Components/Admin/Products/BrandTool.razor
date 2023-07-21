@@ -1,0 +1,87 @@
+﻿@page "/admin/brand"
+@using Kvota.Models.Products
+@using Kvota.Interfaces
+@inject IRepo<Brand> BrandRepo
+@inject IServiceScopeFactory serviceScopeFactory
+<Nav></Nav>
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <button class="btn btn-success btn-sm" @onclick="@(e => OnAddBrand())" role="button">Добавить производителя</button>
+    </div>
+</div>
+@if (BrandList != null)
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Описание</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in BrandList)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td class="text-right">
+                        <button class="btn btn-secondary btn-sm" @onclick="@(e => OnUpdateBrand(item.Id))" role="button">Edit</button>
+                    <button class="btn btn-danger btn-sm" @onclick="@(e => @DeleteBrand(item.Id))" role="button">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+
+
+   
+
+    <Modal @ref="modalAdd" title="Добавить Производителя">
+        <BodyTemplate>
+            <EditForm Model="@Brand" OnValidSubmit="@SubmitBrandAdd">
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="Brand.Name" />
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="Brand.Description" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        </BodyTemplate>
+ 
+    </Modal>
+
+
+    <Modal @ref="modal" title="Изменить Производителя">
+        <BodyTemplate>
+
+            <EditForm Model="@BrandUpdate" OnValidSubmit="@SubmitBrandUpdate">
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="BrandUpdate.Name" />
+                </div>
+            
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="BrandUpdate.Description" />
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </EditForm>
+        </BodyTemplate>
+ 
+    </Modal>
+
+    <Modal @ref="modalError" title="Ошибка">
+        <BodyTemplate>За данным производителем закреплены продукты</BodyTemplate>
+    </Modal>
+}
+

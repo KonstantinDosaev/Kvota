@@ -7,7 +7,7 @@ namespace Kvota.Repositories
     {
         public ContactRepo(KvotaContext context) : base(context)
         {
-            Table = Context.Contacts;
+            Table = context.Contacts;
         }
     }
 }

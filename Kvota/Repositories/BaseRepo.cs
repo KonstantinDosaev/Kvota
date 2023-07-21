@@ -3,13 +3,14 @@ using Kvota.Interfaces;
 using Kvota.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Kvota.Repositories
 {
     public abstract class BaseRepo<T> : IRepo<T> where T : class, IIdentifiable, new()
     {
-        public KvotaContext Context { get; init; }
-        public BaseRepo(KvotaContext context)
+        public DbContext Context { get; init; }
+        public BaseRepo(DbContext context)
         {
             Context = context;
         }
@@ -24,7 +25,13 @@ namespace Kvota.Repositories
 
             return entity;
         }
+        public  T Add(T entity)
+        {
+             Table.Add(entity);
+             SaveChanges();
 
+            return entity;
+        }
         public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
             await Table.AddRangeAsync(entities);
@@ -63,37 +70,56 @@ namespace Kvota.Repositories
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await Table.ToListAsync();
-        private object locker = new();
+  
         public virtual async Task<T> GetOneAsync(Guid id)
         {
             
                 return (await Task.Run(() => Table.FirstOrDefault(entity => entity.Id == id)))!;
+            
 
         }
- 
+        public T GetOne(Guid id)
+        {
+
+            return Table.FirstOrDefault(entity => entity.Id == id)!;
+
+
+        }
+
 
         public async Task<int> SaveAsync(T entity)
         {
             Context.Entry(entity).State = EntityState.Modified;
             return await SaveChangesAsync();
         }
+        public int Save(T entity)
+        {
+            Context.Entry(entity).State = EntityState.Modified;
+            return SaveChanges();
+        }
+        internal int SaveChanges()
+        {
+            try
+            {
+                return  Context.SaveChanges();
+            }
 
+            catch (Exception ex)
+            {
+                ILogger<ErrorContext> err = ex as ILogger<ErrorContext>;
+                throw;
+            }
+        }
         internal async Task<int> SaveChangesAsync()
         {
             try
             {
                 return await Context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw;
-            }
+
             catch (Exception ex)
             {
+                ILogger<ErrorContext> err = ex as ILogger<ErrorContext>;
                 throw;
             }
         }

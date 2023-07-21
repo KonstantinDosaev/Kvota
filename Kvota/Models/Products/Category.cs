@@ -1,6 +1,17 @@
-﻿namespace Kvota.Models.Products
+﻿using Kvota.Interfaces;
+
+namespace Kvota.Models.Products
 {
-    public class Category
+    public class Category:IIdentifiable
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public string? Image { get; set; } = null!;
+        public string? Description { get; set; }
+
+        public Guid? GrandCategoryId { get; set; }
+        public virtual GrandCategory? GrandCategory { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = null!;
+        public virtual ICollection<CategoryOption> CategoryOptions { get; set; } = null!;
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/categ"
+﻿
 
 
 <div class="catalog_body">
@@ -15,7 +15,7 @@
     </div>
     <div class="grand_body">
 
-        @foreach (GrandCategory items in grandCategories)
+        @foreach (GrandCategorye items in grandCategories)
         {
             <div class="grand_item">
                 <div class="item_image_body"><img class="item_image" src="image/aboutbg2.jpg" /></div>
@@ -42,7 +42,7 @@
 
 @code {
 
-    public class Category
+    public class Categorye
     {
         public int id;
         public string name;
@@ -50,7 +50,7 @@
         public int grandCategoryId;
     }
 
-    public class GrandCategory
+    public class GrandCategorye
     {
         public int id;
         public string name;
@@ -58,114 +58,59 @@
     }
 
     List<string> manuf = new List<string>() { "name1", "name2", "name3", "name4", "name5", "name6", "name7", "name8", "name9", "name10", "name11", "name12" };
-    List<Category> categories = new List<Category>()
+    List<Categorye> categories = new List<Categorye>()
     {
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
 
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
 
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 4},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 4},
+        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
 
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 6},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 6},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
 
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
 
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 5},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 7},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 5},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 8},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 5},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 4},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 6},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 7},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 8},
-        new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 7},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 4},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 2},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 6},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 9},
-        //new Category(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        //new Category(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        //new Category(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 8},
-        //new Category(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 5},
+        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
+        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 7},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
+        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
+        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
+        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
+        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 8},
+       
 
     };
-    List<GrandCategory> grandCategories = new List<GrandCategory>()
+    List<GrandCategorye> grandCategories = new List<GrandCategorye>()
     {
-        new GrandCategory(){id=1, name = "Катоды"},
-        new GrandCategory(){id=2, name = "Нагрузки"},
-        new GrandCategory(){id=3, name = "Катоды"},
-        new GrandCategory(){id=4, name = "Чипы"},
-        new GrandCategory(){id=5, name = "Диоды"},
-        new GrandCategory(){id=6, name = "Rout"}
+        new GrandCategorye(){id=1, name = "Катоды"},
+        new GrandCategorye(){id=2, name = "Нагрузки"},
+        new GrandCategorye(){id=3, name = "Катоды"},
+        new GrandCategorye(){id=4, name = "Чипы"},
+        new GrandCategorye(){id=5, name = "Диоды"},
+        new GrandCategorye(){id=6, name = "Rout"}
 
     };
 

@@ -1,0 +1,70 @@
+﻿@page "/admin/product/edit/{id:guid}"
+@using Kvota.Models.Products
+@using Kvota.Interfaces
+@inject IRepo<Product> ProductRepo
+@inject IRepo<Category> CategoryRepo
+@inject IRepo<Brand> BrandRepo
+<div class="row">
+    <div class="col-lg-9">
+        <h1>@Product.Name</h1>
+    </div>
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Go Back To List</a>
+    </div>
+</div>
+
+@if (Product != null)
+{
+    <EditForm Model="@Product" OnValidSubmit="@SubmitProduct">
+        <div class="form-group">
+            <label>Part No</label>
+            <InputText class="form-control" @bind-Value="Product.PartNumber" />
+        </div>
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="form-group">
+            <label>Производитель</label>
+            <InputSelect @bind-Value="Product.BrandId" class="form-control">
+                <option value=""></option>
+                @if (BrandList != null)
+                {
+                    @foreach (var brand in BrandList)
+                    {
+                        <option value="@brand.Id">@brand.Name</option>
+                    }
+                }
+            </InputSelect>
+
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <InputSelect @bind-Value="Product.CategoryId" class="form-control">
+                <option value=""></option>
+                @if (CategoriesList != null)
+                {
+                    @foreach (var category in CategoriesList)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label>Описание</label>
+            <InputTextArea class="form-control" @bind-Value="Product.Description" />
+        </div>
+        <div class="form-group">
+            <label>Цена</label>
+            <InputNumber class="form-control" @bind-Value="Product.Price" />
+        </div>
+        <div class="form-group">
+            <label>Количество</label>
+            <InputNumber class="form-control" @bind-Value="Product.Quantity" />
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+}

@@ -7,7 +7,7 @@ namespace Kvota.Repositories
     {
         public HomeRepo(KvotaContext context) : base(context)
         {
-            Table = Context.Homes;
+            Table = context.Homes;
         }
     }
 }

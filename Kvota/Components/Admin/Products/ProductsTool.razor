@@ -1,0 +1,60 @@
+﻿@page "/admin/product"
+@using Kvota.Models.Products
+@using Kvota.Interfaces
+@inject IRepo<Product> ProductRepo
+@inject IServiceScopeFactory serviceScopeFactory
+<Nav></Nav>
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-success btn-sm" href="/admin/product/create" role="button">Создать продукт</a>
+    </div>
+</div>
+ 
+@if (Products != null && Products.Any())
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Парт-номер</th>
+            <th>Бренд</th>
+            <th>Категория</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Скидка</th>
+            <th>Количество</th>
+            <th>Дата создания</th>
+            <th>Дата обновления</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Products)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.PartNumber</td>
+                <td>@item.Brand?.Name</td>
+                <td>@item.Category?.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Price</td>
+                <td>@item.SalePrice</td>
+                <td>@item.Quantity</td>
+                <td>@item.DateTimeCreated</td>
+                <td>@item.DateTimeUpdated</td>
+
+
+                <td class="text-right">
+                    <a class="btn btn-primary btn-sm" href="/players/detail/@item.Id" role="button">Details</a>
+                        <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Edit</a>
+                    <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteProduct(item.Id))" role="button">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+
+}
