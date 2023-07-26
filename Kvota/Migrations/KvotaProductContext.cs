@@ -24,6 +24,7 @@ namespace Kvota.Migrations
         public virtual DbSet<Brand> Brands { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<CategoryOption> CategoryOptions { get; set; } = null!;
+        public virtual DbSet<GrandCategory> GrandCategories { get; set; } = null!;
         public virtual DbSet<ProductOption> ProductOptions { get; set; } = null!;
     }
 }

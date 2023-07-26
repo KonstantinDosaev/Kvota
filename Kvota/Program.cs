@@ -21,6 +21,7 @@ builder.Services.AddScoped<IRepo<Home>, HomeRepo>();
 builder.Services.AddScoped<IRepo<ContactsModel>, ContactRepo>();
 builder.Services.AddScoped<IRepo<Product>, ProductRepo>();
 builder.Services.AddScoped<IRepo<Category>, CategoryRepo>();
+builder.Services.AddScoped<IRepo<GrandCategory>, GrandCategoryRepo>();
 builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddDbContext<KvotaContext>(options =>
     options.UseNpgsql(connectionString));

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Numerics;
+﻿using BlazorBootstrap;
 using Kvota.Interfaces;
 using Kvota.Models.Content;
-using Kvota.Repositories;
-using BlazorBootstrap;
+using Microsoft.AspNetCore.Components;
 
-namespace Kvota.Components.Admin
+namespace Kvota.Pages.Admin
 {
     partial class HomeTool
     {

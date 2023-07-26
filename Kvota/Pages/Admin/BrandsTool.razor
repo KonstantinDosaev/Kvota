@@ -1,9 +1,12 @@
 ﻿@page "/admin/brand"
 @using Kvota.Models.Products
+@using Kvota.Components.Admin
 @using Kvota.Interfaces
-@inject IRepo<Brand> BrandRepo
+@inject IRepo<Brand> BrandRepos
 @inject IServiceScopeFactory serviceScopeFactory
-<Nav></Nav>
+
+
+<NavAdmin></NavAdmin>
 <div class="row">
     <div class="col-lg-3 text-right">
         <button class="btn btn-success btn-sm" @onclick="@(e => OnAddBrand())" role="button">Добавить производителя</button>
@@ -25,7 +28,7 @@
             <tr>
                 <td>@item.Name</td>
                 <td>@item.Description</td>
-                <td class="text-right">
+                    <td class="text-end">
                         <button class="btn btn-secondary btn-sm" @onclick="@(e => OnUpdateBrand(item.Id))" role="button">Edit</button>
                     <button class="btn btn-danger btn-sm" @onclick="@(e => @DeleteBrand(item.Id))" role="button">Delete</button>
                 </td>
@@ -84,4 +87,5 @@
         <BodyTemplate>За данным производителем закреплены продукты</BodyTemplate>
     </Modal>
 }
+
 

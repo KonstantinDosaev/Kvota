@@ -1,0 +1,90 @@
+﻿@page "/admin/category"
+@using Kvota.Models.Products
+@using Kvota.Components.Admin
+@using Kvota.Interfaces
+@using Microsoft.AspNetCore.Components
+@inject IRepo<GrandCategory> GRepo
+
+
+<NavAdmin></NavAdmin>
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <button class="btn btn-success btn-sm" @onclick="@(e => GetModalAdd())" role="button">Добавить Категорию</button>
+    </div>
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-primary " href="/admin/category/not/@Guid.Empty" role="button">Показать подкатегории без родительской</a>
+    </div>
+</div>
+@if (ItemList != null)
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Описание</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ItemList)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td class="text-end">
+                        <a class="btn btn-primary " href="/admin/category/@item.Name/@item.Id" role="button">К подкатегориям</a>
+                        <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
+                        <button class="btn btn-danger " @onclick="@(e => @Delete(item.Id))" role="button">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <Modal @ref="_modalAdd" title="Добавить">
+        <BodyTemplate>
+            <EditForm Model="@Item" OnValidSubmit="@SubmitAdd">
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="Item.Name" />
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="Item.Description" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        </BodyTemplate>
+
+    </Modal>
+
+    <Modal @ref="_modalUpdate" title="Изменить">
+        <BodyTemplate>
+
+            <EditForm Model="@ItemUpdate" OnValidSubmit="@SubmitUpdate">
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="ItemUpdate.Name" />
+                </div>
+
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="ItemUpdate.Description" />
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </EditForm>
+        </BodyTemplate>
+    </Modal>
+
+    <Modal @ref="_modalError" title="Ошибка">
+        <BodyTemplate>За данным категорией закреплены подкатегории</BodyTemplate>
+    </Modal>
+}
+
+
+
+
+@code {
+
+}

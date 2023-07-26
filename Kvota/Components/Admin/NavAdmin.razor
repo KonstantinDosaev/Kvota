@@ -1,6 +1,7 @@
 ﻿<div class="nav_body">
     <div class="nav_item"><NavLink Match="NavLinkMatch.All" href="/hometool" class="link"><span>Главная страница</span></NavLink> </div>
     <div class="nav_item"><NavLink href="contacttool" class="link">Контакты</NavLink> </div>
+    <div class="nav_item"><NavLink href="/admin/category" class="link">Категории</NavLink> </div>
     <div class="nav_item"><NavLink href="/admin/brand" class="link">Производители</NavLink> </div>
     <div class="nav_item"><NavLink href="/admin/product" class="link">Продукты</NavLink> </div>
 
@@ -12,11 +13,12 @@
         padding: 1rem;
     }
     .nav_item {
-      
+        border: 1px solid darkred;
+        border-radius: 5px;
     }
 
     .link {
-        color: deepskyblue;
+        color:darkred;
         text-decoration: none;
         padding: 5px;
         border-radius: 5px;
@@ -28,7 +30,7 @@
             height: 200px;
         color: white;
         font-weight: 700;
-        background-color: deepskyblue; 
+        background-color: darkred; 
         
     }
 </style>

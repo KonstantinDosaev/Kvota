@@ -1,11 +1,12 @@
 ﻿@using Kvota.Models.Content
 @using Kvota.Interfaces
+@using Kvota.Components.Admin
 @inject IRepo<Home> HomeRepo
 @page "/hometool"
 
 @if (Tools != null)
 {
-    <Nav></Nav>
+    <NavAdmin></NavAdmin>
     <div class ="admin_body" style="padding: 1rem;">
     <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
         <div class="form-group">

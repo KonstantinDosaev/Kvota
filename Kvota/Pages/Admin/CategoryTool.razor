@@ -1,0 +1,109 @@
+﻿@page "/admin/category/{title}/{id:guid}"
+@using Kvota.Models.Products
+@using Kvota.Components.Admin
+@using Kvota.Interfaces
+@using Kvota.Pages.Products
+@using Microsoft.AspNetCore.Components
+@using Microsoft.EntityFrameworkCore
+@inject IRepo<GrandCategory> GRepo
+@inject IRepo<Category> CategoryRepo
+@inject IServiceScopeFactory serviceScopeFactory
+
+<NavAdmin></NavAdmin>
+<br/>
+<h2>@Title</h2>
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <button class="btn btn-success btn-sm" @onclick="@(e => GetModalAdd())" role="button">Добавить подкатегорию</button>
+    </div>
+</div>
+@if (ItemList != null)
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Описание</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (Id == Guid.Empty )
+        {
+            Id = null;
+        }
+        @foreach (var item in ItemList.Where(w => w.GrandCategoryId == Id))
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td class="text-end ">
+                    <a class="btn btn-primary " href="/admin/category/@item.Id" role="button">К </a>
+                    <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
+                    <button class="btn btn-danger " @onclick="@(e => @Delete(item.Id))" role="button">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <Modal @ref="_modalAdd" title="Добавить">
+        <BodyTemplate>
+            <EditForm Model="@Item" OnValidSubmit="@SubmitAdd">
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="Item.Name" />
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="Item.Description" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        </BodyTemplate>
+
+    </Modal>
+
+    <Modal @ref="_modalUpdate" title="Изменить">
+        <BodyTemplate>
+
+            <EditForm Model="@ItemUpdate" OnValidSubmit="@SubmitUpdate">
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="ItemUpdate.Name" />
+                </div>
+                
+                <div class="form-group">
+                    <label>Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="ItemUpdate.Description" />
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </EditForm>
+            <EditForm Model="@ItemUpdate" OnValidSubmit="@SubmitUpdateGrand">
+                <div class="form-group">
+                    <label>Родительская категория</label>
+                    <InputSelect @bind-Value="_tempId" class="form-control">
+                        <option value="Id"></option>
+                        @if (GcList != null)
+                        {
+                            @foreach (var item in GcList)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить родительскую категорию</button>
+            </EditForm>
+        </BodyTemplate>
+    </Modal>
+
+    <Modal @ref="_modalError" title="Ошибка">
+        <BodyTemplate>За данным категорией закреплены подкатегории</BodyTemplate>
+    </Modal>
+}
+            
+@code {
+   
+}

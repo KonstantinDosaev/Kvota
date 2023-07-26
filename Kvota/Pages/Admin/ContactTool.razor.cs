@@ -3,7 +3,7 @@ using Kvota.Interfaces;
 using Kvota.Models.Content;
 using Microsoft.AspNetCore.Components;
 
-namespace Kvota.Components.Admin
+namespace Kvota.Pages.Admin
 {
     partial class ContactTool
     {

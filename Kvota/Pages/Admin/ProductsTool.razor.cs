@@ -1,10 +1,8 @@
 ﻿using Kvota.Interfaces;
-using Kvota.Models.Content;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 
-
-namespace Kvota.Components.Admin.Products
+namespace Kvota.Pages.Admin
 {
     partial class ProductsTool
     {

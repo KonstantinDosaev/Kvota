@@ -1,11 +1,12 @@
 ﻿@using Kvota.Models.Content
 @using Microsoft.AspNetCore.Components
 @using Kvota.Interfaces
+@using Kvota.Components.Admin
 @inject IRepo<ContactsModel> ContactRepo
 @page "/contacttool"
 @if (Tools != null)
 {
-    <Nav></Nav>
+    <NavAdmin></NavAdmin>
     <div class ="admin_body" style="padding: 1rem;">
     <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
         <div class="form-group">

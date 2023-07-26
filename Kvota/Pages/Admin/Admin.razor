@@ -8,13 +8,13 @@
 @inject SignInManager<KvotaUser> SignInManager
 @inject UserManager<KvotaUser> UserManager
 
-<h3>Admin</h3>
+
 
 <AuthorizeView>
     <Authorized>
         @if (@context.User.IsInRole("Administrators"))
         {
-            <Nav></Nav>
+            <NavAdmin></NavAdmin>
         }
         else
         {

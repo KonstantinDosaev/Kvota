@@ -8,7 +8,7 @@ namespace Kvota.Models.Products
         public string Name { get; set; } = null!;
         public string? Measure { get; set; }
 
-        public virtual ICollection<ProductOption> ProductOption { get; set; } = null!;
+        public virtual ICollection<ProductOption>? ProductOption { get; set; }
         public virtual Category? Category { get; set; }
         public Guid CategoryId { get; set; }
     }

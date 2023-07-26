@@ -70,7 +70,7 @@ namespace Kvota.Repositories
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await Table.ToListAsync();
-  
+ 
         public virtual async Task<T> GetOneAsync(Guid id)
         {
             
