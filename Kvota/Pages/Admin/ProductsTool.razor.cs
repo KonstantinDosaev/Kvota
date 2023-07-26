@@ -10,6 +10,7 @@ namespace Kvota.Pages.Admin
         public NavigationManager? NavigationManager { get; set; }
         private IEnumerable<Product> Products { get; set; } = default!;
         protected IRepo<Product> ProductService { get; set; } = default!;
+        private string jpg = "jpg";
         protected override async Task OnInitializedAsync()
         {
             using var scope = serviceScopeFactory.CreateScope();

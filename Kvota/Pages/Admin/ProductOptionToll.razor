@@ -1,0 +1,92 @@
+﻿@page "/admin/prodoptions/{title}/{id:guid}/{idp:guid}"
+@using Kvota.Models.Products
+@using Kvota.Components.Admin
+@using Kvota.Interfaces
+@using Kvota.Pages.Products
+@using Microsoft.AspNetCore.Components
+@using Microsoft.EntityFrameworkCore
+@inject IRepo<ProductOption> OptionsRepo
+@inject IRepo<Category> CategoryRepo
+@inject IServiceScopeFactory serviceScopeFactory
+
+<NavAdmin></NavAdmin>
+<br />
+<h2>@Title</h2>
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <button class="btn btn-success btn-sm" @onclick="@(e => GetModalAdd())" role="button">Добавить опцию</button>
+    </div>
+</div>
+@if (ItemList != null)
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Значение</th>
+                <th>Мера измерения</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Id == Guid.Empty) { Id = null; }
+            @foreach (var item in ItemList.Where(w => w.ProductId == Idp))
+            {
+                <tr>
+                    <td>@item.CategoryOption.Name</td>
+                    <td>@item.Value</td>
+                    <td>@item.CategoryOption.Measure</td>
+                    <td class="text-end ">
+                        <a class="btn btn-primary " href="/admin/category/@item.Id" role="button">К </a>
+                        <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
+                        <button class="btn btn-danger " @onclick="@(e => @Delete(item.Id))" role="button">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <Modal @ref="_modalAdd" title="Добавить">
+        <BodyTemplate>
+            <EditForm Model="@Item" OnValidSubmit="@SubmitAdd">
+                <div class="form-group">
+                    <label>Производитель</label>
+                    <InputSelect @bind-Value="Item.CategoryOptionId" class="form-control">
+                        <option value=""></option>
+                        @if (CategoryOptionList != null)
+                        {
+                            @foreach (var brand in CategoryOptionList.Where(w=>w.CategoryId == Id))
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        }
+                    </InputSelect>
+
+                </div>
+                <div class="form-group">
+                    <label>Значение</label>
+                    <InputText class="form-control" @bind-Value="Item.Value" />
+                </div>
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </EditForm>
+        </BodyTemplate>
+
+    </Modal>
+
+    <Modal @ref="_modalUpdate" title="Изменить">
+        <BodyTemplate>
+
+            <EditForm Model="@ItemUpdate" OnValidSubmit="@SubmitUpdate">
+                <div class="form-group">
+                    <label>Значение</label>
+                    <InputText class="form-control" @bind-Value="ItemUpdate.Value" />
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </EditForm>
+        </BodyTemplate>
+    </Modal>
+
+    <Modal @ref="_modalError" title="Ошибка">
+        <BodyTemplate>Присутствуют дочерние элементы</BodyTemplate>
+    </Modal>
+}

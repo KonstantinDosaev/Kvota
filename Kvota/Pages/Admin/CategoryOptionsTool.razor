@@ -1,23 +1,20 @@
-﻿@page "/admin/category/{title}/{id:guid}"
+﻿@page "/admin/catoptions/{title}/{id:guid}"
 @using Kvota.Models.Products
 @using Kvota.Components.Admin
 @using Kvota.Interfaces
 @using Kvota.Pages.Products
 @using Microsoft.AspNetCore.Components
 @using Microsoft.EntityFrameworkCore
-@inject IRepo<GrandCategory> GRepo
+@inject IRepo<CategoryOption> OptionsRepo
 @inject IRepo<Category> CategoryRepo
 @inject IServiceScopeFactory serviceScopeFactory
 
 <NavAdmin></NavAdmin>
-<br/>
+<br />
 <h2>@Title</h2>
 <div class="row">
     <div class="col-lg-3 text-right">
-        <button class="btn btn-success btn-sm" @onclick="@(e => GetModalAdd())" role="button">Добавить подкатегорию</button>
-    </div>
-    <div class="col-lg-3 text-right">
-        <a class="btn btn-primary " href="/admin/catoptions/not/@Guid.Empty" role="button">Показать опции без категории</a>
+        <button class="btn btn-success btn-sm" @onclick="@(e => GetModalAdd())" role="button">Добавить опцию</button>
     </div>
 </div>
 @if (ItemList != null)
@@ -26,27 +23,24 @@
         <thead>
             <tr>
                 <th>Имя</th>
-                <th>Описание</th>
+                <th>Мера измерения</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-        @if (Id == Guid.Empty )
-        {
-            Id = null;
-        }
-        @foreach (var item in ItemList.Where(w => w.GrandCategoryId == Id))
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td class="text-end ">
-                        <a class="btn btn-primary " href="/admin/catoptions/@item.Name/@item.Id" role="button">К Опциям Категории </a>
-                    <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
-                    <button class="btn btn-danger " @onclick="@(e => @Delete(item.Id))" role="button">Delete</button>
-                </td>
-            </tr>
-        }
+            @if (Id == Guid.Empty) {Id = null;}
+            @foreach (var item in ItemList.Where(w => w.CategoryId == Id))
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Measure</td>
+                    <td class="text-end ">
+                        <a class="btn btn-primary " href="/admin/category/@item.Id" role="button">К </a>
+                        <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
+                        <button class="btn btn-danger " @onclick="@(e => @Delete(item.Id))" role="button">Delete</button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 
@@ -58,8 +52,8 @@
                     <InputText class="form-control" @bind-Value="Item.Name" />
                 </div>
                 <div class="form-group">
-                    <label>Описание</label>
-                    <InputTextArea class="form-control" @bind-Value="Item.Description" />
+                    <label>Мера измерения</label>
+                    <InputText class="form-control" @bind-Value="Item.Measure" />
                 </div>
                 <button type="submit" class="btn btn-primary">Создать</button>
             </EditForm>
@@ -76,10 +70,10 @@
                     <label>Имя</label>
                     <InputText class="form-control" @bind-Value="ItemUpdate.Name" />
                 </div>
-                
+
                 <div class="form-group">
-                    <label>Описание</label>
-                    <InputTextArea class="form-control" @bind-Value="ItemUpdate.Description" />
+                    <label>Мера измерения</label>
+                    <InputText class="form-control" @bind-Value="ItemUpdate.Measure" />
                 </div>
                 <button type="submit" class="btn btn-primary">Изменить</button>
             </EditForm>
@@ -88,9 +82,9 @@
                     <label>Родительская категория</label>
                     <InputSelect @bind-Value="_tempId" class="form-control">
                         <option value="Id"></option>
-                        @if (GcList != null)
+                        @if (CategoryList != null)
                         {
-                            @foreach (var item in GcList)
+                            @foreach (var item in CategoryList)
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }
@@ -103,8 +97,6 @@
     </Modal>
 
     <Modal @ref="_modalError" title="Ошибка">
-        <BodyTemplate>За данной категорией закреплены подкатегории</BodyTemplate>
+        <BodyTemplate>Присутствуют дочерние элементы</BodyTemplate>
     </Modal>
 }
-            
-

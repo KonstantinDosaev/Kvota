@@ -15,6 +15,7 @@
 
 @if (Product != null)
 {
+   
     <EditForm Model="@Product" OnValidSubmit="@SubmitProduct">
         <div class="form-group">
             <label>Part No</label>
@@ -64,7 +65,10 @@
             <InputNumber class="form-control" @bind-Value="Product.Quantity" />
         </div>
 
-
+        <FileUploads Directory="products" Name="@Product.Name" ></FileUploads> <br />
+        
         <button type="submit" class="btn btn-primary">Create</button>
     </EditForm>
+ 
+
 }

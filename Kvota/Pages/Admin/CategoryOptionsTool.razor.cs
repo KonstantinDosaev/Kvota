@@ -1,34 +1,35 @@
 ﻿using BlazorBootstrap;
 using Kvota.Interfaces;
 using Kvota.Models.Products;
+using Kvota.Repositories.Products;
 using Microsoft.AspNetCore.Components;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kvota.Pages.Admin
 {
-    partial class CategoryTool
+    partial class CategoryOptionsTool
     {
         private Modal? _modalUpdate;
         private Modal? _modalAdd;
         private Modal? _modalError;
         [Inject] public NavigationManager? NavigationManager { get; set; }
-        
-        private Category? Item { get; set; }
-        public Category? ItemUpdate { get; set; }
-        private List<Category>? ItemList { get; set; }
-        private List<GrandCategory>? GcList { get; set; }
-        [Parameter] 
-        public  Guid? Id { get; set; }
+
+        private CategoryOption? Item { get; set; }
+        public CategoryOption? ItemUpdate { get; set; }
+        private List<CategoryOption>? ItemList { get; set; }
+        private List<Category>? CategoryList { get; set; }
+        [Parameter]
+        public Guid? Id { get; set; }
         [Parameter]
         public string? Title { get; set; }
         private Guid _tempId;
         protected override async Task OnInitializedAsync()
         {
 
-            ItemList = (List<Category>)await CategoryRepo.GetAllAsync();
+            ItemList = (List<CategoryOption>)await OptionsRepo.GetAllAsync();
             using var scope = serviceScopeFactory.CreateScope();
-            GcList = (List<GrandCategory>?)await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
-            
+            CategoryList = (List<Category>?)await scope.ServiceProvider.GetService<IRepo<Category>>()!.GetAllAsync();
+
         }
 
 
@@ -36,7 +37,7 @@ namespace Kvota.Pages.Admin
         {
             try
             {
-                await CategoryRepo.DeleteAsync(id);
+                await OptionsRepo.DeleteAsync(id);
                 NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
             catch
@@ -48,37 +49,36 @@ namespace Kvota.Pages.Admin
 
         private async void GetModalUpdate(Guid id)
         {
-           
-            ItemUpdate = await CategoryRepo.GetOneAsync(id);
+
+            ItemUpdate = await OptionsRepo.GetOneAsync(id);
             _modalUpdate?.ShowAsync();
         }
 
         private void GetModalAdd()
         {
 
-            Item = new Category { GrandCategoryId = Id };
+            Item = new CategoryOption() { CategoryId = (Guid)Id! };
             _modalAdd?.ShowAsync();
 
         }
 
         private async void SubmitAdd()
         {
-            await CategoryRepo.AddAsync(Item);
+            await OptionsRepo.AddAsync(Item);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
         private async void SubmitUpdate()
         {
-            await CategoryRepo.Update(ItemUpdate);
+            await OptionsRepo.Update(ItemUpdate);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
 
         }
         private async void SubmitUpdateGrand()
         {
-            ItemUpdate!.GrandCategoryId = _tempId;
-            await CategoryRepo.Update(ItemUpdate);
+            ItemUpdate!.CategoryId = _tempId;
+            await OptionsRepo.Update(ItemUpdate);
 
         }
-
     }
 }

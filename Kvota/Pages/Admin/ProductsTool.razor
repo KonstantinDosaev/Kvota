@@ -14,9 +14,11 @@
  
 @if (Products != null && Products.Any())
 {
+    
     <table class="table table-bordered table-striped table-sm">
         <thead>
         <tr>
+            <th></th>
             <th>Имя</th>
             <th>Парт-номер</th>
             <th>Бренд</th>
@@ -34,6 +36,7 @@
             @foreach (var item in Products)
         {
             <tr>
+                <td> <img src="image/products/@item.Name.@jpg" width="100"> </td>
                 <td>@item.Name</td>
                 <td>@item.PartNumber</td>
                 <td>@item.Brand?.Name</td>
@@ -47,8 +50,8 @@
 
 
                 <td class="text-right">
-                    <a class="btn btn-primary btn-sm" href="/players/detail/@item.Id" role="button">Details</a>
-                        <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Edit</a>
+                    <a class="btn btn-primary " href="/admin/prodoptions/@item.Name/@item.CategoryId/@item.Id" role="button">Опции</a>
+                    <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Edit</a>
                     <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteProduct(item.Id))" role="button">Delete</button>
                 </td>
             </tr>
