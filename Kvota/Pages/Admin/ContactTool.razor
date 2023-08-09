@@ -3,48 +3,50 @@
 @using Kvota.Interfaces
 @using Kvota.Components.Admin
 @inject IRepo<ContactsModel> ContactRepo
-@page "/contacttool"
-@if (Tools != null)
-{
-    <NavAdmin></NavAdmin>
-    <div class ="admin_body" style="padding: 1rem;">
-    <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
-        <div class="form-group">
-            <label>Адрес</label>
-            <InputText class="form-control" @bind-Value="Tools.AddressOne" />
-        </div>
-        <div class="form-group">
-            <label>Доп адрес</label>
-            <InputText class="form-control" @bind-Value="Tools.AddressTwo" />
-        </div>
+@page "/admin/contacttool"
+@attribute [Authorize(Roles = "Administrators")]
 
-        <div class="form-group">
-            <label>Email</label>
-            <InputText class="form-control" @bind-Value="Tools.EmailOne" />
-        </div>
-        <div class="form-group">
-            <label>Email 2</label>
-            <InputText class="form-control" @bind-Value="Tools.EmailTwo" />
-        </div>
+    @if (Tools != null)
+    {
+        <NavAdmin></NavAdmin>
+        <div class ="admin_body" style="padding: 1rem;">
+        <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
+            <div class="form-group">
+                <label>Адрес</label>
+                <InputText class="form-control" @bind-Value="Tools.AddressOne" />
+            </div>
+            <div class="form-group">
+                <label>Доп адрес</label>
+                <InputText class="form-control" @bind-Value="Tools.AddressTwo" />
+            </div>
 
-        <div class="form-group">
-            <label>Телефон 1</label>
-            <InputText class="form-control" @bind-Value="Tools.PhoneOne" />
+            <div class="form-group">
+                <label>Email</label>
+                <InputText class="form-control" @bind-Value="Tools.EmailOne" />
+            </div>
+            <div class="form-group">
+                <label>Email 2</label>
+                <InputText class="form-control" @bind-Value="Tools.EmailTwo" />
+            </div>
+
+            <div class="form-group">
+                <label>Телефон 1</label>
+                <InputText class="form-control" @bind-Value="Tools.PhoneOne" />
+            </div>
+            <div class="form-group">
+                <label>Телефон 2</label>
+                <InputText class="form-control" @bind-Value="Tools.PhoneTwo" />
+            </div>
+            <div class="form-group">
+                <label>Телефон 3</label>
+                <InputText class="form-control" @bind-Value="Tools.PhoneThree" />
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </EditForm>
+            <Modal @ref="modal" title="ОК">
+                <BodyTemplate>
+                    Изменения сохранены
+                </BodyTemplate>
+            </Modal>
         </div>
-        <div class="form-group">
-            <label>Телефон 2</label>
-            <InputText class="form-control" @bind-Value="Tools.PhoneTwo" />
-        </div>
-        <div class="form-group">
-            <label>Телефон 3</label>
-            <InputText class="form-control" @bind-Value="Tools.PhoneThree" />
-        </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-    </EditForm>
-        <Modal @ref="modal" title="ОК">
-            <BodyTemplate>
-                Изменения сохранены
-            </BodyTemplate>
-        </Modal>
-    </div>
-}
+    }

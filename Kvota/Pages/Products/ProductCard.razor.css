@@ -1,0 +1,33 @@
+﻿.product-card__name {
+    
+}
+.product-card__body {
+    display: flex;
+   
+    
+}
+.product-card__image {
+    margin: 0 2rem 0 0;
+    width: 20rem;
+}
+.product-card__brand {
+    font-weight: bold
+}
+.product-card__pnumber {
+    color: maroon;
+    font-weight: bold
+}
+.product-card__description {
+
+}
+.product-card__options {
+
+}
+.product-card__option {
+
+}
+@media (max-width: 1220px) {
+    .product-card__body {
+        display: block;
+    }
+}

@@ -1,16 +1,13 @@
-﻿@page "/fileupload"
-@using System.IO
+﻿@using System.IO
 @inject IWebHostEnvironment env
 
 
-<h1>Загрузить изображение</h1>
-
-<h3>@Message</h3>
+<h3>Загрузить изображение</h3>
 
 <form @onsubmit="OnSubmit">
     <InputFile OnChange="OnInputFileChange" multiple />
     <br /><br />
-    <button type="submit">Загрузить</button>
+    <button class="btn btn-secondary" type="submit">Загрузить</button>
 </form>
 @code {
 

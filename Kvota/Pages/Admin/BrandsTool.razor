@@ -4,7 +4,7 @@
 @using Kvota.Interfaces
 @inject IRepo<Brand> BrandRepos
 @inject IServiceScopeFactory serviceScopeFactory
-
+@attribute [Authorize(Roles = "Administrators")]
 
 <NavAdmin></NavAdmin>
 <div class="row">

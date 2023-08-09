@@ -31,6 +31,7 @@ namespace Kvota.Pages
             CurrentUser = (await authenticationStateTask).User;
 
             GetUsers();
+            await InvokeAsync(StateHasChanged);
         }
 
         IdentityUser objUser = new IdentityUser();

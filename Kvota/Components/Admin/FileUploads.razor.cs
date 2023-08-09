@@ -6,8 +6,8 @@ namespace Kvota.Components.Admin
     partial class FileUploads
     {
         
-            string Message = "No file(s) selected";
-            IReadOnlyList<IBrowserFile> selectedFiles;
+            string Message = "не загружен файл";
+            private IReadOnlyList<IBrowserFile> _selectedFiles = null!;
 
         [Parameter]
         public string? Directory { get; set; }
@@ -15,29 +15,34 @@ namespace Kvota.Components.Admin
         public string? Name { get; set; }
         [Parameter]
         public string? PatchImage { get; set; }
-
+        [Parameter]
+        public EventCallback<string> OnClickCallback { get; set; }
         private void OnInputFileChange(InputFileChangeEventArgs e)
         {
-                selectedFiles = e.GetMultipleFiles();
-                Message = $"{selectedFiles.Count} file(s) selected";
+                _selectedFiles = e.GetMultipleFiles();
+                Message = $"{_selectedFiles.Count} загружено";
                 this.StateHasChanged();
         }
 
         private async void OnSubmit()
         {
-            foreach (var file in selectedFiles)
+            foreach (var file in _selectedFiles)
             {
+                
                 Stream stream = file.OpenReadStream();
                 //var path = $"{env.WebRootPath}\\{file.Name}";
                 var path = $"{env.WebRootPath}\\image\\{Directory}\\{Name}.jpg";
-                PatchImage = path;
+                PatchImage = $"image\\{Directory}\\{Name}.jpg";
                 FileStream fs = File.Create(path);
                 await stream.CopyToAsync(fs);
                 stream.Close();
                 fs.Close();
+                await OnClickCallback.InvokeAsync(PatchImage);
             }
-            Message = $"загружено файлов {selectedFiles.Count}";
+
+            Message = $"загружено файлов {_selectedFiles.Count}";
             this.StateHasChanged();
         }
+
     }
 }

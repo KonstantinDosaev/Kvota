@@ -29,6 +29,7 @@ namespace Kvota.Pages.Admin
             ItemList = (List<CategoryOption>)await OptionsRepo.GetAllAsync();
             using var scope = serviceScopeFactory.CreateScope();
             CategoryList = (List<Category>?)await scope.ServiceProvider.GetService<IRepo<Category>>()!.GetAllAsync();
+            await InvokeAsync(StateHasChanged);
 
         }
 

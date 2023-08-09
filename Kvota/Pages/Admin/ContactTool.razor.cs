@@ -18,7 +18,7 @@ namespace Kvota.Pages.Admin
         protected override async Task OnInitializedAsync()
         {
             Tools = await ContactServ.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
-
+            await InvokeAsync(StateHasChanged);
         }
 
         private async void SubmitPlayer()

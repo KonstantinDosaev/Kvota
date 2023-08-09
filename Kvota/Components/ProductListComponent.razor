@@ -1,0 +1,72 @@
+﻿@using Kvota.Pages.Products
+<div class="productlist__products">
+
+    @if (ProductList != null)
+    {
+        @foreach (var items in ProductList)
+        {
+            <div class="productlist__product product">
+                <div >
+                    <img class="product__image"src="@items.Image">
+                </div>
+                <div class="product__body">
+                    <a class="product__name product__text" @onclick="@(e => GetModalUpdate(items.Id, items.Name))">@items.Name</a>
+                    @if (items.Brand != null)
+                    {
+                        <span class="product__brand product__text">Производитель: @items.Brand!.Name</span>
+                    }
+              <span class="product__pnumber product__text">№.: @items.PartNumber</span>
+                </div>
+                <div class="product__prices">
+                    @if (items.Quantity != null)
+                    {
+                        <div class="product__quantity product__text">Кол.-во: @items.Quantity шт.</div>
+                    }
+                    @if (items.Price != null)
+                    {
+                        <span class="product__price ">@items.Price р.</span>
+                    }
+                    @if (items.SalePrice != null)
+                    {
+                        <span class="product__sale ">@items.SalePrice р.</span>
+                    }
+                    <span class="product__feetback ">feeeet</span>
+                </div>
+
+            </div>
+
+
+
+        }
+    }
+    <div class="product__modal">
+        <Modal Size="ModalSize.ExtraLarge" @ref="_modalProduct">
+            <HeaderTemplate>
+                <button class="product-modal__btn btn btn-danger btn-sm" @onclick="@(e => _modalProduct.HideAsync())" role="button">Уточнить наличие и цену</button>
+            </HeaderTemplate>
+            <BodyTemplate>
+                <ProductCard Id="@IdCurrent"/>
+                
+            </BodyTemplate>
+
+
+        </Modal>
+    </div>
+</div>
+<style>
+    .modal-header {
+        background-color: rgba(119, 136, 153,0.9);
+        color: lightgray;
+
+                         
+    }
+
+    .modal-content {
+        
+    }
+
+    .product-modal__btn {
+        background-color: rgba(178, 34, 34, 0.8);
+        font-size: 1rem;
+    }
+</style>

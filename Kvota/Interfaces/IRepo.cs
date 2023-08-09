@@ -1,4 +1,6 @@
-﻿namespace Kvota.Interfaces
+﻿using Kvota.Models.Products;
+
+namespace Kvota.Interfaces
 {
     public interface IRepo<T>
     {
@@ -9,6 +11,7 @@
         Task<T> GetOneAsync(Guid id);
         
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllByIdAsync(Guid id);
         Task Update(T entity);
         Task<int> DeleteAsync(Guid id);
 
@@ -18,7 +21,9 @@
 
         public T Add(T entity);
         int Save(T entity);
-        T GetOne(Guid id);
+        T GetOne(Guid id); 
+        Task<IEnumerable<T>> GetSearch(string searchString);
+
 
     }
 }

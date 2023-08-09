@@ -26,4 +26,9 @@
     <PackageReference Include="Radzen.Blazor" Version="4.14.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
 </Project>

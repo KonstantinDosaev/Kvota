@@ -1,0 +1,55 @@
+﻿@page "/productlists/{id:guid}"
+@inject IServiceScopeFactory ServiceScopeFactory
+@if (Product != null)
+{
+    <div class="product-card">
+        
+        <div >
+            
+        </div>
+        <div class="product-card__body">
+            <img  class="product-card__image" src="@Product.Image">
+            <div>
+                <h1 class="product-card__name">@Product.Name</h1>
+                @if (Product.Brand != null)
+                {
+                    <p class="product-card__brand product__text">Производитель: @Product.Brand!.Name</p>
+                }
+                <p class="product-card__pnumber product__text">Артикул: @Product.PartNumber</p>
+                <p style="font-weight: bold">Описание:</p>
+                @if (Product.Description != null)
+                {
+                    <p class="product-card__description product__text">@Product.Description</p>
+                }
+            </div>
+
+        </div>
+
+        <div class="product-card__options">
+
+            @if (Product.ProductOption != null)
+            {
+                foreach (var option in Product.ProductOption)
+                {
+                    <span class="product-card__option">@option.CategoryOption!.Name @option.Value @option.CategoryOption.Measure</span>
+                }
+            }
+        </div>
+       @* <div class="product__prices">
+            @if (Product.Quantity != null)
+            {
+                <div class="product-card__quantity product__text">Кол.-во: @Product.Quantity шт.</div>
+            }
+            @if (Product.Price != null)
+            {
+                <span class="product-card__price ">@Product.Price р.</span>
+            }
+            @if (Product.SalePrice != null)
+            {
+                <span class="product-card__sale ">@Product.SalePrice р.</span>
+            }
+            <span class="product-card__feetback ">feeeet</span>
+        </div>*@
+
+    </div>
+}

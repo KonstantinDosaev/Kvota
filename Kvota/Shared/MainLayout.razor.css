@@ -14,22 +14,34 @@ main {
    
 }
 
-
+.top__con {
+    display: flex;
+    
+}
 .sidebar {
     /*background-image: linear-gradient(180deg, rgb(30, 144, 255 ) 10%, rgb(25, 25, 112) 70%);*/
     background-color: rgba(119, 136, 153,0.9);
     color: lightgray;
     position: sticky;
 }
-
+.top__search {
+    flex: 1 1 auto;
+    align-self: center;
+    margin: 0 1rem;
+}
+.top__contacts {
+    display: flex;
+}
 .top-row {
-    /* background-image: linear-gradient(90deg, rgb(30, 144, 255) 0%, rgb(25, 25, 112) 70%);*/
-    background: rgba(195, 206, 219, 0.7);
-    border-bottom: 1px solid #d6d5d5;
+    
+    background: #fff;
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
+    border-radius: 5px;
     justify-content: flex-end;
-   
     display: flex;
     align-items: center;
+    margin: 0.5rem;
+    padding: 0.2rem 0; 
 }
 
     .top-row ::deep a, .top-row .btn-link {
@@ -42,40 +54,46 @@ main {
         text-overflow: ellipsis;
     }
 
-@media (max-width: 800.98px) {
-    .top-row:not(.auth) {
-        display: none;
-    }
+@media (max-width: 1200px) {
 
-    .top-row.auth {
-        justify-content: space-between;
-    }
-
-    .top-row a, .top-row .btn-link {
-        margin-left: 0;
+    .top__contacts {
+        flex-direction: column;
     }
 }
 
-@media (min-width: 800px) {
-    .page {
-        flex-direction: row;
-    }
+        @media (max-width: 800.98px) {
+            .top-row:not(.auth) {
+                display: none;
+            }
+       
+            .top-row.auth {
+                justify-content: space-between;
+            }
 
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        
-        top: 0;
-    }
+            .top-row a, .top-row .btn-link {
+                margin-left: 0;
+            }
+        }
 
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
+        @media (min-width: 800px) {
+            .page {
+                flex-direction: row;
+            }
 
-    .top-row, article {
-/*        padding-left: 0.7rem !important;
+            .sidebar {
+                width: 250px;
+                height: 100vh;
+                top: 0;
+            }
+
+            .top-row {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+
+            .top-row, article {
+                /*        padding-left: 0.7rem !important;
         padding-right: 0.7rem !important;*/
-    }
-}
+            }
+        }

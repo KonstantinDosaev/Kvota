@@ -24,6 +24,11 @@
             <NavLink class="nav-link" href="about">
                 <span class="oi oi-people" aria-hidden="true"></span> О компании
             </NavLink>
+        </div>    
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="productlist">
+                <span class="oi oi-people" aria-hidden="true"></span> Каталог
+            </NavLink>
         </div>
         
         <div class="nav-item px-3">
@@ -34,8 +39,8 @@
         
         <AuthorizeView>
             <Authorized>
-                @if (@context.User.IsInRole("Administrators"))
-                {
+@*                @if (@context.User.IsInRole("Administrators"))
+                {*@
                     <div class="nav-item px-3" style="margin-left: 1rem;">
             
                         <NavLink class="nav-link" href="/logout" Match="NavLinkMatch.All">
@@ -43,7 +48,7 @@
                         </NavLink>
           
                     </div> 
-                }
+@*                }*@
                
             </Authorized>
         </AuthorizeView>

@@ -1,0 +1,58 @@
+﻿@using Kvota.Interfaces
+@using Kvota.Models.Products
+@inject IRepo<Product> ProductRepo
+
+<div class="search__block kvota__body-shadow">
+    <button type="submit" class="search__btn" @onclick="SearchProducts"><i class="oi oi-magnifying-glass"></i> </button>
+    <input type="search" class="search__input" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
+</div>
+<Modal Size="ModalSize.ExtraLarge" @ref="_modalSearch" title="Результат поиска">
+    <BodyTemplate>
+        <div class="search__block">
+            <button type="submit" class="search__btn" @onclick="SearchProducts"><i class="oi oi-magnifying-glass"></i> </button>
+            <input type="search" class="search__input" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
+        </div>
+        <div class="product-search__block">
+        @if (SearchList != null)
+        {
+            <ProductListComponent ProductList="SearchList"/>
+        }
+        </div>
+    </BodyTemplate>
+</Modal>
+
+                                
+<style>
+    .search__block {
+        position: relative;
+        width: 100%;
+        padding-left: 20px;
+        background: #fff;
+        box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
+        border-radius: 5px;
+       
+    }
+    .search__input, .search__btn {
+        border: none;
+        outline: none;
+        background: transparent;
+    }
+
+    .search__input {
+        width: 100%;
+        height: 42px;
+        padding-left: 15px;
+    }
+
+    .search__btn {
+        height: 42px;
+        width: 42px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+    }
+    .product-search__block {
+        height:50vh;
+    }
+</style>

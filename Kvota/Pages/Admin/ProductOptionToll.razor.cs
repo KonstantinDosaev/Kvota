@@ -22,13 +22,14 @@ namespace Kvota.Pages.Admin
         public Guid? Idp { get; set; }
         [Parameter]
         public string? Title { get; set; }
-        private Guid _tempId;
+ 
         protected override async Task OnInitializedAsync()
         {
 
             ItemList = (List<ProductOption>)await OptionsRepo.GetAllAsync();
             using var scope = serviceScopeFactory.CreateScope();
             CategoryOptionList = (List<CategoryOption>?)await scope.ServiceProvider.GetService<IRepo<CategoryOption>>()!.GetAllAsync();
+            await InvokeAsync(StateHasChanged);
 
         }
 

@@ -1,4 +1,5 @@
 ﻿@page "/usermanager"
+@attribute [Authorize(Roles = "Administrators")]
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Identity;
 @using Kvota.Areas.Identity.Data

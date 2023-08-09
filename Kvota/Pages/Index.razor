@@ -8,13 +8,14 @@
 @using Kvota.Data
 @using Kvota.Interfaces
 @using Kvota.Models.Content
+@using Kvota.Components
 
 <PageTitle>Квота</PageTitle>
 @if (Content != null)
 {
     <div class="home_body">
-        <div class="row home_images">
-            <div class="col home_image">
+        <div class="row home_images ">
+            <div class="col home_image kvota__body-shadow">
 
                 <h1 class="home_image_text1">@Content.HomeImageTextOne</h1>
                 <h2 class="home_image_text2">@Content.HomeImageTextTwo</h2>
@@ -22,7 +23,7 @@
 
         </div>
 
-        <div class="partner">
+        <div class="partner kvota__body-shadow">
             <h2 class="home_image_text1">@Content.PartnerTitle</h2>
             <div class="row partner__lables">
                 <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
@@ -56,63 +57,14 @@
         </div>
 
         <div class="company">
-            <div class="text_col company__text" style="background-image: url(/wwwroot/image/feedback.jpg)">
+            <div class="text_col company__text kvota__body-shadow" style="background-image: url(/wwwroot/image/feedback.jpg)">
                 <h2> О компании</h2> <br/>
                 <p>@Content.AboutHomeText</p>
             </div>
-            <div class="home__form">
-                <h2>Форма обратной связи</h2> <br/>
-                <EditForm Model="feedback" OnSubmit="Submit" class="home__form_body">
-                    <DataAnnotationsValidator/>
-
-                    <ValidationSummary/>
-
-                    <div class="row mb-3">
-                        <label for="name" class="col-sm-2 col-form-label">Имя</label>
-                        <div class="col-sm-10">
-                            <InputText @bind-Value="feedback.Name" class="form-control" id="name"/>
-                            <ValidationMessage For="@(() => feedback.Name)"/>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="email" class="col-sm-2 col-form-label">E-mail</label>
-                        <div class="col-sm-10">
-                            <InputText type="email" @bind-Value="feedback.Email" class="form-control" id="email"/>
-                            <ValidationMessage For="@(() => feedback.Email)"/>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="phone" class="col-sm-2 col-form-label">Телефон</label>
-                        <div class="col-sm-10">
-                            <InputText type="phone" @bind-Value="feedback.PhoneNumber" class="form-control" id="phone"/>
-                            <ValidationMessage For="@(() => feedback.PhoneNumber)"/>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="partNumber" class="col-sm-2 col-form-label">Парт номер</label>
-                        <div class="col-sm-10">
-                            <InputText @bind-Value="feedback.PartNumber" class="form-control" id="partNumber"/>
-                            <ValidationMessage For="@(() => feedback.PartNumber)"/>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="comment" class="col-sm-2 col-form-label">Комментарий</label>
-                        <div class="col-sm-10">
-                            <InputTextArea @bind-Value="feedback.Comment" class="form-control" id="comment"/>
-                            <ValidationMessage For="@(() => feedback.Comment)"/>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </EditForm>
-
-                @code {
-
-                }
+            <div class="home__form kvota__body-shadow">
+                <FeedbackForm/>
 
             </div>
-            <Modal @ref="modal" title="Сообщение отправлено">
-                <BodyTemplate>Мы свяжемся с вами "@feedback.Name"</BodyTemplate>
-            </Modal>
         </div>
     </div>
 
@@ -138,19 +90,7 @@
     {
         Content = await HomeServ.GetOneAsync(new Guid("7c7ed7ca-fda1-4449-8637-c403c61957eb"));
     }
-
     
-    Feedback feedback = new();
-    private Modal? modal;
-
-    async void  Submit()
-    {
-        var fb = await feedback.SendEmailCustom(feedback);
-        if (fb)
-            modal?.ShowAsync();
-
-    }
-
 
 }
 

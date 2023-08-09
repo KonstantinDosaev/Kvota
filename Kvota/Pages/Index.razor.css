@@ -11,8 +11,9 @@
     flex: 1 1 auto;
 }
 .home_image {
+    margin: 0.35rem 0.5rem;
     background: url(/image/vishnu-mohanan-pfR18JNEMv8-unsplash.jpg) 50%/cover no-repeat;
-    padding:0 1rem;
+    padding: 0 1rem;
 }
 .home_image_text1 {
     margin-top: 1rem;
@@ -33,10 +34,9 @@
 }
 
 .partner {
-   
+    margin: 0.35rem 0.5rem;
     padding: 1rem;
     background: url(/image/manufbg.jpg)0 0/cover no-repeat;
-    
 }
 
 .partner__lables {
@@ -66,15 +66,16 @@
 .company__text {
     flex: 1 1 50%;
     padding: 1rem;
+    margin: 0.5rem;
 }
 .home__form {
+    margin: 0.5rem;
     flex: 1 1 50%;
     padding: 1rem;
-    background: url(/image/feedback.jpg)0 60%/cover no-repeat;
+    background: url(/image/feedback.jpg)0 0/cover no-repeat;
+    
 }
-.home__form_body {
-    color: black;
-}
+
 
 @media (max-width: 1296px) {
     .company{

@@ -1,5 +1,6 @@
 ﻿using Kvota.Migrations;
 using Kvota.Models.Products;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kvota.Repositories.Products
 {
@@ -9,6 +10,6 @@ namespace Kvota.Repositories.Products
             {
                 Table = context.Categories;
             }
-        
+        public override async Task<IEnumerable<Category>> GetAllAsync() => await Table.Include(i => i.CategoryOptions).ToListAsync();
     }
 }

@@ -1,15 +1,16 @@
 ﻿@page "/admin/product/edit/{id:guid}"
+@attribute [Authorize(Roles = "Administrators")]
 @using Kvota.Models.Products
 @using Kvota.Interfaces
 @inject IRepo<Product> ProductRepo
-@inject IRepo<Category> CategoryRepo
+@inject IRepo<GrandCategory> GrandCategoryRepo
 @inject IRepo<Brand> BrandRepo
 <div class="row">
     <div class="col-lg-9">
         <h1>@Product.Name</h1>
     </div>
     <div class="col-lg-3 text-right">
-        <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Go Back To List</a>
+        <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Вернуться назад</a>
     </div>
 </div>
 
@@ -40,17 +41,28 @@
 
         </div>
         <div class="form-group">
-            <label>Category</label>
-            <InputSelect @bind-Value="Product.CategoryId" class="form-control">
-                <option value=""></option>
-                @if (CategoriesList != null)
+            <label>Категория</label>
+            <select class="form-control" @bind="Product.CategoryId">
+                <option value=@Product.CategoryId>@if (Product.Category != null){@Product.Category.Name}</option>
+                @if (GrandCategoryList != null)
                 {
-                    @foreach (var category in CategoriesList)
+                    foreach (var grandCategory in GrandCategoryList)
                     {
-                        <option value="@category.Id">@category.Name</option>
+                        <optgroup label="@grandCategory.Name">
+                            @if (grandCategory.Categories != null)
+                            {
+                                foreach (var item in grandCategory.Categories)
+                                {
+                                    if (item != null)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            }
+                        </optgroup>
                     }
                 }
-            </InputSelect>
+            </select>
         </div>
         <div class="form-group">
             <label>Описание</label>
@@ -65,7 +77,7 @@
             <InputNumber class="form-control" @bind-Value="Product.Quantity" />
         </div>
 
-        <FileUploads Directory="products" Name="@Product.Name" ></FileUploads> <br />
+        <FileUploads Directory="products" Name="@Product.Name" OnClickCallback="AddImagePatch"></FileUploads> <br />
         
         <button type="submit" class="btn btn-primary">Create</button>
     </EditForm>

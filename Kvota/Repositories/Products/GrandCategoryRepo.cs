@@ -10,5 +10,6 @@ namespace Kvota.Repositories.Products
         {
             Table = context.GrandCategories;
         }
+        public override async Task<IEnumerable<GrandCategory>> GetAllAsync() => await Table.Include(i => i.Categories).ToListAsync();
     }
 }

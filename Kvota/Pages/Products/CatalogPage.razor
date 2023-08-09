@@ -1,9 +1,14 @@
-﻿
+﻿@page "/productlist"
+@using Kvota.Models.Products
+@using Kvota.Interfaces
+@using Kvota.Components
+@inject IRepo<Product> ProductRepo
+@inject IServiceScopeFactory serviceScopeFactory
 
 
-<div class="catalog_body">
+<div class="catalog__body">
     
-    <div class="manufactures_body">
+@*    <div class="manufactures_body">
         @foreach (var item in manuf)
         {
             string it = item + ".jpg";
@@ -12,107 +17,43 @@
                 <p class="manufactures_title">@item</p>
             </a>
         }
-    </div>
-    <div class="grand_body">
-
-        @foreach (GrandCategorye items in grandCategories)
+    </div>*@
+    <div class="catalog__grands">
+        @if (GrandCategories != null)
         {
-            <div class="grand_item">
-                <div class="item_image_body"><img class="item_image" src="image/aboutbg2.jpg" /></div>
-                <div class="item_body">
-                    <div class="item_title">@items.name</div>
-                    <div class="item_list">
+            @foreach (var items in GrandCategories.OrderBy(o=>o.Name))
+            {
+                <div class="catalog__grand grand kvota__body-shadow">
+                    <div class="grand__image-body"><img class="grand__image" src="image/aboutbg2.jpg"/></div>
+                    <div class="grand__body">
+                        <div class="grand__title">@items.Name</div>
+                        <div class="grand__category category-grand">
 
-                        @foreach (var item in categories.Where(w => w.grandCategoryId == items.id))
-                        {
-                            <div class="list_row">
-                                <a class="item_link">@item.name</a>
-                                <p class="item_quant">@item.quantityProduct</p>
-                            </div>
-                        }
+                            @if (items.Categories != null)
+                            {
+                                foreach (var item in items.Categories.OrderBy(o=>o.Name))
+                                {
+                                    <div class="category-grand__body">
+                                        <a class="category-grand__link" href="productlist/@item.Name/@item.Id">@item.Name</a>
+                                        <p class="category-grand__quant">
+                                            (@if (item.Products != null)
+                                            {@item.Products.Count})
+                                        </p>
+                                    </div>
+                                }
+                                    
+                            }
 
 
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </div>
 
 
-@code {
 
-    public class Categorye
-    {
-        public int id;
-        public string name;
-        public int quantityProduct;
-        public int grandCategoryId;
-    }
 
-    public class GrandCategorye
-    {
-        public int id;
-        public string name;
-
-    }
-
-    List<string> manuf = new List<string>() { "name1", "name2", "name3", "name4", "name5", "name6", "name7", "name8", "name9", "name10", "name11", "name12" };
-    List<Categorye> categories = new List<Categorye>()
-    {
-        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 9},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 9},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 4},
-        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 6},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 5},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 3},
-
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 4},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 5},
-        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 5},
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 4},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 10},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
-        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 2},
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 7},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 1},
-        new Categorye(){id=4, name = "zdjzdjz",quantityProduct = 644, grandCategoryId = 7},
-        new Categorye(){id=1, name = "sdafa",quantityProduct = 350, grandCategoryId = 7},
-        new Categorye(){id=2, name = "jnfkjlfdhk",quantityProduct = 245, grandCategoryId = 6},
-        new Categorye(){id=3, name = "szjzdjd",quantityProduct = 24, grandCategoryId = 8},
-       
-
-    };
-    List<GrandCategorye> grandCategories = new List<GrandCategorye>()
-    {
-        new GrandCategorye(){id=1, name = "Катоды"},
-        new GrandCategorye(){id=2, name = "Нагрузки"},
-        new GrandCategorye(){id=3, name = "Катоды"},
-        new GrandCategorye(){id=4, name = "Чипы"},
-        new GrandCategorye(){id=5, name = "Диоды"},
-        new GrandCategorye(){id=6, name = "Rout"}
-
-    };
-
-}
 

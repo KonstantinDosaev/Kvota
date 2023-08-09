@@ -22,7 +22,7 @@ namespace Kvota.Pages.Admin
         {
             
             BrandList = (List<Brand>)await BrandRepos.GetAllAsync();
-
+            await InvokeAsync(StateHasChanged);
         }
 
 

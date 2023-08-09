@@ -16,7 +16,7 @@ namespace Kvota.Pages.Admin
         protected override async Task OnInitializedAsync()
         {
             Tools = await HomeServ.GetOneAsync(new Guid("7c7ed7ca-fda1-4449-8637-c403c61957eb"));
-           
+            await InvokeAsync(StateHasChanged);
         }
 
 

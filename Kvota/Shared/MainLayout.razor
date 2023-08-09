@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IServiceScopeFactory serviceScopeFactory
-
-<PageTitle>VpShop.UI</PageTitle>
+@using Kvota.Components.Admin.Products
+<PageTitle>Квота</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -11,20 +11,26 @@
     <main>
         @if (Contact != null)
         {
-            <div class="top-row px-4">
-
-                <div>
-                    <a href="tel:@Contact.PhoneOne" target="_blank">
-                        <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.PhoneOne
-                    </a>
+            <div class="top__con">
+                <div class="top__search">
+                    <SearchProduct/>
                 </div>
-                <div>
-                    <a href="mailto:@Contact.EmailOne">
-                        <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.EmailOne
-                    </a>
+                <div class="top-row px-3">
+                    <div class="top__contacts ">
+                        <div>
+                            <a href="tel:@Contact.PhoneOne" target="_blank">
+                                <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.PhoneOne
+                            </a>
+                        </div>
+                        <div>
+                            <a href="mailto:@Contact.EmailOne">
+                                <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.EmailOne
+                            </a>
+                        </div>
+                    </div>
+               
+                    <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem; ">@Contact.AddressOne</span>
                 </div>
-                <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem;">@Contact.AddressOne</span>
-
             </div>
         }
         <article>

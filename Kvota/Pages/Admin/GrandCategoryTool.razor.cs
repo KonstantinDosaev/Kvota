@@ -20,6 +20,7 @@ namespace Kvota.Pages.Admin
         {
 
             ItemList = (List<GrandCategory>)await GRepo.GetAllAsync();
+            await InvokeAsync(StateHasChanged);
         }
 
 

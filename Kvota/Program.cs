@@ -3,12 +3,12 @@ using Kvota.Areas.Identity.Data;
 using Kvota.Data;
 using Kvota.Interfaces;
 using Kvota.Migrations;
+using Kvota.Models;
 using Kvota.Models.Content;
 using Kvota.Models.Products;
 using Kvota.Repositories;
 using Kvota.Repositories.Products;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Kvota.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +16,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("KvotaContextConnection") ?? throw new InvalidOperationException("Connection string 'KvotaContextConnection' not found.");
 var connectionStringProduct = builder.Configuration.GetConnectionString("ProductContextConnection") ?? throw new InvalidOperationException("Connection string 'ProductContextConnection' not found.");
+builder.Services.AddOptions();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddScoped<IRepo<Home>, HomeRepo>();
 builder.Services.AddScoped<IRepo<ContactsModel>, ContactRepo>();
@@ -25,6 +27,8 @@ builder.Services.AddScoped<IRepo<GrandCategory>, GrandCategoryRepo>();
 builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddScoped<IRepo<CategoryOption>, CategoryOptionsRepo>();
 builder.Services.AddScoped<IRepo<ProductOption>, ProductOptionRepo>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 
 builder.Services.AddDbContext<KvotaContext>(options =>
     options.UseNpgsql(connectionString));
@@ -36,7 +40,6 @@ builder.Services.AddDefaultIdentity<KvotaUser>(options => options.SignIn.Require
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<KvotaContext>();
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazorBootstrap();
@@ -45,11 +48,10 @@ builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

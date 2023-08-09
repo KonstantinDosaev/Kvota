@@ -3,6 +3,7 @@ using Kvota.Interfaces;
 using Kvota.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
+using Kvota.Models.Products;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace Kvota.Repositories
@@ -39,6 +40,7 @@ namespace Kvota.Repositories
 
             return entities;
         }
+
         public async Task Update(T entity)
         {
             Table.Update(entity);
@@ -70,7 +72,9 @@ namespace Kvota.Repositories
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await Table.ToListAsync();
- 
+        public virtual async Task<IEnumerable<T>> GetAllByIdAsync(Guid id) => await Table.Where(w=>w.Id==id).ToListAsync();
+     
+
         public virtual async Task<T> GetOneAsync(Guid id)
         {
             
@@ -86,6 +90,8 @@ namespace Kvota.Repositories
 
         }
 
+        public virtual async Task<IEnumerable<T>> GetSearch(string searchString) => await Table.ToListAsync();
+
 
         public async Task<int> SaveAsync(T entity)
         {
@@ -97,7 +103,7 @@ namespace Kvota.Repositories
             Context.Entry(entity).State = EntityState.Modified;
             return SaveChanges();
         }
-        internal int SaveChanges()
+        internal virtual int SaveChanges()
         {
             try
             {
@@ -110,7 +116,7 @@ namespace Kvota.Repositories
                 throw;
             }
         }
-        internal async Task<int> SaveChangesAsync()
+        internal virtual async Task<int> SaveChangesAsync()
         {
             try
             {
@@ -123,5 +129,6 @@ namespace Kvota.Repositories
                 throw;
             }
         }
+
     }
 }

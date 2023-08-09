@@ -1,0 +1,16 @@
+﻿.prductlist__filters {
+    display: flex;
+    margin: 0 0 1rem 0;
+}
+
+.productlist__search {
+    flex: 1 1 auto;
+}
+.prductlist__pager {
+    display: flex;
+}
+.prductlist__quantitypg {
+    width: 75px;
+    height: 38px;
+    margin-left: 5px;
+}

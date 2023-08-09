@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject ProtectedSessionStorage ProtectedSessionStore
+<div class="prductlist__filters">
+    <div class="productlist__sort">
+        <select title="Сортировка" class="form-control" @bind="_sortString" @onclick="GetList">
+            <option value="">Сортировка</option>
+            <option value="name">По имение A-z</option>
+            <option value="nameDesc">По имение Z-a</option>
+            <option value="dateNews">Сначала новые</option>
+            <option value="priceMin">Цена по убыванию</option>
+            <option value="priceMax">Цена по возрастанию</option>
+        </select>
+    </div>
+    <div class="productlist__categoryFilter">
+
+        @if (GrandCategoryList!=null && Category == null)
+        {
+            <select class="form-control"
+                @bind-value="CategoriesFilterId" @onchange="GetList" @bind-value:event="oninput" >
+               <option value=@Guid.Empty>Все категории</option>
+
+                @foreach (var grandCategory in GrandCategoryList)
+                {
+                    <optgroup label="@grandCategory.Name">
+                        @if (grandCategory.Categories != null)
+                        {
+                            foreach (var item in grandCategory.Categories)
+                            {
+                                if (item != null)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        }
+                    
+                   </optgroup>
+                }
+            
+            </select>
+        }
+    </div>
+    <div class="productlist__brandFilter">
+        <select class="form-control"
+                @bind-value="BrandsFilterId" @onchange="GetList" @bind-value:event="oninput">
+            <option value=@Guid.Empty>Все производители</option>
+            @if (BrandList != null)
+            {
+                @foreach (var item in BrandList)
+                {
+                    if (item != null)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    
+@*    <button type="submit" class="btn btn-primary" @onclick="GetList">Фильтр </button>*@
+    <div class="productlist__search">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="Search" />
+            @if (SearchString.Length > 0)
+            {
+                <div class="input-group-append">
+                    <button class="btn " @onclick="ResetSearch">
+                        <i class="oi oi-x"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="prductlist__pager">
+    <Pagination ActivePageNumber="@_currentPageNumber"
+                TotalPages="_totalPg"
+                FirstLinkIcon="IconName.ChevronDoubleLeft"
+                PreviousLinkIcon="IconName.ChevronLeft"
+                NextLinkIcon="IconName.ChevronRight"
+                LastLinkIcon="IconName.ChevronDoubleRight"
+                PageChanged="OnPageChanged" />
+    <select class="form-control prductlist__quantitypg"
+            @bind="_quantityInPage" @onclick="GetList">
+        <option selected value=2>по 2</option>
+        <option value=3>по 3</option>
+        <option value=4>по 4</option>
+
+    </select>
+</div>

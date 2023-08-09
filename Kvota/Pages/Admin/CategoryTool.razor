@@ -1,10 +1,9 @@
 ﻿@page "/admin/category/{title}/{id:guid}"
+@attribute [Authorize(Roles = "Administrators")]
 @using Kvota.Models.Products
 @using Kvota.Components.Admin
 @using Kvota.Interfaces
-@using Kvota.Pages.Products
 @using Microsoft.AspNetCore.Components
-@using Microsoft.EntityFrameworkCore
 @inject IRepo<GrandCategory> GRepo
 @inject IRepo<Category> CategoryRepo
 @inject IServiceScopeFactory serviceScopeFactory
@@ -18,6 +17,9 @@
     </div>
     <div class="col-lg-3 text-right">
         <a class="btn btn-primary " href="/admin/catoptions/not/@Guid.Empty" role="button">Показать опции без категории</a>
+    </div>
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-secondary btn-sm" href="/admin/category/" role="button">Вернуться к категориям</a>
     </div>
 </div>
 @if (ItemList != null)
