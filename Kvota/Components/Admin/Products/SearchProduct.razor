@@ -6,7 +6,7 @@
     <button type="submit" class="search__btn" @onclick="SearchProducts"><i class="oi oi-magnifying-glass"></i> </button>
     <input type="search" class="search__input" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
 </div>
-<Modal Size="ModalSize.ExtraLarge" @ref="_modalSearch" title="Результат поиска">
+<Modal IsScrollable="true" Size="ModalSize.ExtraLarge" @ref="_modalSearch" title="Результат поиска">
     <BodyTemplate>
         <div class="search__block">
             <button type="submit" class="search__btn" @onclick="SearchProducts"><i class="oi oi-magnifying-glass"></i> </button>

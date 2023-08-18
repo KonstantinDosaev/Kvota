@@ -2,7 +2,7 @@
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject ProtectedSessionStorage ProtectedSessionStore
 <div class="prductlist__filters">
-    <div class="productlist__sort">
+@*    <div class="productlist__sort">
         <select title="Сортировка" class="form-control" @bind="_sortString" @onclick="GetList">
             <option value="">Сортировка</option>
             <option value="name">По имение A-z</option>
@@ -11,7 +11,7 @@
             <option value="priceMin">Цена по убыванию</option>
             <option value="priceMax">Цена по возрастанию</option>
         </select>
-    </div>
+    </div>*@
     <div class="productlist__categoryFilter">
 
         @if (GrandCategoryList!=null && Category == null)
@@ -57,8 +57,7 @@
         </select>
     </div>
 
-    
-@*    <button type="submit" class="btn btn-primary" @onclick="GetList">Фильтр </button>*@
+
     <div class="productlist__search">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="Search" />
@@ -73,19 +72,4 @@
         </div>
     </div>
 </div>
-<div class="prductlist__pager">
-    <Pagination ActivePageNumber="@_currentPageNumber"
-                TotalPages="_totalPg"
-                FirstLinkIcon="IconName.ChevronDoubleLeft"
-                PreviousLinkIcon="IconName.ChevronLeft"
-                NextLinkIcon="IconName.ChevronRight"
-                LastLinkIcon="IconName.ChevronDoubleRight"
-                PageChanged="OnPageChanged" />
-    <select class="form-control prductlist__quantitypg"
-            @bind="_quantityInPage" @onclick="GetList">
-        <option selected value=2>по 2</option>
-        <option value=3>по 3</option>
-        <option value=4>по 4</option>
 
-    </select>
-</div>

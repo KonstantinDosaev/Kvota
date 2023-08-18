@@ -13,15 +13,20 @@
         <div class="productlist__items"></div>
         @if (Category != null)
         {
-            <ProductFilterComponent Products="Products" CategoriesFilterId="CategoriesId" Category="@Category" ProductListCallback="GetList"></ProductFilterComponent>
+            <ProductFilterComponent Products="Products" CategoriesFilterId="CategoriesId" Category="@Category" ProductListCallback="GetFilterList"></ProductFilterComponent>
         }
         else
         {
-            <ProductFilterComponent Products="Products"  ProductListCallback="GetList"></ProductFilterComponent>
+            <ProductFilterComponent Products="Products"  ProductListCallback="GetFilterList"></ProductFilterComponent>
         }
         <ProductListComponent ProductList="_pagedList" />
-
-
+        @if (_filteredList.Count() > 10)
+        {
+            <div class="button__block" style="text-align: center">
+                <button class="btn btn-danger " @onclick="@(e => LoadMore(_pagedList.Count))" role="button">Загрузить еще</button>
+                <button class="btn btn-secondary " onclick="document.getElementById('up_position').scrollIntoView({behavior:'smooth'})">Вверх</button>
+            </div>
+        }
     </div>
 }
 

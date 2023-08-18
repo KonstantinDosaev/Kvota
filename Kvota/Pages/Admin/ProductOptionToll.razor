@@ -32,9 +32,14 @@
             @foreach (var item in ItemList.Where(w => w.ProductId == Idp))
             {
                 <tr>
-                    <td>@item.CategoryOption.Name</td>
-                    <td>@item.Value</td>
-                    <td>@item.CategoryOption.Measure</td>
+                    <td>
+                        @if (item.CategoryOption != null)
+                        {
+                            @item.CategoryOption.Name@:</td>
+                            <td>@item.Value</td>
+                            @:<td>@item.CategoryOption.Measure
+                        }
+                    </td>
                     <td class="text-end ">
                         <a class="btn btn-primary " href="/admin/category/@item.Id" role="button">К </a>
                         <button class="btn btn-secondary " @onclick="@(e => GetModalUpdate(item.Id))" role="button">Edit</button>
@@ -50,7 +55,7 @@
             <EditForm Model="@Item" OnValidSubmit="@SubmitAdd">
                 <div class="form-group">
                     <label>Производитель</label>
-                    <InputSelect @bind-Value="Item.CategoryOptionId" class="form-control">
+                    <InputSelect @bind-Value="Item!.CategoryOptionId" class="form-control">
                         <option value=""></option>
                         @if (CategoryOptionList != null)
                         {
@@ -78,7 +83,7 @@
             <EditForm Model="@ItemUpdate" OnValidSubmit="@SubmitUpdate">
                 <div class="form-group">
                     <label>Значение</label>
-                    <InputText class="form-control" @bind-Value="ItemUpdate.Value" />
+                    <InputText class="form-control" @bind-Value="ItemUpdate!.Value" />
                 </div>
                 <button type="submit" class="btn btn-primary">Изменить</button>
             </EditForm>

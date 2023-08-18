@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="1.9.4" />
+    <PackageReference Include="EPPlus" Version="6.2.7" />
     <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.20" />
@@ -28,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
 </Project>

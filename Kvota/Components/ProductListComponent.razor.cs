@@ -12,13 +12,10 @@ namespace Kvota.Components
         [Parameter]
         public IEnumerable<Brand>? BrandList { get; set; }
         private Modal? _modalProduct;
-
         private Guid IdCurrent { get; set; }
-        private string TitleModal { get; set; }
         private async void GetModalUpdate(Guid id, string title)
         {
             IdCurrent = id;
-            TitleModal = title.ToUpper();
             await InvokeAsync(StateHasChanged);
             _modalProduct?.ShowAsync();
             

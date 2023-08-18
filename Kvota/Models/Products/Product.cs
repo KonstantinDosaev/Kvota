@@ -12,9 +12,10 @@ namespace Kvota.Models.Products
         public decimal? Price { get; set; }
         public decimal? SalePrice { get; set; }
         public int? Quantity { get; set; }
+        public int? QuantityTwo { get; set; }
         public DateTime? DateTimeCreated { get; set; }
         public DateTime? DateTimeUpdated { get; set; }
-
+        public DateOnly? DateDelivery { get; set; }
         public virtual Brand? Brand { get; set; }
         public Guid? BrandId { get; set; }
         public virtual Category? Category { get; set; }

@@ -1,4 +1,5 @@
 ﻿@using System.IO
+@using FileInfo = System.IO.FileInfo
 @inject IWebHostEnvironment env
 
 
@@ -9,6 +10,35 @@
     <br /><br />
     <button class="btn btn-secondary" type="submit">Загрузить</button>
 </form>
-@code {
-
+@if (Directory.Exists(_directoryPath))
+{
+    <div class="upload__image-block">
+        @foreach (var file in Directory.GetFiles(_directoryPath!))
+        {
+            var fileInfo = new FileInfo(file).Name;
+            <div class="upload__image-item">
+                <img width="300" height="200" src="@_directoryP\\@fileInfo" />
+                <button class="btn upload__image-delete" @onclick=@(e => DeleteImage(fileInfo))><i class="oi oi-x"></i></button>
+            </div>
+        }
+    </div>
 }
+
+<style>
+    .upload__image-block {
+        display: flex;
+    }
+    .upload__image-item {
+        position: relative;
+    }
+
+    .upload__image-delete {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: aliceblue;
+    }    
+    .upload__image-delete:hover {
+        color:brown;
+    }
+</style>

@@ -1,13 +1,14 @@
 ﻿using Kvota.Interfaces;
 using Kvota.Models.Content;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.Metrics;
 
 namespace Kvota.Shared
 {
     partial class MainLayout
     {
         private ContactsModel Contact { get; set; } = default!;
-
+        private string buttonDisplay = "none";
         protected override async Task OnInitializedAsync()
         {
             using var scope = serviceScopeFactory.CreateScope();

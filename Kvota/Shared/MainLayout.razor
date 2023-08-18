@@ -8,9 +8,11 @@
         <NavMenu />
     </div>
 
-    <main>
+    <main >
+        <div id="up_position"></div>
         @if (Contact != null)
         {
+            
             <div class="top__con">
                 <div class="top__search">
                     <SearchProduct/>
@@ -28,14 +30,15 @@
                             </a>
                         </div>
                     </div>
-               
-                    <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem; ">@Contact.AddressOne</span>
+
+                    <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem;">@Contact.AddressOne</span>
                 </div>
             </div>
         }
-        <article>
+        <article >
             @Body
         </article>
+
     </main>
 </div>
 

@@ -57,7 +57,7 @@
             <EditForm Model="@Item" OnValidSubmit="@SubmitAdd">
                 <div class="form-group">
                     <label>Имя</label>
-                    <InputText class="form-control" @bind-Value="Item.Name" />
+                    <InputText class="form-control" @bind-Value="Item!.Name" />
                 </div>
                 <div class="form-group">
                     <label>Описание</label>
@@ -76,7 +76,7 @@
 
                 <div class="form-group">
                     <label>Имя</label>
-                    <InputText class="form-control" @bind-Value="ItemUpdate.Name" />
+                    <InputText class="form-control" @bind-Value="ItemUpdate!.Name" />
                 </div>
                 
                 <div class="form-group">

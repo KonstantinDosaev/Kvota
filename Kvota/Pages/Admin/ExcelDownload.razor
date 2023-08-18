@@ -1,0 +1,22 @@
+﻿@page "/admin/product/excel"
+@attribute [Authorize(Roles = "Administrators")]
+@using System.IO
+@using Kvota.Interfaces
+@using Kvota.Models.Products
+@inject IWebHostEnvironment env
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject IRepo<Brand> BrandService
+@inject IRepo<GrandCategory> GrandCategoryService
+@inject IRepo<Category> CategoryService
+@inject IRepo<Product> ProductService
+
+
+<h3>Загрузить изображение</h3>
+
+<form @onsubmit="OnSubmit">
+    <p>@Message</p>
+    <InputFile OnChange="OnInputFileChange" multiple/>
+    <br/><br/>
+    <button class="btn btn-secondary" type="submit">Загрузить</button>
+    <button class="btn btn-danger btn-sm" @onclick="@(e => ReadExcel())" role="button">ReadExcel</button>
+</form>

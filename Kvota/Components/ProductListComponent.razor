@@ -3,6 +3,7 @@
 
     @if (ProductList != null)
     {
+        
         @foreach (var items in ProductList)
         {
             <div class="productlist__product product">
@@ -36,13 +37,13 @@
             </div>
 
 
-
+            
         }
     }
     <div class="product__modal">
         <Modal Size="ModalSize.ExtraLarge" @ref="_modalProduct">
             <HeaderTemplate>
-                <button class="product-modal__btn btn btn-danger btn-sm" @onclick="@(e => _modalProduct.HideAsync())" role="button">Уточнить наличие и цену</button>
+                <button class="product-modal__btn btn btn-danger btn-sm" @onclick="@(e => _modalProduct!.HideAsync())" role="button">Уточнить наличие и цену</button>
             </HeaderTemplate>
             <BodyTemplate>
                 <ProductCard Id="@IdCurrent"/>

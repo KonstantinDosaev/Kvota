@@ -1,23 +1,20 @@
 ﻿using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Kvota.Components
 {
     partial class ProductFilterComponent
     {
-        private IEnumerable<GrandCategory>? GrandCategoryList { get; set; }
+        private IEnumerable<GrandCategory> GrandCategoryList { get; set; } = default!;
         [Parameter]
-        public IEnumerable<Product> Products { get; set; } = null!;
+        public IEnumerable<Product>? Products { get; set; }
 
-        private static IEnumerable<Product> _filteredList = null!;
-        private IEnumerable<Brand>? BrandList { get; set; }
-        private string _sortString = "";
-        private static IEnumerable<Product>? _pagedList;
-        private int _totalPg;
-        private int _quantityInPage=2;
-        private int _currentPageNumber;
+        private static IEnumerable<Product> _filteredList = default!;
+        private IEnumerable<Brand> BrandList { get; set; }= default!;
+        //private string _sortString = "";
+
+
 
         [Parameter]
         public Guid CategoriesFilterId { get; set; }
@@ -30,17 +27,34 @@ namespace Kvota.Components
 
         [Parameter]
         public EventCallback<IEnumerable<Product>> ProductListCallback { get; set; }
+
+
+        public override Task SetParametersAsync(ParameterView parameters)
+        {
+            if (parameters.TryGetValue<IEnumerable<Product>>(nameof(Products), out var value))
+            {
+                if (value is null )
+                {
+                    BrandList = new List<Brand>();
+                }
+                else
+                {
+                    BrandList = value.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+                }
+            }
+            return base.SetParametersAsync(parameters);
+        }
         protected override async Task OnInitializedAsync()
         {
+           
             using var scope = ServiceScopeFactory.CreateScope();
             GrandCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
-            BrandList = Products.Where(w=>w.BrandId!=null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
-            _currentPageNumber = 1;
-            GetList();
-            await InvokeAsync(StateHasChanged);
+            //BrandList = Products.Where(w=>w.BrandId!=null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+          
+            
         }
 
-        protected void GetList()
+        protected async void GetList()
         {
             _filteredList = Products;
 
@@ -57,31 +71,31 @@ namespace Kvota.Components
                     .ToList();
             }
 
-            if (_sortString != string.Empty)
-            {
-                _filteredList = _sortString switch
-                {
-                    "name" => _filteredList.OrderBy(o => o.Name).ToList(),
-                    "nameDesc" => _filteredList.OrderByDescending(o => o.Name).ToList(),
-                    "dateNews" => _filteredList.OrderByDescending(o => o.DateTimeUpdated).ToList(),
-                    "priceMin" => _filteredList.OrderByDescending(o => o.Price).ToList(),
-                    "priceMax" => _filteredList.OrderBy(o => o.Price).ToList(),
-                    _ => _filteredList
-                };
-            }
+            //if (_sortString != string.Empty)
+            //{
+            //    _filteredList = _sortString switch
+            //    {
+            //        "name" => _filteredList.OrderBy(o => o.Name).ToList(),
+            //        "nameDesc" => _filteredList.OrderByDescending(o => o.Name).ToList(),
+            //        "dateNews" => _filteredList.OrderByDescending(o => o.DateTimeUpdated).ToList(),
+            //        "priceMin" => _filteredList.OrderByDescending(o => o.Price).ToList(),
+            //        "priceMax" => _filteredList.OrderBy(o => o.Price).ToList(),
+            //        _ => _filteredList
+            //    };
+            //}
 
-            
-            OnPageChanged(1);
+
+            await ProductListCallback.InvokeAsync(_filteredList);
         }
 
         private async void Search()
         {
             if (!string.IsNullOrEmpty(SearchString))
             {
-                _pagedList = _filteredList
+                _filteredList = Products
                     .Where(x => x.Name.IndexOf(SearchString, StringComparison.OrdinalIgnoreCase) != -1)
                     .ToList();
-                await ProductListCallback.InvokeAsync(_pagedList);
+                await ProductListCallback.InvokeAsync(_filteredList);
             }
             if (string.IsNullOrEmpty(SearchString))
             {
@@ -92,18 +106,11 @@ namespace Kvota.Components
         private void ResetSearch()
         {
             SearchString = string.Empty;
-            OnPageChanged(_currentPageNumber);
+            _filteredList = Products;
         }
 
 
-        private async void OnPageChanged(int newPageNumber)
-        {
-            _currentPageNumber = newPageNumber;
-            _pagedList = _filteredList.Skip((newPageNumber - 1) * _quantityInPage).Take(_quantityInPage);
-            _totalPg = (int)Math.Ceiling((double)_filteredList.Count() / _quantityInPage);
-            await ProductListCallback.InvokeAsync(_pagedList);
-
-        }
+       
 
     }
 }

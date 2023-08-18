@@ -3,6 +3,7 @@ using System;
 using Kvota.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kvota.Migrations.KvotaProduct
 {
     [DbContext(typeof(KvotaProductContext))]
-    partial class KvotaProductContextModelSnapshot : ModelSnapshot
+    [Migration("20230810221201_DateAndQuantity")]
+    partial class DateAndQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

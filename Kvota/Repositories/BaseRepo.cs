@@ -11,13 +11,14 @@ namespace Kvota.Repositories
     public abstract class BaseRepo<T> : IRepo<T> where T : class, IIdentifiable, new()
     {
         public DbContext Context { get; init; }
-        public BaseRepo(DbContext context)
+
+        protected BaseRepo(DbContext context)
         {
             Context = context;
         }
 
 
-        protected DbSet<T> Table;
+        protected DbSet<T> Table = null!;
 
         public async Task<T> AddAsync(T entity)
         {
@@ -112,7 +113,7 @@ namespace Kvota.Repositories
 
             catch (Exception ex)
             {
-                ILogger<ErrorContext> err = ex as ILogger<ErrorContext>;
+                var err = ex as ILogger<ErrorContext>;
                 throw;
             }
         }
@@ -125,7 +126,7 @@ namespace Kvota.Repositories
 
             catch (Exception ex)
             {
-                ILogger<ErrorContext> err = ex as ILogger<ErrorContext>;
+                ILogger<ErrorContext>? err = ex as ILogger<ErrorContext>;
                 throw;
             }
         }
