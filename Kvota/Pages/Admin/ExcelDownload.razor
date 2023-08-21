@@ -11,11 +11,11 @@
 @inject IRepo<Product> ProductService
 
 
-<h3>Загрузить изображение</h3>
+<h3>Загрузить продукты из Excel</h3>
 
 <form @onsubmit="OnSubmit">
     <p>@Message</p>
-    <InputFile OnChange="OnInputFileChange" multiple/>
+    <InputFile OnChange="OnInputFileChange"/>
     <br/><br/>
     <button class="btn btn-secondary" type="submit">Загрузить</button>
     <button class="btn btn-danger btn-sm" @onclick="@(e => ReadExcel())" role="button">ReadExcel</button>

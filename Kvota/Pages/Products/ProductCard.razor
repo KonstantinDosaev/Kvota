@@ -10,26 +10,28 @@
             
         </div>
         <div class="product-card__body">
-            <div class="slider">
-                
+            <div class="product-card__image">
+                @*<div class="slider ">
+
                     @if (Directory.Exists(_directoryPath))
                     {
 
-                            @foreach (var file in Directory.GetFiles(_directoryPath!))
-                            {
-                                var fileInfo = new FileInfo(file).Name;
-                                <div class="slider_item">
-                                        
-                                       
-                                            <img  src="@Product.Image\\@fileInfo" />
-                                      
-                                </div>
-                            }
+                        @foreach (var file in Directory.GetFiles(_directoryPath!))
+                        {
+                            var fileInfo = new FileInfo(file).Name;
+                            <div class="slider_item">
+
+
+                                <img class="slider_image" src="@Product.Image\\@fileInfo"/>
+
+                            </div>
+                        }
 
                     }
-                
-            </div>
 
+                </div>*@
+                <a class="product__name product__text" @onclick="@(e => GetModalImage())">img</a>
+            </div>
             <div>
                 <h1 class="product-card__name">@Product.Name</h1>
                 @if (Product.Brand != null)
@@ -56,7 +58,7 @@
                 }
             }
         </div>
-       @* <div class="product__prices">
+        @* <div class="product__prices">
             @if (Product.Quantity != null)
             {
                 <div class="product-card__quantity product__text">Кол.-во: @Product.Quantity шт.</div>
@@ -71,26 +73,140 @@
             }
             <span class="product-card__feetback ">feeeet</span>
         </div>*@
+        
+        <Modal 
+            ShowCloseButton="false"
+            OnShown="OnModalShown"
+            UseStaticBackdrop="true" 
+            Size="ModalSize.ExtraLarge" 
+            @ref="_modalImage">
 
+            @*<button class="product-modal__btn btn btn-danger btn-sm" @onclick="@(e => _modalProduct!.HideAsync())" role="button">Уточнить наличие и цену</button>*@
+
+            <BodyTemplate>
+                <div class=modalImage__body>
+                    <button class="modalImage__closeBtn closeBtn" @onclick="OnHideModalClick">
+                        <div class="closeBtn__btn closeBtn__up"></div>
+                        <div class="closeBtn__btn closeBtn__down"></div>
+                    </button>
+                    <div class="modal__image">
+                        <div class="slider ">
+
+                            @if (Directory.Exists(_directoryPath))
+                            {
+
+                                @foreach (var file in Directory.GetFiles(_directoryPath!))
+                                {
+                                    var fileInfo = new FileInfo(file).Name;
+                                    <div class="slider_item">
+
+
+                                        <img class="slider_image" data-lazy="@Product.Image\\@fileInfo" />
+                                    
+                                    </div>
+                                }
+
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </BodyTemplate>
+
+
+        </Modal>
     </div>
+
 }
 <style>
-    .slider {
-        overflow: hidden;
+    .modalImage__body {
+        position: relative;
     }
 
-    /* Ограничивающая оболочка */
+    .modalImage__closeBtn {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        margin: 0 0 0 1rem;
+        background: none;
+        border: none;
+    }
+    .closeBtn__btn {
+        
+        width: 2rem;
+        height: 2rem;
+        border-bottom: 5px solid rgba(255,255,255,0.5);
+        border-right: 5px solid rgba(255,255,255,0.5);
+        box-shadow: inset -5px -5px rgba(119, 136, 153,0.5);
+    }
+
+        .closeBtn__btn.closeBtn__up {
+            transform: rotate(45deg);
+            margin-bottom: 0.5rem;
+    }
+
+        .closeBtn__btn.closeBtn__down {
+            transform: rotate(-135deg);
+    }
+    .modalImage__closeBtn:active {
+        transform: scale(0.8);
+    }
+    .modal__image {
+        position: relative;
+        min-width: 0;
+     
+    }
+    .slider {
+        min-width: 0;
+        
+       
+                 
+    }
     .slick-list {
         overflow: hidden;
-        max-width: 900px;
     }
-    /* Лента слайдов */
     .slick-track {
         display: flex;
+
     }
 
-    .slider_item {
-        height: 70px;
-        text-align: center;
+    .slider_image {
+        height: 100%;
+        width: 100%;
+       
+    }
+
+    .modal-body {
+        padding: 0;
+    }
+    .slick-arrow{ 
+        position: absolute;
+        top: 50%;
+        z-index: 10;
+        font-size: 0;
+        width: 3rem;
+        height:3rem;
+        border-top: none;
+        border-left: none;
+        border-bottom: 5px solid rgba(119, 136, 153,0.5);
+        border-right: 5px solid rgba(119, 136, 153,0.5);
+        box-shadow: 5px 5px rgba(255,255,255,0.5);
+        background: none;
+        margin: 0 1rem;
+    }
+
+        .slick-arrow:active {
+        width: 2.5rem;
+        height:2.5rem;
+    }
+    .slick-arrow.slick-prev {
+        left: 0;
+            transform: rotate(135deg);
+            
+    }
+    .slick-arrow.slick-next {
+        right: 0;
+            transform: rotate(-45deg);
     }
 </style>

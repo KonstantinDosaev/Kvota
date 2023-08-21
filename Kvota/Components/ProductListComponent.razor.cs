@@ -16,7 +16,7 @@ namespace Kvota.Components
         private async void GetModalUpdate(Guid id, string title)
         {
             IdCurrent = id;
-            await InvokeAsync(StateHasChanged);
+           // await InvokeAsync(StateHasChanged);
             _modalProduct?.ShowAsync();
             
         }
