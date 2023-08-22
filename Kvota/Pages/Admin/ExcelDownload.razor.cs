@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
 using Kvota.Models.Products;
-using OfficeOpenXml;
-using LicenseContext = System.ComponentModel.LicenseContext;
 using Kvota.Interfaces;
-using Kvota.Repositories.Products;
-using Microsoft.Extensions.DependencyInjection;
+using FastExcel;
+using System.Globalization;
+
 
 namespace Kvota.Pages.Admin
 {
@@ -55,137 +54,42 @@ namespace Kvota.Pages.Admin
             this.StateHasChanged();
         }
 
-        //public async Task ReadExcel()
-        //{
-        //   //var orders = new List<Product>();
-        //   // var FilePath = Patch;
-        //   // FileInfo existingFile = new FileInfo(FilePath);
-        //   // ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-        //    using (ExcelPackage package = new ExcelPackage(_selectedFiles))
-        //    {
-        //        ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
-        //        int colCount = worksheet.Dimension.End.Column;
-        //        int rowCount = worksheet.Dimension.End.Row;
-
-        //        for (int row = 2; row <= rowCount; row++)
-        //        {
-        //            var order = new Product();
-        //            _update = false;
-        //            for (int col = 1; col <= colCount; col++)
-        //            {
-        //                if (worksheet.Cells[row, col].Value != null)
-        //                {
-        //                    if (col == 1)
-        //                    {
-        //                        order.Name = worksheet.Cells[row, col].Value.ToString() ?? throw new InvalidOperationException();
-
-        //                        if (_productsName != null && _productsName.Contains(order.Name))
-        //                        {
-        //                            var tempProduct = _prodList.FirstOrDefault(w => w.Name == order.Name)!;
-        //                            order.Id = tempProduct.Id;
-        //                            order.DateTimeCreated = tempProduct.DateTimeCreated;
-        //                            order.Image= tempProduct.Image;
-        //                            _update=true;
-        //                        }
-        //                    }
-        //                    else if (col == 2)
-        //                    {
-        //                        order.PartNumber = worksheet.Cells[row, col].Value.ToString();
-        //                    }
-        //                    else if (col == 3)
-        //                    {
-        //                        var brand = worksheet.Cells[row, col].Value.ToString();
-        //                        var tempBrand = _brandList.Any() ? _brandList.FirstOrDefault(w => w.Name == brand) : null;
-        //                        if (tempBrand == null)
-        //                        {
-        //                            tempBrand = new Brand() { Name = brand! };
-        //                            _brandList.Add(tempBrand);
-        //                            await BrandService.AddAsync(tempBrand);
-        //                        }
-        //                        order.BrandId = tempBrand!.Id;
-        //                    }
-        //                    else if (col == 4)
-        //                    {
-        //                        var gcategory = worksheet.Cells[row, col].Value.ToString();
-
-        //                        var tempGrand = _grandCategoryList.Any()? _grandCategoryList.FirstOrDefault(w => w.Name == gcategory):null;
-        //                        if (tempGrand == null && gcategory != null)
-        //                        {
-        //                            tempGrand = new GrandCategory() { Name = gcategory };
-        //                            _grandCategoryList.Add( tempGrand);
-        //                            await GrandCategoryService.AddAsync(tempGrand);
-        //                        }
-
-        //                        GrandCategoryIdp = tempGrand!.Id;
-        //                    }
-        //                    else if (col == 5)
-        //                    {
-        //                        var category = worksheet.Cells[row, col].Value.ToString();
-
-        //                        var tempGrand =_categoryList.Any() ? _categoryList.FirstOrDefault(w => w.Name == category) : null;
-        //                        if (tempGrand == null && category != null)
-        //                        {
-        //                            tempGrand = new Category() { Name = category, GrandCategoryId = GrandCategoryIdp};
-        //                            _categoryList.Add( tempGrand);
-        //                            await CategoryService.AddAsync(tempGrand);
-        //                        }
-
-        //                        order.CategoryId = tempGrand!.Id;
-        //                    }
-        //                    else if (col == 6) order.Description = worksheet.Cells[row, col].Value.ToString();
-        //                    else if (col == 7) order.Price = Math.Round((Convert.ToDecimal(worksheet.Cells[row, col].Value)),2);
-        //                    else if (col == 8) order.Quantity = Convert.ToInt32(worksheet.Cells[row, col].Value);
-        //                    else if (col == 9) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value);
-        //                    //else if (col == 10) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value.ToString());
-        //                }
-        //            }
-
-        //            if (!_update)
-        //            {
-        //                order.Image = "image\\products\\default.jpg";
-        //                order.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
-        //                orders.Add(order);
-        //            }
-        //            else
-        //            {
-        //                order.DateTimeUpdated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
-        //                using var scope = ServiceScopeFactory.CreateScope();
-        //                await scope.ServiceProvider.GetService<IRepo<Product>>().Update(order);
-        //            }
-
-        //        }
-        //    }
-
-        //    Console.WriteLine("ff");
-
-        //    await ProductService.AddRangeAsync(orders);
-
-        //}
         public async Task ReadExcel()
         {
             var orders = new List<Product>();
             var FilePath = Patch;
-            FileInfo existingFile = new FileInfo(FilePath);
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-            using (ExcelPackage package = new ExcelPackage(existingFile))
+            var existingFile = new FileInfo(FilePath);
+            if (!existingFile.Exists)
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
-                int colCount = worksheet.Dimension.End.Column;
-                int rowCount = worksheet.Dimension.End.Row;
+                throw new FileNotFoundException("The file " + FilePath + " not exist");
+            }
 
-                for (int row = 2; row <= rowCount; row++)
+
+            using (FastExcel.FastExcel fastExcel = new FastExcel.FastExcel(existingFile, true))
+            {
+                Worksheet worksheet = fastExcel.Read(1);
+                var colCount = worksheet.Rows.FirstOrDefault()!.Cells.Count();
+                var rowCount = worksheet.Rows.Count();
+            
+
+                worksheet.Read();
+                Row[] rows = worksheet.Rows.ToArray();
+
+                foreach (var item in rows)
                 {
+                    if (item.RowNumber==1)
+                        continue;
+                    
                     var order = new Product();
                     _update = false;
-                    for (int col = 1; col <= colCount; col++)
+
+                    foreach (var cellItem in item.Cells)
                     {
-                        if (worksheet.Cells[row, col].Value != null)
+                        if (cellItem.Value != null)
                         {
-                            if (col == 1)
+                            if (cellItem.ColumnNumber == 1)
                             {
-                                order.Name = worksheet.Cells[row, col].Value.ToString() ?? throw new InvalidOperationException();
+                                order.Name = cellItem.Value.ToString() ?? throw new InvalidOperationException();
 
                                 if (_productsName != null && _productsName.Contains(order.Name))
                                 {
@@ -196,13 +100,13 @@ namespace Kvota.Pages.Admin
                                     _update = true;
                                 }
                             }
-                            else if (col == 2)
+                            else if (cellItem.ColumnNumber == 2)
                             {
-                                order.PartNumber = worksheet.Cells[row, col].Value.ToString();
+                                order.PartNumber = cellItem.Value.ToString();
                             }
-                            else if (col == 3)
+                            else if (cellItem.ColumnNumber == 3)
                             {
-                                var brand = worksheet.Cells[row, col].Value.ToString();
+                                var brand = cellItem.Value.ToString();
                                 var tempBrand = _brandList.Any() ? _brandList.FirstOrDefault(w => w.Name == brand) : null;
                                 if (tempBrand == null)
                                 {
@@ -212,9 +116,9 @@ namespace Kvota.Pages.Admin
                                 }
                                 order.BrandId = tempBrand!.Id;
                             }
-                            else if (col == 4)
+                            else if (cellItem.ColumnNumber == 4)
                             {
-                                var gcategory = worksheet.Cells[row, col].Value.ToString();
+                                var gcategory = cellItem.Value.ToString();
 
                                 var tempGrand = _grandCategoryList.Any() ? _grandCategoryList.FirstOrDefault(w => w.Name == gcategory) : null;
                                 if (tempGrand == null && gcategory != null)
@@ -226,9 +130,9 @@ namespace Kvota.Pages.Admin
 
                                 GrandCategoryIdp = tempGrand!.Id;
                             }
-                            else if (col == 5)
+                            else if (cellItem.ColumnNumber == 5)
                             {
-                                var category = worksheet.Cells[row, col].Value.ToString();
+                                var category = cellItem.Value.ToString();
 
                                 var tempGrand = _categoryList.Any() ? _categoryList.FirstOrDefault(w => w.Name == category) : null;
                                 if (tempGrand == null && category != null)
@@ -240,10 +144,10 @@ namespace Kvota.Pages.Admin
 
                                 order.CategoryId = tempGrand!.Id;
                             }
-                            else if (col == 6) order.Description = worksheet.Cells[row, col].Value.ToString();
-                            else if (col == 7) order.Price = Math.Round((Convert.ToDecimal(worksheet.Cells[row, col].Value)), 2);
-                            else if (col == 8) order.Quantity = Convert.ToInt32(worksheet.Cells[row, col].Value);
-                            else if (col == 9) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value);
+                            else if (cellItem.ColumnNumber == 6) order.Description = cellItem.Value.ToString();
+                            else if (cellItem.ColumnNumber == 7) order.Price = Math.Round((Convert.ToDecimal(cellItem.Value,CultureInfo.InvariantCulture)), 2);
+                            else if (cellItem.ColumnNumber == 8) order.Quantity = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
+                            else if (cellItem.ColumnNumber == 9) order.QuantityTwo = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
                             //else if (col == 10) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value.ToString());
                         }
                     }
@@ -252,23 +156,27 @@ namespace Kvota.Pages.Admin
                     {
                         order.Image = "image\\products\\default.jpg";
                         order.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
+                        order.DateTimeUpdated = order.DateTimeCreated;
                         orders.Add(order);
                     }
                     else
                     {
                         order.DateTimeUpdated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
                         using var scope = ServiceScopeFactory.CreateScope();
-                        await scope.ServiceProvider.GetService<IRepo<Product>>().Update(order);
+                        await scope.ServiceProvider.GetService<IRepo<Product>>()!.Update(order);
                     }
 
                 }
             }
 
-            
 
-            await ProductService.AddRangeAsync(orders);
-            Message = "Измения в каталог внесены";
-
+            if (orders.Count!=0)
+            {
+                await ProductService.AddRangeAsync(orders);
+            }
+            File.Delete(Patch!);
+            Message = "Изменения в каталог внесены";
+           
         }
 
 

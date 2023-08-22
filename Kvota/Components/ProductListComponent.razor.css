@@ -7,7 +7,7 @@
     box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
     border-radius: 5px;
     padding: 0 10px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     min-height: 40px;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -30,7 +30,7 @@
 
 .product__text {
     margin-right: 1rem;
-    width: 10rem;
+    min-width: 10rem;
 }
 
 .product__image {
@@ -40,6 +40,8 @@
 }
 
 .product__name {
+    cursor: pointer;
+    width: 20rem;
 }
 
 .product__pnumber {

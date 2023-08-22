@@ -7,9 +7,9 @@
         @foreach (var items in ProductList)
         {
             <div class="productlist__product product">
-                <div >
+@*                <div >
                     <img class="product__image"src="@items.Image">
-                </div>
+                </div>*@
                 <div class="product__body">
                     <a class="product__name product__text" @onclick="@(e => GetModalUpdate(items.Id, items.Name))">@items.Name</a>
                     @if (items.Brand != null)
@@ -41,13 +41,15 @@
         }
     }
     <div class="product__modal">
-        <Modal Size="ModalSize.ExtraLarge" @ref="_modalProduct">
-            <HeaderTemplate>
-                <button class="product-modal__btn btn btn-danger btn-sm" @onclick="@(e => _modalProduct!.HideAsync())" role="button">Уточнить наличие и цену</button>
-            </HeaderTemplate>
+        <Modal ShowCloseButton="false" 
+               Size="ModalSize.ExtraLarge" 
+               @ref="_modalProductCard">
             <BodyTemplate>
+                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
+                    <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
+                </Button>
                 <ProductCard Id="@IdCurrent"/>
-                
+
             </BodyTemplate>
 
 
@@ -62,6 +64,19 @@
                          
     }
 
+
+    .product-modal__closeBtn {
+        top: 0rem;
+        right: 0.5rem;
+        position: absolute;
+        font-size: 3rem;
+        padding: 0;
+       
+    }
+
+    .product-modal__closeBtn:active {
+        transform: scale(0.8);
+    }
     .modal-content {
         
     }

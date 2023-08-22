@@ -11,14 +11,18 @@ namespace Kvota.Components
         public IEnumerable<Product>? ProductList { get; set; }
         [Parameter]
         public IEnumerable<Brand>? BrandList { get; set; }
-        private Modal? _modalProduct;
+        private Modal? _modalProductCard;
         private Guid IdCurrent { get; set; }
         private async void GetModalUpdate(Guid id, string title)
         {
             IdCurrent = id;
-           // await InvokeAsync(StateHasChanged);
-            _modalProduct?.ShowAsync();
+            // await InvokeAsync(StateHasChanged);
+            _modalProductCard?.ShowAsync();
             
+        }
+        private async Task OnHideModalClick()
+        {
+            await _modalProductCard?.HideAsync();
         }
     }
 }

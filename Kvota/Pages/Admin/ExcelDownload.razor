@@ -18,5 +18,6 @@
     <InputFile OnChange="OnInputFileChange"/>
     <br/><br/>
     <button class="btn btn-secondary" type="submit">Загрузить</button>
-    <button class="btn btn-danger btn-sm" @onclick="@(e => ReadExcel())" role="button">ReadExcel</button>
 </form>
+<br/>
+<button class="btn btn-danger btn" @onclick="@(e => ReadExcel())" role="button">Применить</button>
