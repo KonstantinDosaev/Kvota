@@ -1,14 +1,12 @@
 ﻿@page "/"
-@inject IJSRuntime JSRuntime
-@inject IRepo<Home> HomeRepo
-
-@using Microsoft.AspNetCore.Mvc
-@using MailKit.Security
-@using Microsoft.AspNetCore.Components
-@using Kvota.Data
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @using Kvota.Components
+@using System.Text.Json
+@using Kvota.Constants
+@using Kvota.Models.Products
+@inject IRepo<Brand> BrandRepos
+@inject IWebHostEnvironment env
 
 <PageTitle>Квота</PageTitle>
 @if (Content != null)
@@ -25,41 +23,71 @@
 
         <div class="partner kvota__body-shadow">
             <h2 class="home_image_text1">@Content.PartnerTitle</h2>
-            <div class="row partner__lables">
-                <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
-                <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
-            </div>
+            @if (!BrandView)
+            {
+                <div class="row partner__lables">
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
+                </div>
+            }
+            else
+            {
+                <div class="row partner__lables">
+                    @if (BrandList != null)
+                    {
+                        foreach (var item in BrandList)
+                        {
+                            var uri  = item.Image!.Replace("\\", "/");
+
+                            <a class="partner__lable" href="productlist/brand/@item.Id" style="background-image: url(@uri);"></a>
+                        }
+                    }
+                </div>
+            }
+           
 
 
 
         </div>
 
         <div class="company">
-            <div class="text_col company__text kvota__body-shadow" style="background-image: url(/wwwroot/image/feedback.jpg)">
+            <div class="text_col company__text kvota__body-shadow">
                 <h2> О компании</h2> <br/>
-                <p>@Content.AboutHomeText</p>
+                  @foreach (var item in AboutArr)
+                {
+                    if (!item.Contains('~'))
+                    {
+                        <div>@item</div>
+                    }
+                    else
+                    {
+                        <br/>
+                    }
+                }
+                
+
             </div>
             <div class="home__form kvota__body-shadow">
                 <FeedbackForm/>
@@ -75,14 +103,23 @@
 
 @code {
 
-    [Inject]
-    protected IRepo<Home> HomeServ { get; set; } = default!;
 
+    private List<Brand> BrandList { get; set; } = null!;
     private Home Content { get; set; } = null!;
-
+    private string[] AboutArr { get; set; } = default!;
+    private  bool BrandView { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
-        Content = await HomeServ.GetOneAsync(new Guid("7c7ed7ca-fda1-4449-8637-c403c61957eb"));
+        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
+        BrandView = Content.BrandView;
+        AboutArr = Content.AboutHomeText!.Split('^');
+        if (BrandView)
+        {
+            BrandList =  (List<Brand>)await BrandRepos.GetAllAsync();
+            BrandList = BrandList.Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
+        }
     }
     
 

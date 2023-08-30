@@ -10,8 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor.Bootstrap" Version="1.9.4" />
-    <PackageReference Include="EPPlus" Version="6.2.7" />
+    <PackageReference Include="Blazor.Bootstrap" Version="1.10.0" />
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="DNTCaptcha.Blazor" Version="1.1.4" />
     <PackageReference Include="FastExcel" Version="3.0.13" />
     <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.20" />

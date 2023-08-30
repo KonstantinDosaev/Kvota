@@ -1,4 +1,7 @@
-﻿using BlazorBootstrap;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using BlazorBootstrap;
+using Kvota.Constants;
 using Kvota.Interfaces;
 using Kvota.Models.Content;
 using Microsoft.AspNetCore.Components;
@@ -17,13 +20,21 @@ namespace Kvota.Pages.Admin
 
         protected override async Task OnInitializedAsync()
         {
-            Tools = await ContactServ.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
-            await InvokeAsync(StateHasChanged);
+            await using var openStream = File.OpenRead(Links.ContactsJson);
+            Tools = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
         }
 
         private async void SubmitPlayer()
         {
-            await ContactServ.Update(Tools);
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+            await using var createStream = File.Create(Links.ContactsJson);
+            await JsonSerializer.SerializeAsync(createStream, Tools, options);
+            await createStream.DisposeAsync();
+            modal?.ShowAsync();
 
             modal?.ShowAsync();
         }

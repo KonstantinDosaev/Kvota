@@ -65,12 +65,9 @@ namespace Kvota.Pages.Admin
             }
 
 
-            using (FastExcel.FastExcel fastExcel = new FastExcel.FastExcel(existingFile, true))
+            using (var fastExcel = new FastExcel.FastExcel(existingFile, true))
             {
-                Worksheet worksheet = fastExcel.Read(1);
-                var colCount = worksheet.Rows.FirstOrDefault()!.Cells.Count();
-                var rowCount = worksheet.Rows.Count();
-            
+                var worksheet = fastExcel.Read(1);
 
                 worksheet.Read();
                 Row[] rows = worksheet.Rows.ToArray();

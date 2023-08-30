@@ -26,10 +26,16 @@ namespace Kvota.Pages.Admin
         }
 
 
-        private async void DeleteBrand(Guid id)
+        private async void DeleteBrand(Guid id, string pathImage)
         {
             try
             {
+                var path = $"{Env.WebRootPath}\\{pathImage}";
+                var fileInf = new FileInfo(path);
+                if (fileInf.Exists)
+                {
+                    fileInf.Delete();
+                }
                 await BrandRepos.DeleteAsync(id);
                 NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
@@ -63,6 +69,12 @@ namespace Kvota.Pages.Admin
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
 
 
+        }
+        private void AddImagePatch(string patch)
+        {
+            if (patch == string.Empty) return;
+            if (BrandUpdate != null)
+                BrandUpdate.Image = patch;
         }
     }
 }

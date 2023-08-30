@@ -14,13 +14,13 @@
     </div>*@
     <div class="productlist__categoryFilter">
 
-        @if (GrandCategoryList!=null && Category == null)
+        @if (CategoryList!=null && Category == null)
         {
             <select class="form-control"
                 @bind-value="CategoriesFilterId" @onchange="GetList" @bind-value:event="oninput" >
                <option value=@Guid.Empty>Все категории</option>
 
-                @foreach (var grandCategory in GrandCategoryList)
+                @* @foreach (var grandCategory in GrandCategoryList)
                 {
                     <optgroup label="@grandCategory.Name">
                         @if (grandCategory.Categories != null)
@@ -35,27 +35,42 @@
                         }
                     
                    </optgroup>
-                }
+                }*@
+               
+                   
+                           @foreach (var item in CategoryList)
+                            {
+                                if (item != null)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        
+                    
+                   
+                
             
             </select>
         }
     </div>
-    <div class="productlist__brandFilter">
-        <select class="form-control"
-                @bind-value="BrandsFilterId" @onchange="GetList" @bind-value:event="oninput">
-            <option value=@Guid.Empty>Все производители</option>
-            @if (BrandList != null)
+<div class="productlist__brandFilter">
+     
+    <select class="form-control"
+            @bind-value="BrandsFilterId" @onchange="GetList" @bind-value:event="oninput">
+        <option value=@Guid.Empty>Все производители</option>
+        @if (BrandList != null)
+        {
+            @foreach (var item in BrandList)
             {
-                @foreach (var item in BrandList)
+                if (item != null)
                 {
-                    if (item != null)
-                    {
-                        <option value="@item.Id">@item.Name</option>
-                    }
+                    <option value="@item.Id">@item.Name</option>
                 }
             }
-        </select>
-    </div>
+        }
+    </select>
+    
+</div>
 
 
     <div class="productlist__search">

@@ -7,24 +7,13 @@
 
 
 <div class="catalog__body">
-    
-@*    <div class="manufactures_body">
-        @foreach (var item in manuf)
-        {
-            string it = item + ".jpg";
-            <a href="/admin" class="manufactures_items">
-                <img class="manufactures_image" src="image/ffffff/@it"/>
-                <p class="manufactures_title">@item</p>
-            </a>
-        }
-    </div>*@
     <div class="catalog__grands">
         @if (GrandCategories != null)
         {
             @foreach (var items in GrandCategories.OrderBy(o=>o.Name))
             {
                 <div class="catalog__grand grand kvota__body-shadow">
-                    <div class="grand__image-body"><img class="grand__image" src="image/aboutbg2.jpg"/></div>
+                    <div class="grand__image-body"><img class="grand__image" src="@items.Image"/></div>
                     <div class="grand__body">
                         <div class="grand__title">@items.Name</div>
                         <div class="grand__category category-grand">
@@ -41,10 +30,7 @@
                                         </p>
                                     </div>
                                 }
-                                    
                             }
-
-
                         </div>
                     </div>
                 </div>

@@ -6,12 +6,14 @@ namespace Kvota.Components
 {
     partial class ProductFilterComponent
     {
-        private IEnumerable<GrandCategory> GrandCategoryList { get; set; } = default!;
+        //private IEnumerable<GrandCategory> GrandCategoryList { get; set; } = default!;
+
         [Parameter]
         public IEnumerable<Product>? Products { get; set; }
 
         private static IEnumerable<Product> _filteredList = default!;
         private IEnumerable<Brand> BrandList { get; set; }= default!;
+        private IEnumerable<Category> CategoryList { get; set; } = default!;
         //private string _sortString = "";
 
 
@@ -36,23 +38,40 @@ namespace Kvota.Components
                 if (value is null )
                 {
                     BrandList = new List<Brand>();
+                    CategoryList = new List<Category>();
                 }
                 else
                 {
                     BrandList = value.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+                    CategoryList = value.Where(w => w.CategoryId != null).Select(s => s.Category).Distinct().OrderBy(o => o!.Name)!;
+
                 }
             }
             return base.SetParametersAsync(parameters);
         }
-        protected override async Task OnInitializedAsync()
-        {
+        //protected override async Task OnInitializedAsync()
+        //{
            
-            using var scope = ServiceScopeFactory.CreateScope();
-            GrandCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
-            //BrandList = Products.Where(w=>w.BrandId!=null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+        //    using var scope = ServiceScopeFactory.CreateScope();
+        //   // GrandCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
+            
+        //    //BrandList = Products.Where(w=>w.BrandId!=null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
           
             
+        //}
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                if (BrandsFilterId != null && BrandsFilterId != Guid.Empty)
+                {
+                    GetList();
+                }
+            }
+
+
         }
+
 
         protected async void GetList()
         {
@@ -92,21 +111,24 @@ namespace Kvota.Components
         {
             if (!string.IsNullOrEmpty(SearchString))
             {
-                _filteredList = Products
-                    .Where(x => x.Name.IndexOf(SearchString, StringComparison.OrdinalIgnoreCase) != -1)
+                _filteredList = Products!
+                    .Where(x => x.Name.IndexOf(SearchString, StringComparison.OrdinalIgnoreCase) != -1 || (x.PartNumber!=null && x.PartNumber.IndexOf(SearchString, StringComparison.OrdinalIgnoreCase) != -1))
                     .ToList();
                 await ProductListCallback.InvokeAsync(_filteredList);
             }
             if (string.IsNullOrEmpty(SearchString))
             {
                 ResetSearch();
+                _filteredList = Products!;
+                await ProductListCallback.InvokeAsync(_filteredList);
             }
 
         }
-        private void ResetSearch()
+        private async void ResetSearch()
         {
             SearchString = string.Empty;
-            _filteredList = Products;
+            _filteredList = Products!;
+            await ProductListCallback.InvokeAsync(_filteredList);
         }
 
 

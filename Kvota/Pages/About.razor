@@ -1,17 +1,27 @@
 ﻿@page "/about"
 @using Kvota.Models.Content
-@using Kvota.Interfaces
-@inject IRepo<Home> HomeServ
+@using Kvota.Constants
+@using System.Text.Json
 
-
-<PageTitle>О компании</PageTitle>
 
 @if ( Content!= null){
 <div class="about_body">
     <h1 class="about_title">Компания Квота</h1>
     <div class="about_row">
         <div class="about_image1"></div>
-        <p class="about_text">@Content.AboutText </p>
+        <div class="about_text">
+            @foreach (var item in AboutArr)
+            {
+                if (!item.Contains('~'))
+                {
+                    <div>@item</div>
+                }
+                else
+                {
+                    <br/>
+                }
+            }
+        </div>
             <div class="about_image2"></div>
     </div>
     
@@ -24,12 +34,14 @@
 
 @code
 {
-
     private Home? Content { get; set; }
-
+    private string[] AboutArr { get; set; } = default!;
     protected override async Task OnInitializedAsync()
     {
-        Content = await HomeServ.GetOneAsync(new Guid("7c7ed7ca-fda1-4449-8637-c403c61957eb"));
+        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
+
+        AboutArr = Content.AboutHomeText!.Split('^');
     }
 }
 
@@ -49,7 +61,7 @@
 
                        }
     .about_image1 {
-        background: url(/image/aboutbg1.jpg)80%/cover no-repeat;
+        background: url(/image/background/aboutbg1.jpg)80%/cover no-repeat;
         flex: 0 1 20%;
         margin-right: 1.5rem;
         filter: brightness(70%)
@@ -65,7 +77,7 @@
 
     }
     .about_image2 {
-        background: url(/image/aboutbg2.jpg)50%/cover no-repeat;
+        background: url(/image/background/aboutbg2.jpg)50%/cover no-repeat;
         flex: 0 1 20%;
         margin-left: 1.5rem;
         filter: brightness(70%)

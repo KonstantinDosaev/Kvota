@@ -12,7 +12,7 @@
 }
 .home_image {
     margin: 0.35rem 0.5rem;
-    background: url(/image/vishnu-mohanan-pfR18JNEMv8-unsplash.jpg) 50%/cover no-repeat;
+    background: url(/image/background/homeImage.jpg) 50%/cover no-repeat;
     padding: 0 1rem;
 }
 .home_image_text1 {
@@ -36,7 +36,7 @@
 .partner {
     margin: 0.35rem 0.5rem;
     padding: 1rem;
-    background: url(/image/manufbg.jpg)0 0/cover no-repeat;
+    background: url(/image//background/manufbg.jpg)0 0/cover no-repeat;
 }
 
 .partner__lables {
@@ -72,8 +72,7 @@
     margin: 0.5rem;
     flex: 1 1 50%;
     padding: 1rem;
-    background: url(/image/feedback.jpg)0 0/cover no-repeat;
-    
+    background: url(/image/background/feedback.jpg)0 0/cover no-repeat;
 }
 
 

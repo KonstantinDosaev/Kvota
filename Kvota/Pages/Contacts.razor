@@ -1,11 +1,5 @@
 ﻿@page "/contacts"
-@using Kvota.Interfaces
-@using Kvota.Models.Content
-@inject IRepo<ContactsModel> ContactRepo
-@inject IServiceScopeFactory serviceScopeFactory
 
-
-<PageTitle>Контакты</PageTitle>
 
 @if ( Contact!= null){
     <h1 class="contact_title">КОНТАКТЫ</h1>
@@ -17,9 +11,11 @@
                 <a class="contact_item" href="mailto:@Contact.EmailOne">
                     <i class="bi bi-envelope-at"></i>@Contact.EmailOne
                 </a>
+                @if (!string.IsNullOrEmpty(Contact.EmailTwo))
+            {
                 <a class="contact_item" href="mailto:@Contact.EmailTwo">
-                    <i class="bi bi-envelope-at"></i>@Contact.EmailTwo
-                </a>
+                    <i class="bi bi-envelope-at"></i>@Contact.EmailTwo</a>
+            }
             </div>
         </div>
         <div class="contact_row">
@@ -28,15 +24,28 @@
                 <a class="contact_item" href="tel:@Contact.PhoneOne" target="_blank">
                     <i class="bi bi-telephone" ></i>@Contact.PhoneOne
                 </a>
-                <a class="contact_item" href="tel:@Contact.PhoneTwo" target="_blank">
-                    <i class="bi bi-telephone"></i>@Contact.PhoneTwo
-                </a>
+                @if (!string.IsNullOrEmpty(Contact.PhoneTwo))
+                {
+                    <a class="contact_item" href="tel:@Contact.PhoneTwo" target="_blank">
+                        <i class="bi bi-telephone"></i>@Contact.PhoneTwo
+                    </a>
+                }
+                @if (!string.IsNullOrEmpty(Contact.PhoneThree))
+                {
+                    <a class="contact_item" href="tel:@Contact.PhoneThree" target="_blank">
+                        <i class="bi bi-telephone"></i>@Contact.PhoneThree
+                    </a>
+                }
             </div>
         </div>
         <div class="contact_row">
             <p class="contact_subtitle">ПРИЕЗЖАЙТЕ</p>
             <div class="item_row">
                 <p class="contact_item">@Contact.AddressOne</p>
+                @if (!string.IsNullOrEmpty(Contact.AddressTwo))
+                {
+                    <p class="contact_item">@Contact.AddressTwo</p>
+                }
             </div>
         </div>
     </div>

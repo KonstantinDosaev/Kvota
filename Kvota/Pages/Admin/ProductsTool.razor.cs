@@ -1,9 +1,16 @@
 ﻿using BlazorBootstrap;
+using FastExcel;
 using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.JSInterop;
+using NuGet.Packaging;
 
 namespace Kvota.Pages.Admin
 {
@@ -15,6 +22,7 @@ namespace Kvota.Pages.Admin
         protected IRepo<Product> ProductService { get; set; } = default!;
         private static List<Product>? _pagedList ;
         private static IEnumerable<Product>? _filteredList;
+        private static IEnumerable<GrandCategory>? GCategoryList { get; set; }
         [Parameter]
         public Guid CategoriesFilterId { get; set; }
         [Parameter]
@@ -34,6 +42,7 @@ namespace Kvota.Pages.Admin
             _pagedList = new List<Product>();
             using var scope = ServiceScopeFactory.CreateScope();
             ProductService = scope.ServiceProvider.GetService<IRepo<Product>>()!;
+            GCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
             Products = await ProductService.GetAllAsync();
             _filteredList = Products;
             rootPath = Env.WebRootPath;
@@ -41,17 +50,17 @@ namespace Kvota.Pages.Admin
            // GetPagedList(_filteredList);
            // await InvokeAsync(StateHasChanged);
         }
-        private async void DeleteProduct(Guid id,string pathImage)
-        {
-            var path = $"{Env.WebRootPath}\\{pathImage}";
-            var fileInf = new FileInfo(path);
-            if (fileInf.Exists)
-            {
-                fileInf.Delete();
-            }
-            await ProductRepo.DeleteAsync(id);
-            NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        }
+        //private async void DeleteProduct(Guid id,string pathImage)
+        //{
+        //    var path = $"{Env.WebRootPath}\\{pathImage}";
+        //    var fileInf = new FileInfo(path);
+        //    if (fileInf.Exists)
+        //    {
+        //        fileInf.Delete();
+        //    }
+        //    await ProductRepo.DeleteAsync(id);
+        //    NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        //}
         private async void DeleteCheckedProduct(List<Guid> ids)
         {
             foreach (var id in ids)
@@ -89,7 +98,6 @@ namespace Kvota.Pages.Admin
                     SelectedValues.Remove(aSelectedId);
                 }
             }
-            //StateHasChanged();
         }
 
         private void DeleteImage(Guid id)
@@ -110,5 +118,54 @@ namespace Kvota.Pages.Admin
             _pagedList.AddRange((_filteredList.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
 
         }
+        private  void OutputExcel(List<Product> products)
+        {
+            var outputFile = new FileInfo($"{Env.WebRootPath}\\excel\\ExcelOutputKvota.xlsx");
+            List<MyObject> objectList = new List<MyObject>();
+
+                foreach (var item in products)
+                {
+                    MyObject genericObject = new MyObject();
+                    genericObject.NameColumn = item.Name;
+                    if (item.PartNumber != null) genericObject.PartColumn = item.PartNumber;
+                    if (item.Brand != null) genericObject.BrandColumn = item.Brand.Name;
+                    if (item.Category != null)
+                        if (item.Category.GrandCategoryId != null)
+                            genericObject.GCategotyColumn = GCategoryList!.FirstOrDefault(w => w.Id==item.Category.GrandCategoryId)!.Name;
+                    if (item.Category != null) genericObject.CategoryColumn = item.Category.Name;
+                    genericObject.DescriptionColumn = item.Description;
+                    genericObject.PriceColumn = item.Price;
+                    genericObject.QuntityColumn = item.Quantity;
+                    genericObject.TwoQuntityColumn = item.QuantityTwo;
+                    genericObject.DateDeleveyColumn = item.DateDelivery;
+                    objectList.Add(genericObject);
+                }
+          
+                var workbook = new XLWorkbook();
+                var wsDetailedData = workbook.AddWorksheet("data");
+                wsDetailedData.Cell(1, 1).InsertTable(objectList);
+                workbook.SaveAs(outputFile.FullName);
+                var uri = new Uri(NavigationManager.Uri);
+                var urlSave = uri.GetLeftPart(UriPartial.Authority);
+                var fileName = "ExcelOutputKvota.xlsx";
+                var fileURL = $"{urlSave}/excel/ExcelOutputKvota.xlsx";
+               var result =  JsRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+
+
+        }
+    }
+    record MyObject
+    {
+        public string NameColumn { get; set; }
+        public string PartColumn { get; set; }
+        public string BrandColumn { get; set; }
+        public string GCategotyColumn { get; set; }
+        
+        public string CategoryColumn { get; set; }
+        public string? DescriptionColumn { get; set; }
+        public decimal? PriceColumn { get; set; }
+        public int? QuntityColumn { get; set; }
+        public int? TwoQuntityColumn { get; set; }
+        public DateOnly? DateDeleveyColumn { get; set; }
     }
 }

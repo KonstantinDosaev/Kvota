@@ -14,5 +14,7 @@ namespace Kvota.Models.Content
         public string? PartnerTitle { get; set; }
         public string? AboutHomeText { get; set; }
         public string? AboutText { get; set; }
+        public bool CatalogView { get; set; }
+        public bool BrandView { get; set; }
     }
 }

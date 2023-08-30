@@ -86,7 +86,7 @@ namespace Kvota.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Kvota.Models.Content.Contacts", b =>
+            modelBuilder.Entity("Kvota.Models.Content.ContactsModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,6 +129,9 @@ namespace Kvota.Migrations
 
                     b.Property<string>("AboutText")
                         .HasColumnType("text");
+
+                    b.Property<bool>("CatalogView")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("HomeImageTextOne")
                         .HasColumnType("text");

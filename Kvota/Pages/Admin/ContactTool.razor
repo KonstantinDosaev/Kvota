@@ -1,10 +1,8 @@
-﻿@using Kvota.Models.Content
-@using Microsoft.AspNetCore.Components
-@using Kvota.Interfaces
-@using Kvota.Components.Admin
-@inject IRepo<ContactsModel> ContactRepo
-@page "/admin/contacttool"
+﻿@page "/admin/contacttool"
 @attribute [Authorize(Roles = "Administrators")]
+@using Microsoft.AspNetCore.Components
+@using Kvota.Components.Admin
+
 
     @if (Tools != null)
     {

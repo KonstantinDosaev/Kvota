@@ -1,7 +1,10 @@
 ﻿@page "/productlists/{id:guid}"
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject IWebHostEnvironment env
+@inject IRepo<ContactsModel> ContactService
 @using FileInfo = System.IO.FileInfo
+@using Kvota.Models.Content
+@using Kvota.Interfaces
 @if (Product != null)
 {
     <div class="product-card">
@@ -14,15 +17,17 @@
             <a class="product-card__image-body" @onclick="@(e => GetModalImage())">
                 @if (Product.Image == "image\\products\\default.jpg")
                 {
-                    <img class="product-card__image" src="image/products/default.jpg"/>
+                    @*<img class="product-card__image" src="image/products/default.jpg"/>*@
+                    <div class="product-card__image" style="background: url(/image/products/default.jpg)50% 50%/contain no-repeat "></div>
                 }
                 else
                 {
                     @if (Directory.Exists($"{env.WebRootPath}\\{Product.Image}"))
                     {
                         var imageFirst = Directory.GetFiles($"{env.WebRootPath}\\{Product.Image}").FirstOrDefault();
-                        var fileInfo = Product.Image + "\\" + (new FileInfo(imageFirst).Name);
-                        <img class="product-card__image" src="@fileInfo"/>
+                        var fileInfo = (Product.Image.Replace("\\","/")) + "/" + (new FileInfo(imageFirst).Name);
+                     
+                        <div class="product-card__image" style="background: url(@fileInfo)50% 50%/contain no-repeat "></div>
                     }
                 }
             </a>
@@ -34,7 +39,16 @@
                     <div>
                         @if (Product.Brand != null)
                         {
-                            <p class="product-card__brand product__text">@Product.Brand!.Name</p>
+                            if (Product.Brand.Image==null)
+                            {
+                                <span class="product-card__brand product__text">@Product.Brand!.Name</span>
+                            }
+                            else
+                            {
+                                var uri = Product.Brand.Image!.Replace("\\", "/");
+                                <div class="product-card__brand product__text" style="background: url(@uri)50% 50%/contain no-repeat;"></div>
+                            }
+                            
                         @*<img src="@Product.Brand.Image"/>*@
                         }
                     </div>
@@ -48,12 +62,33 @@
                     {
                         <span class="product-card__price ">@Product.Price руб.</span>
                     }
-                    <button class="product-card__feetback btn btn-danger btn-sm" role="button">Уточнить наличие и цену</button>
+                    <div class="product-card__feetback">
+                        <Dropdown OnShowing="OnDropdownShowingAsync">
+                            <DropdownToggleButton  Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
+                            <DropdownMenu>
+                            @if (Contacts != null)
+                            {
+                                <DropdownItem Type="ButtonType.Link">
+                                    <a href="tel:@Contacts.PhoneOne" target="_blank">
+                                        <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
+                                    </a>
+                                </DropdownItem>
+                                <DropdownItem Type="ButtonType.Link">
+                                        <a href="mailto:@Contacts.EmailOne">
+                                        <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
+                                    </a>
+                                </DropdownItem>
+                            }
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+
 
                 </div>
                 @if (Product.Quantity != null)
                 {
-                    <div class="product-card__quantity product__text">Наличие: @Product.Quantity шт.</div>
+                    var sumQuantity = Product.QuantityTwo != null ? Product.Quantity + Product.QuantityTwo : Product.Quantity;
+                    <div class="product-card__quantity product__text">Наличие: @sumQuantity шт.</div>
                 }
                
                 
@@ -70,17 +105,25 @@
                         }
                     </Content>
                 </Tab>
+           
                 <Tab Title="Харрактеристики">
                     <Content>
-                        @if (Product.ProductOption != null)
-                        {
-                            foreach (var option in Product.ProductOption)
+                    @if (Product.ProductOption != null && Product.ProductOption.Count != 0)
+                    {
+                        <div class="product-card__options">
+
+                            @foreach (var option in Product.ProductOption)
                             {
-                                <span class="product-card__option">@option.CategoryOption!.Name @option.Value @option.CategoryOption.Measure</span>
+                                <div class="product-card__option">
+                                    <span class="product-card__optionName">@option.CategoryOption!.Name</span><span class="product-card__optionValue">@option.Value @option.CategoryOption.Measure</span>
+                                </div>
                             }
-                        }
+
+                        </div>
+                    }
                     </Content>
                 </Tab>
+            
             </Tabs>
         </div>
 
@@ -90,7 +133,8 @@
             ShowCloseButton="false"
             OnShown="OnModalShown"
             UseStaticBackdrop="true" 
-            Size="ModalSize.ExtraLarge" 
+            Size="ModalSize.ExtraLarge"
+              IsScrollable="true"
             @ref="_modalImage">
             <BodyTemplate>
                 <div class=modalImage__body>
@@ -120,9 +164,11 @@
     .modal-body {
         padding: 0;
         min-height: 70vh;
+       
     }
     .modalImage__body {
         position: relative;
+        
     }
     .modalImage__closeBtn {
         position: absolute;
@@ -189,4 +235,5 @@
         right: 0;
         transform: rotate(-45deg);
     }
+
 </style>

@@ -1,4 +1,7 @@
 ﻿@using Kvota.Pages.Products
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject IRepo<ContactsModel> ContactService
 <div class="productlist__products">
 
     @if (ProductList != null)
@@ -12,28 +15,45 @@
                 </div>*@
                 <div class="product__body">
                     <a class="product__name product__text" @onclick="@(e => GetModalUpdate(items.Id, items.Name))">@items.Name</a>
+                    <span class="product__pnumber product__text">№.: @items.PartNumber</span>
                     @if (items.Brand != null)
                     {
-                        <span class="product__brand product__text">Производитель: @items.Brand!.Name</span>
+                        <span class="product__brand product__text">@items.Brand!.Name</span>
                     }
-              <span class="product__pnumber product__text">№.: @items.PartNumber</span>
                 </div>
-                <div class="product__prices">
-                    @if (items.Quantity != null)
-                    {
-                        <div class="product__quantity product__text">Кол.-во: @items.Quantity шт.</div>
-                    }
-                    @if (items.Price != null)
-                    {
-                        <span class="product__price ">@items.Price р.</span>
-                    }
-                    @if (items.SalePrice != null)
-                    {
-                        <span class="product__sale ">@items.SalePrice р.</span>
-                    }
-                    <span class="product__feetback ">feeeet</span>
-                </div>
-
+<div class="product__prices">
+    <div>
+    @if (items.SalePrice != null)
+    {
+        <span class="product__sale ">@items.SalePrice р.</span>
+    }
+    @if (items.Price != null)
+    {
+        <span class="product__price ">@items.Price р.</span>
+    }
+                    </div>
+    <div class="product__feetback ">
+        <Dropdown OnShowing="OnDropdownShowingAsync">
+            <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
+            <DropdownMenu>
+                @if (Contacts != null)
+                {
+                    <DropdownItem Type="ButtonType.Link">
+                        <a href="tel:@Contacts.PhoneOne" target="_blank">
+                            <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
+                        </a>
+                    </DropdownItem>
+                    <DropdownItem Type="ButtonType.Link">
+                        <a href="mailto:@Contacts.EmailOne">
+                            <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
+                        </a>
+                    </DropdownItem>
+                }
+            </DropdownMenu>
+        </Dropdown>
+    </div>
+</div>
+                
             </div>
 
 
@@ -57,30 +77,16 @@
     </div>
 </div>
 <style>
-    .modal-header {
-        background-color: rgba(119, 136, 153,0.9);
-        color: lightgray;
-
-                         
-    }
-
-
     .product-modal__closeBtn {
         top: 0rem;
         right: 0.5rem;
         position: absolute;
         font-size: 3rem;
         padding: 0;
-       
     }
-
     .product-modal__closeBtn:active {
         transform: scale(0.8);
     }
-    .modal-content {
-        
-    }
-
     .product-modal__btn {
         background-color: rgba(178, 34, 34, 0.8);
         font-size: 1rem;

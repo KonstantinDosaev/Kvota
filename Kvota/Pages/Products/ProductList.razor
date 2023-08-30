@@ -1,5 +1,6 @@
 ﻿@page "/productlists"
 @page "/productlist/{category}/{categoriesid:guid}"
+@page "/productlist/brand/{brandsid:guid}"
 @using Kvota.Models.Products
 @using Kvota.Interfaces
 @using Kvota.Components
@@ -17,9 +18,25 @@
         }
         else
         {
-            <ProductFilterComponent Products="Products"  ProductListCallback="GetFilterList"></ProductFilterComponent>
+            if (BrandsId!=null && BrandsId!= Guid.Empty)
+            {
+                <ProductFilterComponent Products="Products" BrandsFilterId="BrandsId" ProductListCallback="GetFilterList"></ProductFilterComponent>
+            }
+            else
+            {
+                <ProductFilterComponent Products="Products" ProductListCallback="GetFilterList"></ProductFilterComponent>
+            } 
+            
         }
-        <ProductListComponent ProductList="_pagedList" />
+        @if (_pagedList.Count > 0)
+        {
+            <ProductListComponent ProductList="_pagedList" />
+        }
+        else
+        {
+            <div>Список товаров пуст</div>
+        }
+        
         @if (_filteredList.Count() > 10)
         {
             <div class="button__block" style="text-align: center">

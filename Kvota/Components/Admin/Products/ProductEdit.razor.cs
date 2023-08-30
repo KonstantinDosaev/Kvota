@@ -29,15 +29,14 @@ namespace Kvota.Components.Admin.Products
                 Product.DateTimeUpdated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
                 await ProductRepo.Update(Product);
             }
-
-           // NavigationManager.NavigateTo("/admin/product");
         }
 
-        private void AddImagePatch(string patch)
+        private async void AddImagePatch(string patch)
         {
             if (patch == string.Empty) return;
             if (Product != null)
                 Product.Image = patch;
+            await ProductRepo.Update(Product);
         }
     }
 }

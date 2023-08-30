@@ -1,6 +1,8 @@
 ﻿
 using Kvota.Models.Products;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 
 namespace Kvota.Migrations
 {
@@ -14,6 +16,7 @@ namespace Kvota.Migrations
         {
             optionsBuilder
                 .UseLazyLoadingProxies(); // подключение lazy loading
+            
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {

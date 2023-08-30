@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Kvota.Models.Content
+@using System.Text.Json
+@using Kvota.Constants
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         
         <a class="navbar-brand" href=""><i style="margin-right: 10px"class="bi bi-cpu"></i>KVOTA.RU</a>
@@ -16,6 +19,21 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
+            @if (CatalogView)
+            {
+                <NavLink class="nav-link" href="productlist">
+                    <span class="oi oi-book" aria-hidden="true"></span> Каталог
+                </NavLink>
+            }           
+            else
+             {
+                 <NavLink class="nav-link" href="productlists">
+                     <span class="oi oi-book" aria-hidden="true"></span> Каталог
+                 </NavLink>
+             }
+
+        </div>
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="contacts">
                 <span class="oi oi-map-marker" aria-hidden="true"></span> Контакты
             </NavLink>
@@ -24,23 +42,16 @@
             <NavLink class="nav-link" href="about">
                 <span class="oi oi-people" aria-hidden="true"></span> О компании
             </NavLink>
-        </div>    
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="productlist">
-                <span class="oi oi-people" aria-hidden="true"></span> Каталог
-            </NavLink>
         </div>
-        
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="admin">
-                <span class="oi oi-people" aria-hidden="true"></span> admin
-            </NavLink>
-        </div>
-        
         <AuthorizeView>
             <Authorized>
-@*                @if (@context.User.IsInRole("Administrators"))
-                {*@
+                @if (@context.User.IsInRole("Administrators"))
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin">
+                            <span class="oi oi-puzzle-piece" aria-hidden="true"></span> admin
+                        </NavLink>
+                    </div>
                     <div class="nav-item px-3" style="margin-left: 1rem;">
             
                         <NavLink class="nav-link" href="/logout" Match="NavLinkMatch.All">
@@ -48,13 +59,10 @@
                         </NavLink>
           
                     </div> 
-@*                }*@
+              }
                
             </Authorized>
         </AuthorizeView>
-  
-       
-
     </nav>
 </div>
 
@@ -63,8 +71,17 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    private bool CatalogView { get; set; }
+    public Home? HomeContent { get; set; }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        HomeContent = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
+
+        CatalogView = HomeContent.CatalogView;
     }
 }

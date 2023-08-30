@@ -10,6 +10,8 @@
 @using Kvota.Components
 @using System.IO
 @using FileInfo = System.IO.FileInfo
+@inject IJSRuntime JsRuntime
+
 <NavAdmin></NavAdmin>
 <div class="row">
     <div class="col-lg-3 text-right">
@@ -17,6 +19,9 @@
     </div>
     <div class="col-lg-3 text-right">
         <a class="btn btn-success btn-sm" href="/admin/product/excel" role="button">Загрузить из Excel</a>
+    </div>
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)_filteredList!))" role="button">Выгрузить в Excel</a>
     </div>
     <div class="col-lg-3 text-right">
         <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteCheckedProduct(SelectedValues))" role="button">Удалить выделенные</button>

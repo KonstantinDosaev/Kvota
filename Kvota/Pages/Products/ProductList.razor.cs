@@ -18,6 +18,8 @@ namespace Kvota.Pages.Products
 
         [Parameter] 
         public string? Category { get; set; }
+        [Parameter]
+        public string? Brand { get; set; }
         private int _quantityInPage = 10;
         private int _currentPageCount = 10;
         protected override async Task OnInitializedAsync()

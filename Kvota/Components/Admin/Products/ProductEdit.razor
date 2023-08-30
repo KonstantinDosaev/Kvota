@@ -85,7 +85,7 @@
             <label>Cрок</label>
             <InputDate class="form-control" @bind-Value="Product.DateDelivery" />
         </div>
-        <FileUploads MyDirectory="products" Name="@Product.Name" OnClickCallback="AddImagePatch"></FileUploads> <br />
+        <FileUploads MyDirectory="products" Name="@Product.Id.ToString()" OnClickCallback="AddImagePatch"></FileUploads> <br />
         
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </EditForm>

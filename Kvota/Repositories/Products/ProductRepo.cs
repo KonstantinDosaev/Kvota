@@ -22,7 +22,7 @@ namespace Kvota.Repositories.Products
         public override async Task<IEnumerable<Product>> GetSearch(string searchString)
         {
             return await Table
-                .Where(x =>  x.Name.Contains(searchString)).ToListAsync();
+                .Where(x =>   x.Name.Contains(searchString)||( x.PartNumber != null &&  x.PartNumber.Contains(searchString))).ToListAsync();
         }
         public override async Task<IEnumerable<Product>> GetAllByIdAsync(Guid id) => await Table.OrderBy(o => o.Name).Where(w => w.CategoryId == id)
             .Include(i => i.Brand).Include(i => i.Category)

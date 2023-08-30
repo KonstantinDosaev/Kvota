@@ -24,10 +24,16 @@ namespace Kvota.Pages.Admin
         }
 
 
-        private async void Delete(Guid id)
+        private async void Delete(Guid id, string pathImage)
         {
             try
             {
+                var path = $"{Env.WebRootPath}\\{pathImage}";
+                var fileInf = new FileInfo(path);
+                if (fileInf.Exists)
+                {
+                    fileInf.Delete();
+                }
                 await GRepo.DeleteAsync(id);
                 NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
@@ -61,9 +67,12 @@ namespace Kvota.Pages.Admin
         {
             await GRepo.Update(ItemUpdate);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
-
-
-
+        }
+        private void AddImagePatch(string patch)
+        {
+            if (patch == string.Empty) return;
+            if (ItemUpdate != null)
+                ItemUpdate.Image = patch;
         }
     }
 }

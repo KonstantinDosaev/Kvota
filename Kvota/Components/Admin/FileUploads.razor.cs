@@ -8,9 +8,10 @@ namespace Kvota.Components.Admin
     partial class FileUploads
     {
         
-            string Message = "не загружен файл";
-            private IReadOnlyList<IBrowserFile> _selectedFiles = null!;
-
+        string Message = "не загружен файл";
+        private IReadOnlyList<IBrowserFile> _selectedFiles = null!;
+        [Inject]
+        public NavigationManager? NavigationManager { get; set; }
         [Parameter]
         public string? MyDirectory { get; set; }
         [Parameter]
@@ -23,6 +24,7 @@ namespace Kvota.Components.Admin
         public EventCallback<string> OnClickCallback { get; set; }
         protected override void OnInitialized()
         {
+           
             _directoryPath = $"{env.WebRootPath}\\image\\{MyDirectory}\\{Name}";
             _directoryP = $"\\image\\{MyDirectory}\\{Name}";
         }
@@ -37,26 +39,40 @@ namespace Kvota.Components.Admin
         {
             try
             {
-                if (!Directory.Exists(_directoryPath))
+                if (MyDirectory == "products")
                 {
-                    Directory.CreateDirectory(_directoryPath!);
-
+                    if (!Directory.Exists(_directoryPath))
+                    {
+                        Directory.CreateDirectory(_directoryPath!);
+                    }
+                    foreach (var file in _selectedFiles)
+                    {
+                        var stream = file.OpenReadStream(maxAllowedSize:1500000);
+                        var path = $"{_directoryPath}\\{file.Name}";
+                        var fs = File.Create(path);
+                        await stream.CopyToAsync(fs);
+                        stream.Close();
+                        fs.Close();
+                    }
+                    PatchImage = _directoryP;
                 }
-                
-
-                foreach (var file in _selectedFiles)
+                else
                 {
-                    var stream = file.OpenReadStream(maxAllowedSize:1500000);
-                    var path = $"{_directoryPath}\\{file.Name}";
-                    var fs = File.Create(path);
-                    await stream.CopyToAsync(fs);
-                    stream.Close();
-                    fs.Close();
+                    var file = _selectedFiles.FirstOrDefault();
+                    if (file != null)
+                    {
+                        var stream = file.OpenReadStream(maxAllowedSize: 1500000);
+                        var path = $"{_directoryPath}.jpg";
+                        var fs = File.Create(path);
+                        await stream.CopyToAsync(fs);
+                        stream.Close();
+                        fs.Close();
+                        PatchImage = $"\\image\\{MyDirectory}\\{Name}.jpg";
+                    }
                 }
-                PatchImage = _directoryP;
                 await OnClickCallback.InvokeAsync(PatchImage);
                 Message = $"загружено файлов {_selectedFiles.Count}";
-               await InvokeAsync(StateHasChanged);
+                NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
             catch
             {
