@@ -3,27 +3,29 @@
 @using Kvota.Models.Products
 @using Kvota.Interfaces
 @using Kvota.Components.Admin
-@using Kvota.Components.Admin.Products
 @inject IRepo<Product> ProductRepo
 @inject IServiceScopeFactory ServiceScopeFactory
-@inject IWebHostEnvironment Env
 @using Kvota.Components
 @using System.IO
+@using Kvota.Constants
 @using FileInfo = System.IO.FileInfo
 @inject IJSRuntime JsRuntime
 
 <NavAdmin></NavAdmin>
 <div class="row">
-    <div class="col-lg-3 text-right">
+    <div class="col text-right">
         <a  class="btn btn-success btn-sm" href="/admin/product/create" role="button">Создать продукт</a>
     </div>
-    <div class="col-lg-3 text-right">
+    <div class="col text-right">
         <a class="btn btn-success btn-sm" href="/admin/product/excel" role="button">Загрузить из Excel</a>
     </div>
-    <div class="col-lg-3 text-right">
-        <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)_filteredList!))" role="button">Выгрузить в Excel</a>
+    <div class="col text-right">
+        <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)_filteredList!))" role="button">Выгрузить отфильтрованное в Excel</a>
     </div>
-    <div class="col-lg-3 text-right">
+    <div class="col text-right">
+        <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)Products!))" role="button">Выгрузить всё в Excel</a>
+    </div>
+    <div class="col text-right">
         <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteCheckedProduct(SelectedValues))" role="button">Удалить выделенные</button>
     </div>
     </div>
@@ -65,16 +67,16 @@
                    @onchange="eventArgs => { CheckboxClicked(item.Id, eventArgs.Value); }" />  
                 </td>
                 <td>
-                        @if (item.Image == "image\\products\\default.jpg")
+                        @if (item.Image == Links.DefaultImageProduct)
                         {
-                            <img width="100" height="70" src="image\\products\\default.jpg" />
+                            <img width="100" height="70" src="@Links.DefaultImageProduct" />
                         }
                         else
                         {
-                            @if (Directory.Exists($"{rootPath}\\{item.Image}"))
+                            @if (Directory.Exists($"{Links.RootPath}{item.Image}"))
                             {
-                                var imageFirst = Directory.GetFiles($"{rootPath}\\{item.Image}").FirstOrDefault();
-                                var fileInfo = item.Image + "\\" + (new FileInfo(imageFirst).Name);
+                                var imageFirst = Directory.GetFiles($"{Links.RootPath}{item.Image}").FirstOrDefault();
+                                var fileInfo = item.Image + "/" + (new FileInfo(imageFirst!).Name);
                                 <img width="100" height="70" src="@fileInfo"/>
                             }
                         }

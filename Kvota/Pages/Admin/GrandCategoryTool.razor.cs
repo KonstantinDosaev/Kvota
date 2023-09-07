@@ -1,4 +1,5 @@
 ﻿using BlazorBootstrap;
+using Kvota.Constants;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 
@@ -28,7 +29,7 @@ namespace Kvota.Pages.Admin
         {
             try
             {
-                var path = $"{Env.WebRootPath}\\{pathImage}";
+                var path = $"{Links.RootPath}/{pathImage}";
                 var fileInf = new FileInfo(path);
                 if (fileInf.Exists)
                 {

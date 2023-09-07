@@ -79,9 +79,8 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
         HomeContent = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
-
         CatalogView = HomeContent.CatalogView;
     }
 }

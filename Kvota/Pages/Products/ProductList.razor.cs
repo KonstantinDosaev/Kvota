@@ -12,22 +12,29 @@ namespace Kvota.Pages.Products
         private static List<Product>? _pagedList;
         private static IEnumerable<Product>? _filteredList;
         [Parameter]
-        public Guid CategoriesId { get; set; }
-        [Parameter]
-        public Guid BrandsId { get; set; }
-
+        public string? Groups { get; set; }
         [Parameter] 
-        public string? Category { get; set; }
+        public string? GroupName { get; set; }
+
         [Parameter]
-        public string? Brand { get; set; }
+        public Guid GroupId { get; set; }
         private int _quantityInPage = 10;
         private int _currentPageCount = 10;
         protected override async Task OnInitializedAsync()
         {
+           await InitList();
+        }
+        protected override async Task OnParametersSetAsync()
+        {
+           await InitList();
+        }
+        private async Task InitList()
+        {
             using var scope = serviceScopeFactory.CreateScope();
-            if (Category != null)
+            if (Groups != null)
             {
-                Products = await scope.ServiceProvider.GetService<IRepo<Product>>()!.GetAllByIdAsync(CategoriesId);
+
+                Products = await scope.ServiceProvider.GetService<IRepo<Product>>()!.GetAllByIdAsync(GroupId, Groups);
             }
             else
             {
@@ -36,16 +43,12 @@ namespace Kvota.Pages.Products
             _pagedList = new List<Product>();
             _filteredList = Products;
 
-           LoadMore(0);
-            
-           
-            
+            LoadMore(0);
         }
         private void LoadMore(int newPageNumber)
         {
             _currentPageCount = newPageNumber;
-            _pagedList.AddRange((_filteredList.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
-
+            _pagedList!.AddRange((_filteredList!.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
         }
 
         protected void GetFilterList(IEnumerable<Product> filteredList)
@@ -53,7 +56,7 @@ namespace Kvota.Pages.Products
             _filteredList = filteredList;
             _pagedList = new List<Product>();
             LoadMore(0);
-
+            this.StateHasChanged();
         }
 
     }

@@ -16,6 +16,7 @@ namespace Kvota.Models.Products
         public DateTime? DateTimeCreated { get; set; }
         public DateTime? DateTimeUpdated { get; set; }
         public DateOnly? DateDelivery { get; set; }
+        public int? DayToDelivery { get; set; }
         public virtual Brand? Brand { get; set; }
         public Guid? BrandId { get; set; }
         public virtual Category? Category { get; set; }

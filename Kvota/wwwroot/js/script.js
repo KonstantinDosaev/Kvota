@@ -17,3 +17,7 @@ window.triggerFileDownload = (fileName, url) => {
     anchorElement.click();
     anchorElement.remove();
 }
+
+window.addEventListener('beforeunload', function () {
+    Blazor.defaultReconnectionHandler._reconnectionDisplay = {};
+});

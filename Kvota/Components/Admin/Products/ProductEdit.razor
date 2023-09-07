@@ -70,7 +70,7 @@
             <InputNumber class="form-control" @bind-Value="Product.Price" />
         </div>
         <div class="form-group">
-            <label>Цена по скидке</label>
+            <label>Скидка %</label>
             <InputNumber class="form-control" @bind-Value="Product.SalePrice" />
         </div>
         <div class="form-group">
@@ -82,8 +82,8 @@
             <InputNumber class="form-control" @bind-Value="Product.QuantityTwo" />
         </div>
         <div class="form-group">
-            <label>Cрок</label>
-            <InputDate class="form-control" @bind-Value="Product.DateDelivery" />
+            <label>Cрок поставки (дней)</label>
+            <InputNumber class="form-control" @bind-Value="Product.DayToDelivery" />
         </div>
         <FileUploads MyDirectory="products" Name="@Product.Id.ToString()" OnClickCallback="AddImagePatch"></FileUploads> <br />
         

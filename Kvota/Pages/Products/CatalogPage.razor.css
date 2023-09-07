@@ -15,22 +15,23 @@
    
     flex: 0 1 48%;
     margin: 1%;
+   
      
 }
 
 .grand__image-body {
-    padding: 0 1.5rem 0 0;
+    padding:  1rem;
 }
 
 .grand__image {
     width: 10rem;
-    height: 10rem;
+    height: 7rem;
     border-top-left-radius: 5px;
     
 }
 
 .grand__body {
-    padding: 5px;
+    padding: 0.5rem;
 }
 
 .grand__title {
@@ -66,6 +67,14 @@
     .catalog__grand {
         
         flex: 0 1 100%;
+        
+    }
+}
+@media (max-width: 404px) {
+
+    .grand__image {
+        width: 5rem;
+        height: 4rem;
         
     }
 }

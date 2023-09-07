@@ -1,9 +1,7 @@
 ﻿@page "/admin/product/excel"
 @attribute [Authorize(Roles = "Administrators")]
-@using System.IO
 @using Kvota.Interfaces
 @using Kvota.Models.Products
-@inject IWebHostEnvironment env
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject IRepo<Brand> BrandService
 @inject IRepo<GrandCategory> GrandCategoryService

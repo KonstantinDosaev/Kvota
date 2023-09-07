@@ -1,4 +1,6 @@
-﻿using Kvota.Data;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Kvota.Constants;
+using Kvota.Data;
 using Kvota.Migrations;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Http;
@@ -24,9 +26,24 @@ namespace Kvota.Repositories.Products
             return await Table
                 .Where(x =>   x.Name.Contains(searchString)||( x.PartNumber != null &&  x.PartNumber.Contains(searchString))).ToListAsync();
         }
-        public override async Task<IEnumerable<Product>> GetAllByIdAsync(Guid id) => await Table.OrderBy(o => o.Name).Where(w => w.CategoryId == id)
-            .Include(i => i.Brand).Include(i => i.Category)
-            .Include(i => i.ProductOption).ToListAsync();
+
+        public override async Task<IEnumerable<Product>> GetAllByIdAsync(Guid id, string name)
+        {
+            if (name == GroupNames.GroupBrand)
+            {
+                return await Table.OrderBy(o => o.Name).Where(w => w.BrandId == id)
+                    .Include(i => i.Brand).Include(i => i.Category)
+                    .Include(i => i.ProductOption).ToListAsync();
+            }
+            if(name == GroupNames.GroupCategory)
+            {
+               return await Table.OrderBy(o => o.Name).Where(w => w.CategoryId == id)
+                    .Include(i => i.Brand).Include(i => i.Category)
+                    .Include(i => i.ProductOption).ToListAsync();
+            }
+
+            return null!;
+        }
 
     }
 }

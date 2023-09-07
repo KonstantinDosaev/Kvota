@@ -19,7 +19,7 @@ namespace Kvota.Pages.Admin
        
         protected override async Task OnInitializedAsync()
         {
-            await using var openStream = File.OpenRead(Links.HomeContentJson);
+            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
             Tools = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
 
         }
@@ -32,7 +32,7 @@ namespace Kvota.Pages.Admin
                 WriteIndented = true, 
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping 
             };
-            await using var createStream = File.Create(Links.HomeContentJson);
+            await using var createStream = File.Create($"{Links.RootPath}/{Links.HomeContentJson}");
             await JsonSerializer.SerializeAsync(createStream, Tools, options);
             await createStream.DisposeAsync();
             _modal?.ShowAsync();

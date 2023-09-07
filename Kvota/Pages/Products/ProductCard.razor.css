@@ -67,9 +67,11 @@
     border: darkred solid;
     border-radius: 8px;
 }
+.product-card__quantity {
+    color: #6c757d;
+}
 .product-card__tabs {
     padding-bottom: 5rem;
-   
 }
 .product-card__description {
     padding: 1rem;

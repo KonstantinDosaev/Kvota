@@ -1,4 +1,5 @@
-﻿using Kvota.Models.Products;
+﻿using Kvota.Constants;
+using Kvota.Models.Products;
 using Kvota.Repositories.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -25,8 +26,8 @@ namespace Kvota.Components.Admin
         protected override void OnInitialized()
         {
            
-            _directoryPath = $"{env.WebRootPath}\\image\\{MyDirectory}\\{Name}";
-            _directoryP = $"\\image\\{MyDirectory}\\{Name}";
+            _directoryPath = $"{env.WebRootPath}/image/{MyDirectory}/{Name}";
+            _directoryP = $"/image/{MyDirectory}/{Name}";
         }
         private void OnInputFileChange(InputFileChangeEventArgs e)
         {
@@ -39,7 +40,7 @@ namespace Kvota.Components.Admin
         {
             try
             {
-                if (MyDirectory == "products")
+                if (MyDirectory == GroupNames.GroupProducts)
                 {
                     if (!Directory.Exists(_directoryPath))
                     {
@@ -48,7 +49,7 @@ namespace Kvota.Components.Admin
                     foreach (var file in _selectedFiles)
                     {
                         var stream = file.OpenReadStream(maxAllowedSize:1500000);
-                        var path = $"{_directoryPath}\\{file.Name}";
+                        var path = $"{_directoryPath}/{file.Name}";
                         var fs = File.Create(path);
                         await stream.CopyToAsync(fs);
                         stream.Close();
@@ -67,12 +68,12 @@ namespace Kvota.Components.Admin
                         await stream.CopyToAsync(fs);
                         stream.Close();
                         fs.Close();
-                        PatchImage = $"\\image\\{MyDirectory}\\{Name}.jpg";
+                        PatchImage = $"{_directoryP}.jpg";
                     }
                 }
                 await OnClickCallback.InvokeAsync(PatchImage);
                 Message = $"загружено файлов {_selectedFiles.Count}";
-                NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                //NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
             catch
             {
@@ -82,7 +83,7 @@ namespace Kvota.Components.Admin
 
         private void DeleteImage(string path)
         {
-            var fileInf = new FileInfo($"{env.WebRootPath}\\image\\{MyDirectory}\\{Name}\\{path}");
+            var fileInf = new FileInfo($"{_directoryPath}/{path}");
             if (fileInf.Exists)
             {
                 fileInf.Delete();

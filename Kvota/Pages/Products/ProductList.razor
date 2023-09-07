@@ -1,10 +1,7 @@
 ﻿@page "/productlists"
-@page "/productlist/{category}/{categoriesid:guid}"
-@page "/productlist/brand/{brandsid:guid}"
-@using Kvota.Models.Products
-@using Kvota.Interfaces
+@page "/{groups}/{groupname}/{groupid:guid}"
 @using Kvota.Components
-@inject IRepo<Product> ProductRepo
+@using Kvota.Constants
 @inject IServiceScopeFactory serviceScopeFactory
 
 
@@ -12,21 +9,21 @@
 {
     <div class="productlist">
         <div class="productlist__items"></div>
-        @if (Category != null)
+        @if (Groups != null)
         {
-            <ProductFilterComponent Products="Products" CategoriesFilterId="CategoriesId" Category="@Category" ProductListCallback="GetFilterList"></ProductFilterComponent>
+            if (Groups==GroupNames.GroupBrand)
+            {
+                <ProductFilterComponent Products="Products" BrandsFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
+            }
+            if (Groups==GroupNames.GroupCategory)
+            {
+                <ProductFilterComponent Products="Products" CategoriesFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
+            }
+           
         }
         else
         {
-            if (BrandsId!=null && BrandsId!= Guid.Empty)
-            {
-                <ProductFilterComponent Products="Products" BrandsFilterId="BrandsId" ProductListCallback="GetFilterList"></ProductFilterComponent>
-            }
-            else
-            {
-                <ProductFilterComponent Products="Products" ProductListCallback="GetFilterList"></ProductFilterComponent>
-            } 
-            
+            <ProductFilterComponent Products="Products" ProductListCallback="GetFilterList"></ProductFilterComponent>
         }
         @if (_pagedList.Count > 0)
         {
@@ -34,10 +31,10 @@
         }
         else
         {
-            <div>Список товаров пуст</div>
+            <div>Список пуст...</div>
         }
         
-        @if (_filteredList.Count() > 10)
+        @if (_filteredList!.Count() > _quantityInPage)
         {
             <div class="button__block" style="text-align: center">
                 <button class="btn btn-danger " @onclick="@(e => LoadMore(_pagedList.Count))" role="button">Загрузить еще</button>

@@ -10,17 +10,13 @@ namespace Kvota.Pages.Admin
 {
     partial class ContactTool
     {
-        [Inject] protected IRepo<ContactsModel> ContactServ { get; set; } = default!;
-
         private ContactsModel Tools { get; set; } = default!;
 
         private Modal? modal;
 
-
-
         protected override async Task OnInitializedAsync()
         {
-            await using var openStream = File.OpenRead(Links.ContactsJson);
+            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.ContactsJson}");
             Tools = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
         }
 
@@ -31,7 +27,7 @@ namespace Kvota.Pages.Admin
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
-            await using var createStream = File.Create(Links.ContactsJson);
+            await using var createStream = File.Create($"{Links.RootPath}/{Links.ContactsJson}");
             await JsonSerializer.SerializeAsync(createStream, Tools, options);
             await createStream.DisposeAsync();
             modal?.ShowAsync();

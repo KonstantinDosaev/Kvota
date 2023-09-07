@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Kvota.Constants;
+using Microsoft.AspNetCore.Components;
 using Kvota.Models.Products;
 using Newtonsoft.Json.Linq;
 using Kvota.Interfaces;
@@ -25,7 +26,7 @@ namespace Kvota.Components.Admin.Products
 
         private async void SubmitProduct()
         {
-            Product.Image = "image\\products\\default.jpg";
+            Product.Image = Links.DefaultImageProduct;
             Product.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0,3,0,0);
             Product.DateTimeUpdated = Product.DateTimeCreated;
             await ProductRepo.AddAsync(Product);

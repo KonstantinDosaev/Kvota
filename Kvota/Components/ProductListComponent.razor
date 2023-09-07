@@ -21,43 +21,41 @@
                         <span class="product__brand product__text">@items.Brand!.Name</span>
                     }
                 </div>
-<div class="product__prices">
-    <div>
-    @if (items.SalePrice != null)
-    {
-        <span class="product__sale ">@items.SalePrice р.</span>
-    }
-    @if (items.Price != null)
-    {
-        <span class="product__price ">@items.Price р.</span>
-    }
-                    </div>
-    <div class="product__feetback ">
-        <Dropdown OnShowing="OnDropdownShowingAsync">
-            <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
-            <DropdownMenu>
-                @if (Contacts != null)
+        <div class="product__prices">
+            <div>
+                @if (items.SalePrice != null)
                 {
-                    <DropdownItem Type="ButtonType.Link">
-                        <a href="tel:@Contacts.PhoneOne" target="_blank">
-                            <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
-                        </a>
-                    </DropdownItem>
-                    <DropdownItem Type="ButtonType.Link">
-                        <a href="mailto:@Contacts.EmailOne">
-                            <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
-                        </a>
-                    </DropdownItem>
+                            <span class="product__sale ">@Math.Round((double)((items.Price! / 100) * (100 - items.SalePrice)),2) р.</span>
                 }
-            </DropdownMenu>
-        </Dropdown>
-    </div>
-</div>
+                @if (items.Price != null)
+                {
+                    <span class="product__price ">@items.Price р.</span>
+                }
+                </div>
+                <div class="product__feetback ">
+                    <Dropdown OnShowing="OnDropdownShowingAsync">
+                        <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
+                        <DropdownMenu>
+                            @if (Contacts != null)
+                            {
+                                <DropdownItem Type="ButtonType.Link">
+                                    <a href="tel:@Contacts.PhoneOne" target="_blank">
+                                        <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
+                                    </a>
+                                </DropdownItem>
+                                <DropdownItem Type="ButtonType.Link">
+                                    <a href="mailto:@Contacts.EmailOne">
+                                        <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
+                                    </a>
+                                </DropdownItem>
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+            </div>
                 
             </div>
-
-
-            
+  
         }
     }
     <div class="product__modal">

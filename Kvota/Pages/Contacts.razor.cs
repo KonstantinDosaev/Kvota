@@ -10,7 +10,7 @@ namespace Kvota.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            await using var openStream = File.OpenRead(Links.ContactsJson);
+            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.ContactsJson}");
             Contact = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
         }
     }

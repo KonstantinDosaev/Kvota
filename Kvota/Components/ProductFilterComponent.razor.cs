@@ -11,7 +11,8 @@ namespace Kvota.Components
         [Parameter]
         public IEnumerable<Product>? Products { get; set; }
 
-        private static IEnumerable<Product> _filteredList = default!;
+
+        private  IEnumerable<Product>? _filteredList { get; set; }
         private IEnumerable<Brand> BrandList { get; set; }= default!;
         private IEnumerable<Category> CategoryList { get; set; } = default!;
         //private string _sortString = "";
@@ -33,6 +34,7 @@ namespace Kvota.Components
 
         public override Task SetParametersAsync(ParameterView parameters)
         {
+            
             if (parameters.TryGetValue<IEnumerable<Product>>(nameof(Products), out var value))
             {
                 if (value is null )
@@ -42,35 +44,34 @@ namespace Kvota.Components
                 }
                 else
                 {
-                    BrandList = value.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
-                    CategoryList = value.Where(w => w.CategoryId != null).Select(s => s.Category).Distinct().OrderBy(o => o!.Name)!;
-
+                    if (_filteredList!= null )
+                    {
+                        BrandList = _filteredList.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+                        CategoryList = _filteredList.Where(w => w.CategoryId != null).Select(s => s.Category).Distinct().OrderBy(o => o!.Name)!; 
+                        
+                    }
+                    else
+                    {
+                        BrandList = value.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
+                        CategoryList = value.Where(w => w.CategoryId != null).Select(s => s.Category).Distinct().OrderBy(o => o!.Name)!;
+                       
+                    }
                 }
             }
             return base.SetParametersAsync(parameters);
         }
-        //protected override async Task OnInitializedAsync()
+        //protected override void OnAfterRender(bool firstRender)
         //{
-           
-        //    using var scope = ServiceScopeFactory.CreateScope();
-        //   // GrandCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
-            
-        //    //BrandList = Products.Where(w=>w.BrandId!=null).Select(s => s.Brand).Distinct().OrderBy(o => o!.Name)!;
-          
-            
+        //    if (firstRender)
+        //    {
+        //        if (BrandsFilterId != null && BrandsFilterId != Guid.Empty)
+        //        {
+        //            GetList();
+        //        }
+        //    }
+
+
         //}
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-            {
-                if (BrandsFilterId != null && BrandsFilterId != Guid.Empty)
-                {
-                    GetList();
-                }
-            }
-
-
-        }
 
 
         protected async void GetList()

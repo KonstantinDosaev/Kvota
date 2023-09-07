@@ -1,8 +1,10 @@
-﻿using Kvota.Interfaces;
+﻿using System.Text.Json;
+using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using BlazorBootstrap;
+using Kvota.Constants;
 using Kvota.Models.Content;
 
 
@@ -13,10 +15,7 @@ namespace Kvota.Pages.Products
         [Parameter]
         public Guid Id { get; set; }
         public Product Product { get; set; } = null!;
-        private List<Brand> BrandList { get; set; } = new List<Brand>();
-        private List<GrandCategory>? GrandCategoryList { get; set; }
         private string? _directoryPath;
-        private int _fullQuantity;
         [Inject]
         protected IJSRuntime JsRuntime { get; set; } = null!;
         private Modal? _modalImage;
@@ -26,9 +25,7 @@ namespace Kvota.Pages.Products
         {
             using var scope = ServiceScopeFactory.CreateScope();
             Product = await scope.ServiceProvider.GetService<IRepo<Product>>()!.GetOneAsync(Id);
-            //BrandList = (List<Brand>)await BrandRepo.GetAllAsync();
-            //GrandCategoryList = (List<GrandCategory>)await GrandCategoryRepo.GetAllAsync();
-            _directoryPath = $"{env.WebRootPath}\\{Product.Image}";
+            _directoryPath = $"{Links.RootPath}/{Product.Image}";
             await InvokeAsync(StateHasChanged);
         }
 
@@ -42,18 +39,18 @@ namespace Kvota.Pages.Products
         private async void OnModalShown()
         {
             await JsRuntime.InvokeVoidAsync("onBlazorReady");
-            
         }
         private async Task OnHideModalClick()
         {
-            await _modalImage?.HideAsync();
+            await _modalImage?.HideAsync()!;
         }
         private async void OnDropdownShowingAsync()
         {
             if (Contacts != null) return;
-            Contacts = await ContactService.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
+            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.ContactsJson}");
+            Contacts = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
             await InvokeAsync(StateHasChanged);
-
         }
+       
     }
 }

@@ -6,7 +6,6 @@
 @using Kvota.Constants
 @using Kvota.Models.Products
 @inject IRepo<Brand> BrandRepos
-@inject IWebHostEnvironment env
 
 <PageTitle>Квота</PageTitle>
 @if (Content != null)
@@ -61,7 +60,7 @@
                         {
                             var uri  = item.Image!.Replace("\\", "/");
 
-                            <a class="partner__lable" href="productlist/brand/@item.Id" style="background-image: url(@uri);"></a>
+                            <a title="@item.Name" class="partner__lable" href="@GroupNames.GroupBrand/@item.Name/@item.Id" style="background-image: url(@uri);"></a>
                         }
                     }
                 </div>
@@ -111,7 +110,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
         Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
         BrandView = Content.BrandView;
         AboutArr = Content.AboutHomeText!.Split('^');

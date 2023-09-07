@@ -1,8 +1,5 @@
 ﻿@page "/productlist"
-@using Kvota.Models.Products
-@using Kvota.Interfaces
-@using Kvota.Components
-@inject IRepo<Product> ProductRepo
+@using Kvota.Constants
 @inject IServiceScopeFactory serviceScopeFactory
 
 
@@ -23,11 +20,11 @@
                                 foreach (var item in items.Categories.OrderBy(o=>o.Name))
                                 {
                                     <div class="category-grand__body">
-                                        <a class="category-grand__link" href="productlist/@item.Name/@item.Id">@item.Name</a>
-                                        <p class="category-grand__quant">
+                                        <a class="category-grand__link" href="@GroupNames.GroupCategory/@item.Name/@item.Id">@item.Name</a>
+                                        @*<p class="category-grand__quant">
                                             (@if (item.Products != null)
                                             {@item.Products.Count})
-                                        </p>
+                                        </p>*@
                                     </div>
                                 }
                             }

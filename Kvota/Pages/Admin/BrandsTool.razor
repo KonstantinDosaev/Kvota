@@ -3,7 +3,6 @@
 @using Kvota.Components.Admin
 @using Kvota.Interfaces
 @inject IRepo<Brand> BrandRepos
-@inject IServiceScopeFactory serviceScopeFactory
 @attribute [Authorize(Roles = "Administrators")]
 @inject IWebHostEnvironment Env
 

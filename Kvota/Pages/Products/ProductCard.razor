@@ -1,10 +1,9 @@
 ﻿@page "/productlists/{id:guid}"
 @inject IServiceScopeFactory ServiceScopeFactory
-@inject IWebHostEnvironment env
-@inject IRepo<ContactsModel> ContactService
 @using FileInfo = System.IO.FileInfo
 @using Kvota.Models.Content
 @using Kvota.Interfaces
+@using Kvota.Constants
 @if (Product != null)
 {
     <div class="product-card">
@@ -15,20 +14,18 @@
         <div class="product-card__body">
 
             <a class="product-card__image-body" @onclick="@(e => GetModalImage())">
-                @if (Product.Image == "image\\products\\default.jpg")
+                @if (Product.Image == Links.DefaultImageProduct)
                 {
-                    @*<img class="product-card__image" src="image/products/default.jpg"/>*@
                     <div class="product-card__image" style="background: url(/image/products/default.jpg)50% 50%/contain no-repeat "></div>
                 }
                 else
                 {
-                    @if (Directory.Exists($"{env.WebRootPath}\\{Product.Image}"))
-                    {
-                        var imageFirst = Directory.GetFiles($"{env.WebRootPath}\\{Product.Image}").FirstOrDefault();
-                        var fileInfo = (Product.Image.Replace("\\","/")) + "/" + (new FileInfo(imageFirst).Name);
-                     
+                   @if (Directory.Exists(_directoryPath))
+                   {
+                        var imageFirst = Directory.GetFiles($"{Links.RootPath}{Product.Image.Replace("\\","/")}").FirstOrDefault();
+                        var fileInfo = (Product.Image.Replace("\\","/")) + "/" + (new FileInfo(imageFirst!).Name);
                         <div class="product-card__image" style="background: url(@fileInfo)50% 50%/contain no-repeat "></div>
-                    }
+                   }
                 }
             </a>
 
@@ -45,18 +42,15 @@
                             }
                             else
                             {
-                                var uri = Product.Brand.Image!.Replace("\\", "/");
-                                <div class="product-card__brand product__text" style="background: url(@uri)50% 50%/contain no-repeat;"></div>
+                                <div class="product-card__brand product__text" style="background: url(@Product.Brand.Image)50% 50%/contain no-repeat;"></div>
                             }
-                            
-                        @*<img src="@Product.Brand.Image"/>*@
                         }
                     </div>
                 </div>
                 <div class="product__prices">
                     @if (Product.SalePrice != null)
                     {
-                        <span class="product-card__sale ">@Product.SalePrice руб.</span>
+                        <span class="product-card__sale ">@Math.Round((double)((Product.Price! / 100) * (100 - Product.SalePrice)),2) руб.</span>
                     }
                     @if (Product.Price != null)
                     {
@@ -66,32 +60,43 @@
                         <Dropdown OnShowing="OnDropdownShowingAsync">
                             <DropdownToggleButton  Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
                             <DropdownMenu>
-                            @if (Contacts != null)
-                            {
-                                <DropdownItem Type="ButtonType.Link">
-                                    <a href="tel:@Contacts.PhoneOne" target="_blank">
-                                        <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
-                                    </a>
-                                </DropdownItem>
-                                <DropdownItem Type="ButtonType.Link">
+                                @if (Contacts != null)
+                                {
+                                    <DropdownItem Type="ButtonType.Link">
+                                        <a href="tel:@Contacts.PhoneOne" target="_blank">
+                                            <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.PhoneOne
+                                        </a>
+                                    </DropdownItem>
+                                    <DropdownItem Type="ButtonType.Link">
                                         <a href="mailto:@Contacts.EmailOne">
-                                        <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
-                                    </a>
-                                </DropdownItem>
-                            }
+                                            <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contacts.EmailOne
+                                        </a>
+                                    </DropdownItem>
+                                }
                             </DropdownMenu>
                         </Dropdown>
                     </div>
-
-
                 </div>
-                @if (Product.Quantity != null)
+                @if (Product.Quantity is null or 0 && Product.QuantityTwo is null or 0)
                 {
-                    var sumQuantity = Product.QuantityTwo != null ? Product.Quantity + Product.QuantityTwo : Product.Quantity;
-                    <div class="product-card__quantity product__text">Наличие: @sumQuantity шт.</div>
+                    <span>Нет в наличии.</span>
+                    if (Product.DayToDelivery != null)
+                    {
+                        <div class="product-card__quantity product__text">При заказе ожидаемая дата поставки @(DateTime.Now.AddDays((double)Product.DayToDelivery).ToString("D"))
+                        </div> 
+                    }
                 }
-               
-                
+                else
+                {
+                    @if (Product.Quantity != null)
+                    {
+                        <div class="product-card__quantity product__text">Склад 1-- @Product.Quantity шт. в наличии</div>
+                    }
+                    @if (Product.QuantityTwo != null)
+                    {
+                        <div class="product-card__quantity product__text">Склад 2-- @Product.QuantityTwo шт. в наличии</div>
+                    }
+                }
             </div>
 
         </div>
@@ -126,9 +131,6 @@
             
             </Tabs>
         </div>
-
-
-        
         <Modal 
             ShowCloseButton="false"
             OnShown="OnModalShown"
@@ -149,8 +151,7 @@
                                 {
                                     var fileInfo = new FileInfo(file).Name;
                                     <div class="slider_item">
-
-                                        <img class="slider_image" data-lazy="@Product.Image\\@fileInfo" />
+                                        <img class="slider_image" data-lazy="@Product.Image/@fileInfo" />
                                     </div>
                                 }
                             }

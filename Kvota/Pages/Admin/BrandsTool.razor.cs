@@ -1,6 +1,4 @@
-﻿
-
-using BlazorBootstrap;
+﻿using BlazorBootstrap;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 
@@ -30,7 +28,7 @@ namespace Kvota.Pages.Admin
         {
             try
             {
-                var path = $"{Env.WebRootPath}\\{pathImage}";
+                var path = $"{Env.WebRootPath}/{pathImage}";
                 var fileInf = new FileInfo(path);
                 if (fileInf.Exists)
                 {
@@ -63,7 +61,7 @@ namespace Kvota.Pages.Admin
             await BrandRepos.AddAsync(Brand);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
-        async void SubmitBrandUpdate()
+        private async void SubmitBrandUpdate()
         {
             await BrandRepos.Update(BrandUpdate);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);

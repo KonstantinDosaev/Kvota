@@ -4,6 +4,7 @@ using Kvota.Models.Products;
 using Kvota.Interfaces;
 using FastExcel;
 using System.Globalization;
+using Kvota.Constants;
 
 
 namespace Kvota.Pages.Admin
@@ -25,7 +26,7 @@ namespace Kvota.Pages.Admin
         private List<GrandCategory>? _grandCategoryList ;
         private List<Category>? _categoryList;
         private bool _update ;
-        private IEnumerable<Product> _prodList;
+        private IEnumerable<Product>? _prodList;
         protected override async Task  OnInitializedAsync()
         {
              _prodList = await ProductService.GetAllAsync();
@@ -43,10 +44,10 @@ namespace Kvota.Pages.Admin
 
         private async void OnSubmit()
         {
-            Stream stream = _selectedFiles.OpenReadStream();
-                var path = $"{env.WebRootPath}\\{_selectedFiles.Name}";
+            var stream = _selectedFiles.OpenReadStream();
+                var path = $"{Links.RootPath}/{_selectedFiles.Name}";
                 Patch = path;
-                FileStream fs = File.Create(path);
+                var fs = File.Create(path);
                 await stream.CopyToAsync(fs);
                 stream.Close();
                 fs.Close();
@@ -58,7 +59,7 @@ namespace Kvota.Pages.Admin
         {
             var orders = new List<Product>();
             var FilePath = Patch;
-            var existingFile = new FileInfo(FilePath);
+            var existingFile = new FileInfo(FilePath!);
             if (!existingFile.Exists)
             {
                 throw new FileNotFoundException("The file " + FilePath + " not exist");
@@ -90,7 +91,7 @@ namespace Kvota.Pages.Admin
 
                                 if (_productsName != null && _productsName.Contains(order.Name))
                                 {
-                                    var tempProduct = _prodList.FirstOrDefault(w => w.Name == order.Name)!;
+                                    var tempProduct = _prodList!.FirstOrDefault(w => w.Name == order.Name)!;
                                     order.Id = tempProduct.Id;
                                     order.DateTimeCreated = tempProduct.DateTimeCreated;
                                     order.Image = tempProduct.Image;
@@ -104,11 +105,11 @@ namespace Kvota.Pages.Admin
                             else if (cellItem.ColumnNumber == 3)
                             {
                                 var brand = cellItem.Value.ToString();
-                                var tempBrand = _brandList.Any() ? _brandList.FirstOrDefault(w => w.Name == brand) : null;
+                                var tempBrand = _brandList!.Any() ? _brandList!.FirstOrDefault(w => w.Name == brand) : null;
                                 if (tempBrand == null)
                                 {
                                     tempBrand = new Brand() { Name = brand! };
-                                    _brandList.Add(tempBrand);
+                                    _brandList!.Add(tempBrand);
                                     await BrandService.AddAsync(tempBrand);
                                 }
                                 order.BrandId = tempBrand!.Id;
@@ -117,11 +118,11 @@ namespace Kvota.Pages.Admin
                             {
                                 var gcategory = cellItem.Value.ToString();
 
-                                var tempGrand = _grandCategoryList.Any() ? _grandCategoryList.FirstOrDefault(w => w.Name == gcategory) : null;
+                                var tempGrand = _grandCategoryList!.Any() ? _grandCategoryList!.FirstOrDefault(w => w.Name == gcategory) : null;
                                 if (tempGrand == null && gcategory != null)
                                 {
                                     tempGrand = new GrandCategory() { Name = gcategory };
-                                    _grandCategoryList.Add(tempGrand);
+                                    _grandCategoryList!.Add(tempGrand);
                                     await GrandCategoryService.AddAsync(tempGrand);
                                 }
 
@@ -131,11 +132,11 @@ namespace Kvota.Pages.Admin
                             {
                                 var category = cellItem.Value.ToString();
 
-                                var tempGrand = _categoryList.Any() ? _categoryList.FirstOrDefault(w => w.Name == category) : null;
+                                var tempGrand = _categoryList!.Any() ? _categoryList!.FirstOrDefault(w => w.Name == category) : null;
                                 if (tempGrand == null && category != null)
                                 {
                                     tempGrand = new Category() { Name = category, GrandCategoryId = GrandCategoryIdp };
-                                    _categoryList.Add(tempGrand);
+                                    _categoryList!.Add(tempGrand);
                                     await CategoryService.AddAsync(tempGrand);
                                 }
 
@@ -145,13 +146,15 @@ namespace Kvota.Pages.Admin
                             else if (cellItem.ColumnNumber == 7) order.Price = Math.Round((Convert.ToDecimal(cellItem.Value,CultureInfo.InvariantCulture)), 2);
                             else if (cellItem.ColumnNumber == 8) order.Quantity = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
                             else if (cellItem.ColumnNumber == 9) order.QuantityTwo = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
+                            else if (cellItem.ColumnNumber == 10) order.DayToDelivery = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
+                            else if (cellItem.ColumnNumber == 11) order.SalePrice = Math.Round((Convert.ToDecimal(cellItem.Value, CultureInfo.InvariantCulture)), 2);
                             //else if (col == 10) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value.ToString());
                         }
                     }
 
                     if (!_update)
                     {
-                        order.Image = "image\\products\\default.jpg";
+                        order.Image = Links.DefaultImageProduct;
                         order.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
                         order.DateTimeUpdated = order.DateTimeCreated;
                         orders.Add(order);

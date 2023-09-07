@@ -25,12 +25,10 @@ namespace Kvota.Pages.Admin
  
         protected override async Task OnInitializedAsync()
         {
-
             ItemList = (List<ProductOption>)await OptionsRepo.GetAllAsync();
             using var scope = serviceScopeFactory.CreateScope();
             CategoryOptionList = (List<CategoryOption>?)await scope.ServiceProvider.GetService<IRepo<CategoryOption>>()!.GetAllAsync();
             await InvokeAsync(StateHasChanged);
-
         }
 
 

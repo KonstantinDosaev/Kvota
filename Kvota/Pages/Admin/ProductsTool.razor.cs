@@ -1,16 +1,9 @@
-﻿using BlazorBootstrap;
-using FastExcel;
-using Kvota.Interfaces;
+﻿using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using ClosedXML.Excel;
-using Microsoft.EntityFrameworkCore.Query;
+using Kvota.Constants;
 using Microsoft.JSInterop;
-using NuGet.Packaging;
 
 namespace Kvota.Pages.Admin
 {
@@ -27,13 +20,9 @@ namespace Kvota.Pages.Admin
         public Guid CategoriesFilterId { get; set; }
         [Parameter]
         public Guid BrandsFilterId { get; set; }
-
         private Guid _value ;
         private bool _checked;
         public List<Guid> SelectedValues = new();
-        private string rootPath;
-
- 
         private int _quantityInPage = 10;
         private int _currentPageCount=10;
 
@@ -45,7 +34,7 @@ namespace Kvota.Pages.Admin
             GCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
             Products = await ProductService.GetAllAsync();
             _filteredList = Products;
-            rootPath = Env.WebRootPath;
+
             LoadMore(0);
            // GetPagedList(_filteredList);
            // await InvokeAsync(StateHasChanged);
@@ -102,9 +91,9 @@ namespace Kvota.Pages.Admin
 
         private void DeleteImage(Guid id)
         {
-            var pathImage = Products.Where(w=>w.Id==id).Select(s=>s.Image).FirstOrDefault();
-            if (pathImage == "image\\products\\default.jpg") return;
-            var path = $"{Env.WebRootPath}\\{pathImage}";
+            var pathImage = Products!.Where(w=>w.Id==id).Select(s=>s.Image).FirstOrDefault();
+            if (pathImage == Links.DefaultImageProduct) return;
+            var path = $"{Links.RootPath}/{pathImage}";
             var dirInfo = new DirectoryInfo(path);
             if (dirInfo.Exists)
             {
@@ -115,17 +104,17 @@ namespace Kvota.Pages.Admin
         private  void LoadMore(int newPageNumber)
         {
             _currentPageCount = newPageNumber;
-            _pagedList.AddRange((_filteredList.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
+            _pagedList!.AddRange((_filteredList!.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
 
         }
         private  void OutputExcel(List<Product> products)
         {
-            var outputFile = new FileInfo($"{Env.WebRootPath}\\excel\\ExcelOutputKvota.xlsx");
-            List<MyObject> objectList = new List<MyObject>();
+            var outputFile = new FileInfo($"{Links.RootPath}/excel/ExcelOutputKvota.xlsx");
+            var objectList = new List<MyObject>();
 
                 foreach (var item in products)
                 {
-                    MyObject genericObject = new MyObject();
+                    var genericObject = new MyObject();
                     genericObject.NameColumn = item.Name;
                     if (item.PartNumber != null) genericObject.PartColumn = item.PartNumber;
                     if (item.Brand != null) genericObject.BrandColumn = item.Brand.Name;
@@ -137,8 +126,9 @@ namespace Kvota.Pages.Admin
                     genericObject.PriceColumn = item.Price;
                     genericObject.QuntityColumn = item.Quantity;
                     genericObject.TwoQuntityColumn = item.QuantityTwo;
-                    genericObject.DateDeleveyColumn = item.DateDelivery;
-                    objectList.Add(genericObject);
+                    genericObject.DateDeleveyColumn = item.DayToDelivery;
+                    genericObject.SalePrice = item.SalePrice;
+                objectList.Add(genericObject);
                 }
           
                 var workbook = new XLWorkbook();
@@ -166,6 +156,7 @@ namespace Kvota.Pages.Admin
         public decimal? PriceColumn { get; set; }
         public int? QuntityColumn { get; set; }
         public int? TwoQuntityColumn { get; set; }
-        public DateOnly? DateDeleveyColumn { get; set; }
+        public int? DateDeleveyColumn { get; set; }
+        public decimal? SalePrice { get; set; }
     }
 }

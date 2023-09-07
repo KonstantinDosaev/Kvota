@@ -1,4 +1,6 @@
-﻿using BlazorBootstrap;
+﻿using System.Text.Json;
+using BlazorBootstrap;
+using Kvota.Constants;
 using Kvota.Models.Content;
 using Kvota.Models.Products;
 using Kvota.Repositories.Products;
@@ -15,21 +17,21 @@ namespace Kvota.Components
         private Modal? _modalProductCard;
         private Guid IdCurrent { get; set; }
         private ContactsModel Contacts { get; set; } = null!;
-        private async void GetModalUpdate(Guid id, string title)
+        private void GetModalUpdate(Guid id, string title)
         {
             IdCurrent = id;
-            // await InvokeAsync(StateHasChanged);
             _modalProductCard?.ShowAsync();
             
         }
         private async Task OnHideModalClick()
         {
-            await _modalProductCard?.HideAsync();
+            await _modalProductCard?.HideAsync()!;
         }
         private async void OnDropdownShowingAsync()
         {
             if (Contacts != null) return;
-            Contacts = await ContactService.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
+            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.ContactsJson}");
+            Contacts = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
             await InvokeAsync(StateHasChanged);
 
         }

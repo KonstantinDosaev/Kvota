@@ -38,48 +38,9 @@
     private string[] AboutArr { get; set; } = default!;
     protected override async Task OnInitializedAsync()
     {
-        await using var openStream = File.OpenRead(Links.HomeContentJson);
+        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
         Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
 
         AboutArr = Content.AboutHomeText!.Split('^');
     }
 }
-
-<style>
-    .about_body {
-        
-        
-    }
-    .about_title {
-        padding: 1rem 1rem 0 5rem;
-        color: brown;
-        font-weight: bolder;
-        margin: 0;
-    }
-    .about_row { 
-        display: flex;
-
-                       }
-    .about_image1 {
-        background: url(/image/background/aboutbg1.jpg)80%/cover no-repeat;
-        flex: 0 1 20%;
-        margin-right: 1.5rem;
-        filter: brightness(70%)
-    }
-    .about_text {
-        background-color: black;
-        color: white;
-        min-height: 90VH;
-        flex: 0 1 60%;
-        margin-bottom: 0px;
-        padding: 9rem 5rem;
-        font-size: 1.5rem;
-
-    }
-    .about_image2 {
-        background: url(/image/background/aboutbg2.jpg)50%/cover no-repeat;
-        flex: 0 1 20%;
-        margin-left: 1.5rem;
-        filter: brightness(70%)
-    }
-</style>

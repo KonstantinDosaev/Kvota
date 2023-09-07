@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@inject IServiceScopeFactory serviceScopeFactory
 @using Kvota.Components.Admin.Products
+@inject IWebHostEnvironment Env
 <PageTitle>Квота</PageTitle>
 
 <div class="page">
@@ -35,10 +35,11 @@
                 </div>
             </div>
         }
-        <article >
-            @Body
-        </article>
-
+        <ErrorBoundary>
+            <article >
+                @Body
+            </article>
+        </ErrorBoundary>
     </main>
 </div>
 
