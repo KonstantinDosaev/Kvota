@@ -6,20 +6,23 @@
 @using Kvota.Constants
 @using Kvota.Models.Products
 @inject IRepo<Brand> BrandRepos
-
+@inject IJSRuntime JsRuntime
+@using Kvota.Components.Admin.Products
 <PageTitle>Квота</PageTitle>
 @if (Content != null)
 {
     <div class="home_body">
-        <div class="row home_images ">
-            <div class="col home_image kvota__body-shadow">
+        <div class=" home_images ">
+            <div class="home_image kvota__body-shadow">
 
                 <h1 class="home_image_text1">@Content.HomeImageTextOne</h1>
                 <h2 class="home_image_text2">@Content.HomeImageTextTwo</h2>
+                
+              
             </div>
-
+         
         </div>
-
+        <div class="home_search sticky-top"><SerchCotactLineComponent/></div>
         <div class="partner kvota__body-shadow">
             <h2 class="home_image_text1">@Content.PartnerTitle</h2>
             @if (!BrandView)
@@ -65,20 +68,16 @@
                     }
                 </div>
             }
-           
-
-
-
         </div>
 
         <div class="company">
             <div class="text_col company__text kvota__body-shadow">
-                <h2> О компании</h2> <br/>
-                  @foreach (var item in AboutArr)
+                <h2> О нас</h2> <br/>
+                @foreach (var item in AboutArr)
                 {
                     if (!item.Contains('~'))
                     {
-                        <div>@item</div>
+                        <div style="font-size: 1.25rem">@item</div>
                     }
                     else
                     {
@@ -88,17 +87,104 @@
                 
 
             </div>
-            <div class="home__form kvota__body-shadow">
+            <div class="company__image kvota__body-shadow">
+                
+
+            </div>
+        </div>
+        <div class="home_sliderblock">
+            <div class="homeslider">
+                <div class="homeslider_item" style="background: url(/image/background/aboutbg2.jpg) 50%/cover no-repeat;">
+                    <div class="homeslider_text">
+                        <h3 class="homeslider_textup">Только оригинальная продукция</h3><br />
+                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                    </div>
+                </div>
+                <div class="homeslider_item" style="background: url(/image/background/aboutbg1.jpg) 50%/cover no-repeat;">
+                    <div class="homeslider_text">
+                        <h3 class="homeslider_textup">100% входной контроль</h3><br />
+                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                    </div>
+                </div>
+                <div class="homeslider_item" style="background: url(/image/background/feedback.jpg) 50%/cover no-repeat;">
+                    <div class="homeslider_text">
+                        <h3 class="homeslider_textup">Безналичный расчет</h3><br />
+                        <p style="font-size: 1.5rem">Работаем только с юридическими лицами по безналичному расчету</p>
+                    </div>
+                </div>
+                <div class="homeslider_item" style="background: url(/image/background/homeImage.jpg) 50%/cover no-repeat;">
+                    <div class="homeslider_text">
+                        <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
+                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                    </div>
+                </div>
+                <div class="homeslider_item" style="background: white">
+                    <div class="homeslider_text">
+                        <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
+                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form">
+            <div class="form__text">
+                <div style="font-size: 1.25rem">Текст о том какие мы молодцы и как своевременно  и профессионально обрабатываем заявки и вопросы</div>
+
+            </div>
+            <div class="home__form">
                 <FeedbackForm/>
 
             </div>
         </div>
+        <div class="partner kvota__body-shadow">
+            <h2 class="home_image_text1">@Content.PartnerTitle</h2>
+            @if (!BrandView)
+            {
+                <div class="row partner__lables">
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
+                    <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
+                </div>
+            }
+            else
+            {
+                <div class="row partner__lables">
+                    @if (BrandList != null)
+                    {
+                        foreach (var item in BrandList)
+                        {
+                            var uri = item.Image!.Replace("\\", "/");
+
+                            <a title="@item.Name" class="partner__lable" href="@GroupNames.GroupBrand/@item.Name/@item.Id" style="background-image: url(@uri);"></a>
+                        }
+                    }
+                </div>
+            }
+        </div>
     </div>
 
 }
-
-
-
 
 @code {
 
@@ -107,7 +193,7 @@
     private Home Content { get; set; } = null!;
     private string[] AboutArr { get; set; } = default!;
     private  bool BrandView { get; set; }
-    
+    private bool _sliderIsPlay = false;
     protected override async Task OnInitializedAsync()
     {
         await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
@@ -119,7 +205,54 @@
             BrandList =  (List<Brand>)await BrandRepos.GetAllAsync();
             BrandList = BrandList.Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
         }
+   
+      
     }
-    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        var t=  JsRuntime.InvokeVoidAsync("onHomeReady");
+        base.OnAfterRender(firstRender);
+    }
+
 
 }
+<style>
+    .slick-list {
+        flex: 1;
+        overflow: hidden;
+    }
+    .slick-track {
+        display: flex;
+    }
+    .slick-arrow {
+        position: absolute;
+        bottom: 5%;
+        z-index: 10;
+        font-size: 0;
+        width: 3rem;
+        height: 3rem;
+        border-top: none;
+        border-left: none;
+        border-bottom: 5px solid rgba(119, 136, 153,0.5);
+        border-right: 5px solid rgba(119, 136, 153,0.5);
+        box-shadow: inset -5px -5px rgba(255,255,255,0.5);
+        background: none;
+        margin: 0 1rem;
+    }
+
+        .slick-arrow:active {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .slick-arrow.slick-prev {
+            left: 3%;
+            transform: rotate(135deg);
+        }
+
+        .slick-arrow.slick-next {
+            right: 3%;
+            transform: rotate(-45deg);
+        }
+
+</style>

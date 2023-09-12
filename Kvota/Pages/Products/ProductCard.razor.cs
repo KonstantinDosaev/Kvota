@@ -12,6 +12,8 @@ namespace Kvota.Pages.Products
 {
     partial class ProductCard
     {
+        [Inject]
+        public NavigationManager? NavigationManager { get; set; }
         [Parameter]
         public Guid Id { get; set; }
         public Product Product { get; set; } = null!;
@@ -51,6 +53,7 @@ namespace Kvota.Pages.Products
             Contacts = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
             await InvokeAsync(StateHasChanged);
         }
+
        
     }
 }

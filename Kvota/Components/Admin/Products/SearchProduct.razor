@@ -3,8 +3,9 @@
 @inject IRepo<Product> ProductRepo
 
 <div class="search__block kvota__body-shadow">
-    <button type="submit" class="search__btn" @onclick="SearchProducts"><i class="oi oi-magnifying-glass"></i> </button>
-    <input type="search" class="search__input" placeholder="Поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
+   
+    <input type="search" class="search__input" placeholder="enter the part number..." @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
+    <button type="submit" class="search__btn" @onclick="SearchProducts">найти </button>
 </div>
 <Modal IsScrollable="true" Size="ModalSize.ExtraLarge" @ref="_modalSearch" title="Результат поиска">
     <BodyTemplate>
@@ -46,11 +47,16 @@
 
     .search__btn {
         height: 42px;
-        width: 42px;
+      
         position: absolute;
         top: 0;
-        left: 0;
+        right: 0;
+        background-color:crimson;
         cursor: pointer;
+        color: white;
+        padding: 0 1rem;
+        font-weight: bold;
+        border-radius: 5px;
     }
     .product-search__block {
         height:50vh;

@@ -4,7 +4,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         
-        <a class="navbar-brand" href=""><i style="margin-right: 10px"class="bi bi-cpu"></i>KVOTA.RU</a>
+        <a class="navbar-brand" href=""><i style="margin-right: 10px" class="bi bi-cpu"></i>CVOTA.RU</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -24,13 +24,13 @@
                 <NavLink class="nav-link" href="productlist">
                     <span class="oi oi-book" aria-hidden="true"></span> Каталог
                 </NavLink>
-            }           
+            }
             else
-             {
-                 <NavLink class="nav-link" href="productlists">
-                     <span class="oi oi-book" aria-hidden="true"></span> Каталог
-                 </NavLink>
-             }
+            {
+                <NavLink class="nav-link" href="productlists">
+                    <span class="oi oi-book" aria-hidden="true"></span> Каталог
+                </NavLink>
+            }
 
         </div>
         <div class="nav-item px-3">
@@ -53,14 +53,14 @@
                         </NavLink>
                     </div>
                     <div class="nav-item px-3" style="margin-left: 1rem;">
-            
+
                         <NavLink class="nav-link" href="/logout" Match="NavLinkMatch.All">
                             <span class="oi oi-power-standby" aria-hidden="true"></span> Logout
                         </NavLink>
-          
-                    </div> 
-              }
-               
+
+                    </div>
+                }
+
             </Authorized>
         </AuthorizeView>
     </nav>

@@ -15,7 +15,12 @@
                 </div>*@
                 <div class="product__body">
                     <a class="product__name product__text" @onclick="@(e => GetModalUpdate(items.Id, items.Name))">@items.Name</a>
-                    <span class="product__pnumber product__text">№.: @items.PartNumber</span>
+                    <span class="product__pnumber product__text">Партномер :
+                        @if (items.PartNumber != null)
+                        {
+                            @items.PartNumber
+                        }
+                    </span>
                     @if (items.Brand != null)
                     {
                         <span class="product__brand product__text">@items.Brand!.Name</span>
@@ -23,15 +28,15 @@
                 </div>
         <div class="product__prices">
             <div>
-                @if (items.SalePrice != null)
-                {
-                            <span class="product__sale ">@Math.Round((double)((items.Price! / 100) * (100 - items.SalePrice)),2) р.</span>
-                }
                 @if (items.Price != null)
                 {
+                    @if (items.SalePrice != null)
+                    {
+                        <span class="product__sale ">@Math.Round((double)((items.Price! / 100) * (100 - items.SalePrice)), 2) р.</span>
+                    }
                     <span class="product__price ">@items.Price р.</span>
                 }
-                </div>
+            </div>
                 <div class="product__feetback ">
                     <Dropdown OnShowing="OnDropdownShowingAsync">
                         <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>

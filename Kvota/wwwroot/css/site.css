@@ -2,6 +2,18 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+}
+@font-face {
+    font-family: "Inter";
+    /*src: url("_content/rcl/font/Comfortaa.ttf") format("truetype");*/
+    /*src: url("../font/Comfortaa.ttf") format("truetype");*/
+    /*src: url("../css/open-iconic/font/fonts/Comfortaa.ttf") format("truetype");*/
+    src: url("/css/Inter-VariableFont_slnt,wght.ttf") format("truetype");
+    /*src: url("Comfortaa.ttf") format("truetype");*/
+}
+html, body {
+    font-family: 'Inter';
 }
 
 h1:focus {

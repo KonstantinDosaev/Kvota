@@ -32,7 +32,12 @@
             <div class="product-card__top-body top-body">
                 <h1 class="product-card__name">@Product.Name</h1>
                 <div class="top-body__num">
-                    <p class="product-card__pnumber product__text">Артикул: @Product.PartNumber</p>
+                    <p class="product-card__pnumber product__text">Партномер:
+                        @if (Product.PartNumber != null)
+                        {
+                            @Product.PartNumber
+                        }
+                    </p>
                     <div>
                         @if (Product.Brand != null)
                         {
@@ -48,17 +53,17 @@
                     </div>
                 </div>
                 <div class="product__prices">
-                    @if (Product.SalePrice != null)
-                    {
-                        <span class="product-card__sale ">@Math.Round((double)((Product.Price! / 100) * (100 - Product.SalePrice)),2) руб.</span>
-                    }
                     @if (Product.Price != null)
                     {
+                        @if (Product.SalePrice != null)
+                        {
+                            <span class="product-card__sale ">@Math.Round((double)((Product.Price! / 100) * (100 - Product.SalePrice)), 2) руб.</span>
+                        }
                         <span class="product-card__price ">@Product.Price руб.</span>
                     }
                     <div class="product-card__feetback">
                         <Dropdown OnShowing="OnDropdownShowingAsync">
-                            <DropdownToggleButton  Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
+                            <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
                             <DropdownMenu>
                                 @if (Contacts != null)
                                 {
@@ -82,7 +87,8 @@
                     <span>Нет в наличии.</span>
                     if (Product.DayToDelivery != null)
                     {
-                        <div class="product-card__quantity product__text">При заказе ожидаемая дата поставки @(DateTime.Now.AddDays((double)Product.DayToDelivery).ToString("D"))
+                        <div class="product-card__quantity product__text">
+                            При заказе ожидаемая дата поставки @(DateTime.Now.AddDays((double)Product.DayToDelivery).ToString("dd/MM/yy"))
                         </div> 
                     }
                 }

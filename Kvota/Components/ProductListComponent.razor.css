@@ -27,12 +27,12 @@
 .product__body {
     padding: 1rem 0;
     display: flex;
-    justify-content: space-between;
+    flex: 1 1 auto;
 }
 
 .product__text {
     margin-right: 1rem;
-    min-width: 10rem;
+    width: 300px;
 }
 
 .product__image {
@@ -44,12 +44,16 @@
 .product__name {
     text-decoration: none;
     cursor: pointer;
-    width: 20rem;
+    
+    
 }
 
 .product__pnumber {
+    
 }
-
+.product__brand {
+    width: auto;
+}
 .product__prices {
     display: flex;
     justify-content: flex-end;

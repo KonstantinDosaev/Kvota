@@ -11,20 +11,41 @@ namespace Kvota.Shared
 {
     partial class MainLayout
     {
+        [Inject]
+        public NavigationManager? NavigationManager { get; set; }
+        string UriHome { get; set; }
+        Uri UriCurrent { get; set; }
+        bool ViewTopBlock { get; set; }=true;
         private ContactsModel Contact { get; set; } = default!;
         
         protected override async Task OnInitializedAsync()
         {
-            //using var scope = serviceScopeFactory.CreateScope();
-            //Contact = await scope.ServiceProvider.GetService<IRepo<ContactsModel>>()!.GetOneAsync(new Guid("80beea30-3f74-42f3-812b-561cea25ec32"));
+           
             Links.RootPath = Env.WebRootPath;
             await using var openStream = File.OpenRead($"{Links.RootPath}/{ContactsJson}");
             Contact = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
-            //await using (var fs = new FileStream("contactsContent.json", FileMode.OpenOrCreate))
-            //{
-            //    var contactsContent = Contact;
-            //    await JsonSerializer.SerializeAsync(fs, contactsContent);
-            //}
+            UriCurrent = new Uri(NavigationManager.Uri);
+            UriHome = UriCurrent.GetLeftPart(UriPartial.Authority) + "/";
+            
+            //ViewTopBlock = UriCurrent.ToString() != UriHome;
+           
+
         }
+        protected override async Task OnParametersSetAsync()
+        {
+            UriCurrent = new Uri(NavigationManager.Uri);
+        
+        }
+        //protected override void OnAfterRender(bool firstRender)
+        //{
+        //    if (firstRender)
+        //    {
+        //        UriCurrent = new Uri(NavigationManager.Uri);
+        //       // ViewTopBlock = UriCurrent.ToString() != UriHome;
+        //    }
+        //    UriCurrent = new Uri(NavigationManager.Uri);
+
+        //}
+
     }
 }

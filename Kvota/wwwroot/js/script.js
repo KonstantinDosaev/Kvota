@@ -6,6 +6,15 @@
     });
   /*  $('.slider').slick('slickGoTo', 0)*/;
 }
+window.onHomeReady = () => {
+    $('.homeslider').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        arrows: true,
+    });
+}
 unslickSlider = () => {
     $('.slider').slick('unslick');
 }

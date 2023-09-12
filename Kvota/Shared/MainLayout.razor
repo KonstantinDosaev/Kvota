@@ -1,39 +1,23 @@
 ﻿@inherits LayoutComponentBase
-@using Kvota.Components.Admin.Products
+@using Kvota.Components
 @inject IWebHostEnvironment Env
 <PageTitle>Квота</PageTitle>
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu/>
+        <NavMenu />
     </div>
 
     <main >
         <div id="up_position"></div>
         @if (Contact != null)
         {
-            
-            <div class="top__con">
-                <div class="top__search">
-                    <SearchProduct/>
+            @if (UriCurrent.ToString() != UriHome)
+            {
+                <div class="top__container">
+                    <SerchCotactLineComponent/>
                 </div>
-                <div class="top-row px-3">
-                    <div class="top__contacts ">
-                        <div>
-                            <a href="tel:@Contact.PhoneOne" target="_blank">
-                                <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.PhoneOne
-                            </a>
-                        </div>
-                        <div>
-                            <a href="mailto:@Contact.EmailOne">
-                                <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>@Contact.EmailOne
-                            </a>
-                        </div>
-                    </div>
-
-                    <span class=" text-wrap" style="font-weight: bold; margin-left: 1rem;">@Contact.AddressOne</span>
-                </div>
-            </div>
+            }
         }
         <ErrorBoundary>
             <article >
@@ -45,5 +29,5 @@
 
 @code
 {
-
+   
 }
