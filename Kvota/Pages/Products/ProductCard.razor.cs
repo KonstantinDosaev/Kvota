@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Kvota.Interfaces;
+﻿using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -49,8 +48,7 @@ namespace Kvota.Pages.Products
         private async void OnDropdownShowingAsync()
         {
             if (Contacts != null) return;
-            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.ContactsJson}");
-            Contacts = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
+            Contacts = await ContactSerialize.DeSerialize($"{Links.RootPath}/{Links.ContactsJson}");
             await InvokeAsync(StateHasChanged);
         }
 

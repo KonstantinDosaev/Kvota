@@ -1,7 +1,8 @@
 ﻿@page "/about"
 @using Kvota.Models.Content
 @using Kvota.Constants
-@using System.Text.Json
+@using Kvota.Interfaces
+@inject ISerializeService<Home> HomeSerialize
 
 
 @if ( Content!= null){
@@ -34,9 +35,7 @@
     private string[] AboutArr { get; set; } = default!;
     protected override async Task OnInitializedAsync()
     {
-        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
-        Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
-
+        Content = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
         AboutArr = Content.AboutText!.Split('^');
     }
 }

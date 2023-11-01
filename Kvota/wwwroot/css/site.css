@@ -75,7 +75,7 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-.kvota__body-shadow {
+/*.kvota__body-shadow {
     background: #fff;
     box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
     border-radius: 5px;
@@ -90,4 +90,20 @@ a, .btn-link {
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     transition: all 0.5s ease;
+}*/
+.kvota__body-shadow {
+    box-shadow: 0 20px 30px -17px rgba(30, 144, 255,0.55);
+    border-radius: 5px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
+
+    .kvota__body-shadow:hover {
+        -moz-box-shadow: 0 0 10px #000;
+        -webkit-box-shadow: 0 0 10px #000;
+        box-shadow: 0 0 10px rgba(30, 144, 255,0.9);
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }

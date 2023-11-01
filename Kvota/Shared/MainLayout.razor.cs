@@ -1,11 +1,6 @@
-﻿using Kvota.Interfaces;
-using Kvota.Migrations;
-using Kvota.Models.Content;
+﻿using Kvota.Models.Content;
 using Microsoft.AspNetCore.Components;
-using System.Diagnostics.Metrics;
-using System.Text.Json;
 using Kvota.Constants;
-using static Kvota.Constants.Links;
 
 namespace Kvota.Shared
 {
@@ -22,8 +17,7 @@ namespace Kvota.Shared
         {
            
             Links.RootPath = Env.WebRootPath;
-            await using var openStream = File.OpenRead($"{Links.RootPath}/{ContactsJson}");
-            Contact = (await JsonSerializer.DeserializeAsync<ContactsModel>(openStream))!;
+            Contact = await ContactSerialize.DeSerialize($"{Links.RootPath}/{Links.ContactsJson}");
             UriCurrent = new Uri(NavigationManager.Uri);
             UriHome = UriCurrent.GetLeftPart(UriPartial.Authority) + "/";
             

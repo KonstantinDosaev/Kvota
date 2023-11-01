@@ -2,12 +2,14 @@
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @using Kvota.Components
+@using Kvota.Pages.Products
 @using System.Text.Json
 @using Kvota.Constants
 @using Kvota.Models.Products
 @inject IRepo<Brand> BrandRepos
+@inject IRepo<Product> ProductRepos
 @inject IJSRuntime JsRuntime
-@using Kvota.Components.Admin.Products
+@inject ISerializeService<Home> HomeSerialize
 <PageTitle>Квота</PageTitle>
 @if (Content != null)
 {
@@ -22,7 +24,7 @@
             </div>
          
         </div>
-        <div class="home_search sticky-top"><SerchCotactLineComponent/></div>
+        <div class="home_search sticky-top kvota__body-shadow"><SerchCotactLineComponent /></div>
         <div class="partner kvota__body-shadow">
             <h2 class="home_image_text1">@Content.PartnerTitle</h2>
             @if (!BrandView)
@@ -84,15 +86,12 @@
                         <br/>
                     }
                 }
-                
-
             </div>
             <div class="company__image kvota__body-shadow">
-                
 
             </div>
         </div>
-        <div class="home_sliderblock">
+        <div class="home_sliderblock kvota__body-shadow">
             <div class="homeslider">
                 <div class="homeslider_item" style="background: url(/image/background/aboutbg2.jpg) 50%/cover no-repeat;">
                     <div class="homeslider_text">
@@ -126,7 +125,7 @@
                 </div>
             </div>
         </div>
-        <div class="form">
+        <div class="form kvota__body-shadow">
             <div class="form__text">
                 <div style="font-size: 1.25rem">Текст о том какие мы молодцы и как своевременно  и профессионально обрабатываем заявки и вопросы</div>
 
@@ -136,86 +135,110 @@
 
             </div>
         </div>
-        <div class="partner kvota__body-shadow">
-            <h2 class="home_image_text1">@Content.PartnerTitle</h2>
-            @if (!BrandView)
-            {
-                <div class="row partner__lables">
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
-                </div>
-            }
-            else
-            {
-                <div class="row partner__lables">
-                    @if (BrandList != null)
-                    {
-                        foreach (var item in BrandList)
-                        {
-                            var uri = item.Image!.Replace("\\", "/");
+        @if (ProductList is {Count: > 0 })
+        {
+            <div class="home__product product-home">
+                <h2 class="home_image_text1 product-home__title">@Content.ProductTitle</h2> <br/>
 
-                            <a title="@item.Name" class="partner__lable" href="@GroupNames.GroupBrand/@item.Name/@item.Id" style="background-image: url(@uri);"></a>
-                        }
+                <div class="product-home__slider">
+                    @foreach (var product in ProductList)
+                    {
+                        <div class="product-home__item">
+                            <div class="product-home__body kvota__body-shadow">
+                                <a @onclick="@(e => GetModalUpdate(product.Id))">
+                                    @if (Directory.Exists($"{Links.RootPath}{product.Image}"))
+                                    {
+                                        var imageFirst = Directory.GetFiles($"{Links.RootPath}{product.Image.Replace("\\", "/")}").FirstOrDefault();
+                                        var fileInfo = (product.Image.Replace("\\", "/")) + "/" + (new FileInfo(imageFirst!).Name);
+                                        <div class="product-home__image" style="background: url(@fileInfo) 50% 50%/cover no-repeat"></div>
+                                    }
+                                    <div class="product-hom__text">
+                                        <p class="product-home__name">@product.Name</p>
+                                        <p class="product-home__pnumber">
+                                            Парт-номер :
+                                            @if (product.PartNumber != null)
+                                            {
+                                                @product.PartNumber
+                                            }
+                                        </p>
+                                        @if (product.Brand != null)
+                                        {
+                                            <p class="product-home__brand">@product.Brand!.Name</p>
+                                        }
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
                     }
                 </div>
-            }
+
+            </div>
+        }
+        <div class="partner kvota__body-shadow">
+                <h2 class="home_image_text1">@Content.PartnerTitle</h2>
+                @if (!BrandView)
+                {
+                    <div class="row partner__lables">
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
+                        <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="row partner__lables">
+                        @if (BrandList != null)
+                        {
+                            foreach (var item in BrandList)
+                            {
+                                var uri = item.Image!.Replace("\\", "/");
+
+                                <a title="@item.Name" class="partner__lable" href="@GroupNames.GroupBrand/@item.Name/@item.Id" style="background-image: url(@uri);"></a>
+                            }
+                        }
+                    </div>
+                }
         </div>
     </div>
+    <div class="product__modal">
+        <Modal ShowCloseButton="false" 
+               Size="ModalSize.ExtraLarge" 
+               @ref="_modalProductCard">
+            <BodyTemplate>
+                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
+                    <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
+                </Button>
+                <ProductCard Id="@IdCurrent"/>
 
+            </BodyTemplate>
+
+
+        </Modal>
+    </div>
 }
 
-@code {
-
-
-    private List<Brand> BrandList { get; set; } = null!;
-    private Home Content { get; set; } = null!;
-    private string[] AboutArr { get; set; } = default!;
-    private  bool BrandView { get; set; }
-    private bool _sliderIsPlay = false;
-    protected override async Task OnInitializedAsync()
-    {
-        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
-        Content = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
-        BrandView = Content.BrandView;
-        AboutArr = Content.AboutHomeText!.Split('^');
-        if (BrandView)
-        {
-            BrandList =  (List<Brand>)await BrandRepos.GetAllAsync();
-            BrandList = BrandList.Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
-        }
-   
-      
-    }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        var t=  JsRuntime.InvokeVoidAsync("onHomeReady");
-        base.OnAfterRender(firstRender);
-    }
-
-
-}
 <style>
     .slick-list {
         flex: 1;
@@ -224,6 +247,7 @@
     .slick-track {
         display: flex;
     }
+
     .slick-arrow {
         position: absolute;
         bottom: 5%;
@@ -245,14 +269,73 @@
             height: 2.5rem;
         }
 
-        .slick-arrow.slick-prev {
-            left: 3%;
-            transform: rotate(135deg);
+        .homeslider .slick-arrow.slick-prev {
+                left: 3%;
+                transform: rotate(135deg);
         }
 
-        .slick-arrow.slick-next {
+        .homeslider .slick-arrow.slick-next {
             right: 3%;
             transform: rotate(-45deg);
         }
+
+    .home__product {
+        background-image: linear-gradient(90deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.3) 100%);
+        position: relative;
+        margin: 0.5rem;
+        padding: 1rem 0;
+    }
+
+    .product-home__title {
+        margin: 1rem;
+
+    }
+    .product-home__body {
+        background-image: linear-gradient(90deg, rgba(56, 56, 56,0.8) 70%, rgba(98, 170, 226, 0.7) 100%);
+     /*   background-image: linear-gradient(90deg, rgba(270, 255, 255,0.9) 70%, rgba(30, 144, 255,0.0) 100%);*/
+        text-decoration: none;
+        margin: 0 1rem;
+        height: 520px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .product-home__image {
+        height: 220px;
+        margin-bottom: 40px;
+        border-radius: 5px;
+        border: rgba(98, 170, 226, 0.3) solid 0.5px;
+    }
+    .product-hom__text{
+        padding: 0.7rem;
+        color: white;
+    }
+    .product-home__name {
+        font-size: 1.5rem;
+        text-decoration: underline rgba(178,34,34,1);
+    }
+    .product-home__slider .slick-arrow.slick-prev {
+        left: 1%;
+        transform: rotate(135deg);
+    }
+
+    .product-home__slider .slick-arrow.slick-next {
+        right:1%;
+        transform: rotate(-45deg);
+    }
+    .product-modal__closeBtn {
+        top: 0rem;
+        right: 0.5rem;
+        position: absolute;
+        font-size: 3rem;
+        padding: 0;
+    }
+    .product-modal__closeBtn:active {
+        transform: scale(0.8);
+    }
+    .product-modal__btn {
+        background-color: rgba(178, 34, 34, 0.8);
+        font-size: 1rem;
+    }
 
 </style>

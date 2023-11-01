@@ -4,6 +4,7 @@
 @using Kvota.Models.Content
 @using Kvota.Interfaces
 @using Kvota.Constants
+@inject ISerializeService<ContactsModel> ContactSerialize
 @if (Product != null)
 {
     <div class="product-card">
@@ -32,7 +33,7 @@
             <div class="product-card__top-body top-body">
                 <h1 class="product-card__name">@Product.Name</h1>
                 <div class="top-body__num">
-                    <p class="product-card__pnumber product__text">Партномер:
+                    <p class="product-card__pnumber product__text">Парт-номер:
                         @if (Product.PartNumber != null)
                         {
                             @Product.PartNumber
@@ -150,16 +151,20 @@
                         <div class="closeBtn__btn closeBtn__up"></div>
                         <div class="closeBtn__btn closeBtn__down"></div>
                     </button>
-                    <div class="slider ">
+                    <div class="slider">
                             @if (Directory.Exists(_directoryPath))
                             {
                                 @foreach (var file in Directory.GetFiles(_directoryPath!))
                                 {
                                     var fileInfo = new FileInfo(file).Name;
                                     <div class="slider_item">
-                                        <img class="slider_image" data-lazy="@Product.Image/@fileInfo" />
+                                        <img class="slider_image" src="@Product.Image/@fileInfo" />
                                     </div>
                                 }
+                            }
+                            else
+                            {
+                            <img class="slider_image" src="@Links.DefaultImageProduct" />
                             }
                     </div>
                 </div>
@@ -170,7 +175,7 @@
 <style>
     .modal-body {
         padding: 0;
-        min-height: 70vh;
+      /*  min-height: 70vh;*/
        
     }
     .modalImage__body {
@@ -215,7 +220,7 @@
         height: 100%;
         width: 100%;
     }
-    .slick-arrow{ 
+    .slider .slick-arrow{ 
         position: absolute;
         top: 50%;
         z-index: 10;
@@ -230,17 +235,18 @@
         background: none;
         margin: 0 1rem;
     }
-    .slick-arrow:active {
+    .slider .slick-arrow:active {
         width: 2.5rem;
         height:2.5rem;
     }
-    .slick-arrow.slick-prev {
+    .slider .slick-arrow.slick-prev {
         left: 0;
         transform: rotate(135deg);
     }
-    .slick-arrow.slick-next {
-        right: 0;
-        transform: rotate(-45deg);
+
+    .slider .slick-arrow.slick-next {
+    right: 0;
+    transform: rotate(-45deg);
     }
 
 </style>

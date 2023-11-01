@@ -1,9 +1,6 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using BlazorBootstrap;
+﻿using BlazorBootstrap;
 using Kvota.Constants;
 using Kvota.Models.Content;
-using Microsoft.AspNetCore.Components;
 
 
 namespace Kvota.Pages.Admin
@@ -19,22 +16,14 @@ namespace Kvota.Pages.Admin
        
         protected override async Task OnInitializedAsync()
         {
-            await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
-            Tools = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
+            Tools = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
 
         }
 
 
         private async  void SubmitPlayer()
         {
-            var options = new JsonSerializerOptions()
-            {
-                WriteIndented = true, 
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping 
-            };
-            await using var createStream = File.Create($"{Links.RootPath}/{Links.HomeContentJson}");
-            await JsonSerializer.SerializeAsync(createStream, Tools, options);
-            await createStream.DisposeAsync();
+            await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", Tools);
             _modal?.ShowAsync();
 
         }

@@ -27,8 +27,10 @@ builder.Services.AddScoped<IRepo<GrandCategory>, GrandCategoryRepo>();
 builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddScoped<IRepo<CategoryOption>, CategoryOptionsRepo>();
 builder.Services.AddScoped<IRepo<ProductOption>, ProductOptionRepo>();
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<ISerializeService<Home>, SerializeService<Home>>();
+builder.Services.AddScoped<ISerializeService<ContactsModel>, SerializeService<ContactsModel>>();
 
 builder.Services.AddDbContext<KvotaContext>(options =>
     options.UseNpgsql(connectionString));

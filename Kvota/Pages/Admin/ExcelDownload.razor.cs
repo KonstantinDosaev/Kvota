@@ -104,8 +104,8 @@ namespace Kvota.Pages.Admin
                             }
                             else if (cellItem.ColumnNumber == 3)
                             {
-                                var brand = cellItem.Value.ToString();
-                                var tempBrand = _brandList!.Any() ? _brandList!.FirstOrDefault(w => w.Name == brand) : null;
+                                var brand = cellItem.Value.ToString()!.Trim();
+                                var tempBrand = _brandList!.Any() ? _brandList!.FirstOrDefault(w => string.Equals(w.Name, brand, StringComparison.CurrentCultureIgnoreCase)) : null;
                                 if (tempBrand == null)
                                 {
                                     tempBrand = new Brand() { Name = brand! };
@@ -116,9 +116,9 @@ namespace Kvota.Pages.Admin
                             }
                             else if (cellItem.ColumnNumber == 4)
                             {
-                                var gcategory = cellItem.Value.ToString();
+                                var gcategory = cellItem.Value.ToString()!.Trim();
 
-                                var tempGrand = _grandCategoryList!.Any() ? _grandCategoryList!.FirstOrDefault(w => w.Name == gcategory) : null;
+                                var tempGrand = _grandCategoryList!.Any() ? _grandCategoryList!.FirstOrDefault(w => string.Equals(w.Name, gcategory, StringComparison.CurrentCultureIgnoreCase)) : null;
                                 if (tempGrand == null && gcategory != null)
                                 {
                                     tempGrand = new GrandCategory() { Name = gcategory };
@@ -130,9 +130,9 @@ namespace Kvota.Pages.Admin
                             }
                             else if (cellItem.ColumnNumber == 5)
                             {
-                                var category = cellItem.Value.ToString();
+                                var category = cellItem.Value.ToString()!.Trim();
 
-                                var tempGrand = _categoryList!.Any() ? _categoryList!.FirstOrDefault(w => w.Name == category) : null;
+                                var tempGrand = _categoryList!.Any() ? _categoryList!.FirstOrDefault(w => string.Equals(w.Name, category, StringComparison.CurrentCultureIgnoreCase)) : null;
                                 if (tempGrand == null && category != null)
                                 {
                                     tempGrand = new Category() { Name = category, GrandCategoryId = GrandCategoryIdp };

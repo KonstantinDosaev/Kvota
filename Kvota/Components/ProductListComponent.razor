@@ -2,39 +2,39 @@
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @inject IRepo<ContactsModel> ContactService
+@inject ISerializeService<ContactsModel> ContactSerialize
 <div class="productlist__products">
 
-    @if (ProductList != null)
+    @if (Product != null)
     {
         
-        @foreach (var items in ProductList)
-        {
+        
             <div class="productlist__product product">
 @*                <div >
                     <img class="product__image"src="@items.Image">
                 </div>*@
                 <div class="product__body">
-                    <a class="product__name product__text" @onclick="@(e => GetModalUpdate(items.Id, items.Name))">@items.Name</a>
-                    <span class="product__pnumber product__text">Партномер :
-                        @if (items.PartNumber != null)
+                    <a class="product__name product__text" @onclick="@(e => GetModalUpdate(Product.Id))">@Product.Name</a>
+                    <span class="product__pnumber product__text">Парт-номер :
+                        @if (Product.PartNumber != null)
                         {
-                            @items.PartNumber
+                            @Product.PartNumber
                         }
                     </span>
-                    @if (items.Brand != null)
+                    @if (Product.Brand != null)
                     {
-                        <span class="product__brand product__text">@items.Brand!.Name</span>
+                        <span class="product__brand product__text">@Product.Brand!.Name</span>
                     }
                 </div>
         <div class="product__prices">
             <div>
-                @if (items.Price != null)
+                @if (Product.Price != null)
                 {
-                    @if (items.SalePrice != null)
+                    @if (Product.SalePrice != null)
                     {
-                        <span class="product__sale ">@Math.Round((double)((items.Price! / 100) * (100 - items.SalePrice)), 2) р.</span>
+                        <span class="product__sale ">@Math.Round((double)((Product.Price! / 100) * (100 - Product.SalePrice)), 2) р.</span>
                     }
-                    <span class="product__price ">@items.Price р.</span>
+                    <span class="product__price ">@Product.Price р.</span>
                 }
             </div>
                 <div class="product__feetback ">
@@ -61,7 +61,7 @@
                 
             </div>
   
-        }
+        
     }
     <div class="product__modal">
         <Modal ShowCloseButton="false" 

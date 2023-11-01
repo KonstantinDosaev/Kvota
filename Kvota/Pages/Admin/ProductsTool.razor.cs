@@ -3,6 +3,7 @@ using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 using ClosedXML.Excel;
 using Kvota.Constants;
+using Kvota.Models.Content;
 using Microsoft.JSInterop;
 
 namespace Kvota.Pages.Admin
@@ -25,7 +26,7 @@ namespace Kvota.Pages.Admin
         public List<Guid> SelectedValues = new();
         private int _quantityInPage = 10;
         private int _currentPageCount=10;
-
+        private Home? _home;
         protected override async Task OnInitializedAsync()
         {
             _pagedList = new List<Product>();
@@ -34,6 +35,7 @@ namespace Kvota.Pages.Admin
             GCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
             Products = await ProductService.GetAllAsync();
             _filteredList = Products;
+            _home = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
 
             LoadMore(0);
            // GetPagedList(_filteredList);
@@ -141,6 +143,21 @@ namespace Kvota.Pages.Admin
                 var fileURL = $"{urlSave}/excel/ExcelOutputKvota.xlsx";
                var result =  JsRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
 
+
+        }
+        private async void AddProductToHome(Guid id)
+        {
+            if (_home.ProductInHome.Contains(id)) return;
+            _home.ProductInHome ??= new List<Guid>();
+            _home.ProductInHome.Add(id);
+            await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);
+        }
+        private async void RemoveProductFromHome(Guid id)
+        {
+            if (_home.ProductInHome == null) return;
+            _home.ProductInHome.Remove(id);
+              
+            await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);
 
         }
     }

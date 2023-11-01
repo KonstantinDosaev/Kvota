@@ -1,9 +1,5 @@
-﻿using Kvota.Data;
-using Kvota.Interfaces;
-using Kvota.Migrations;
+﻿using Kvota.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
-using Kvota.Models.Products;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace Kvota.Repositories

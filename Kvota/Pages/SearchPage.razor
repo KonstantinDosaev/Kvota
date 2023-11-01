@@ -1,0 +1,41 @@
+﻿@using Kvota.Models.Products;
+@using Kvota.Interfaces
+@inject IRepo<Product> ProductRepo
+@page "/search/{searchstring}"
+@using Kvota.Components
+
+
+<div class="searchPage__block">
+    @if (SearchList != null && SearchList.Count>0)
+    {
+        foreach (var product in SearchList)
+        {
+            <ProductListComponent Product="product" />
+        }
+        
+    }
+    else
+    {
+        <p>Список пуст...</p>
+    }
+</div>
+
+@code {
+
+    private List<Product>? SearchList { get; set; } 
+    [Parameter]
+    public string SearchString { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(SearchString))
+        {
+            SearchList = (List<Product>)await ProductRepo.GetSearch(SearchString);
+        }
+    }
+}
+<style>
+    .searchPage__block {
+        padding: 1rem;
+    }
+</style>

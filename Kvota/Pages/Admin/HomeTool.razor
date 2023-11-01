@@ -1,7 +1,9 @@
 ﻿@attribute [Authorize(Roles = "Administrators")]
 @page "/hometool"
 @using Kvota.Components.Admin
-
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject ISerializeService<Home> HomeSerialize
 
 
 @if (Tools != null)
@@ -32,6 +34,10 @@
             <div class="form-group">
                 <label>Текст: страница О компании</label>
                 <InputTextArea class="form-control" @bind-Value="Tools.AboutText" />
+            </div>
+            <div class="form-group">
+                <label>Титульник слайдера с продуктами ГЭ</label>
+                <InputText class="form-control" @bind-Value="Tools.ProductTitle" />
             </div>
             <div class="form-group">
                 <label>Отобразить категории</label>

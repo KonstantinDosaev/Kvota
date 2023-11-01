@@ -1,6 +1,10 @@
 ﻿@inherits LayoutComponentBase
 @using Kvota.Components
+@using Kvota.Interfaces
+@using Kvota.Models.Content
 @inject IWebHostEnvironment Env
+@inject ISerializeService<ContactsModel> ContactSerialize
+
 <PageTitle>Квота</PageTitle>
 
 <div class="page">
@@ -9,6 +13,7 @@
     </div>
 
     <main >
+      
         <div id="up_position"></div>
         @if (Contact != null)
         {

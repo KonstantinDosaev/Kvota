@@ -1,5 +1,7 @@
 ﻿@page "/contacts"
-
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject ISerializeService<ContactsModel> ContactSerialize
 
 @if ( Contact!= null){
     <h1 class="contact_title">КОНТАКТЫ</h1>

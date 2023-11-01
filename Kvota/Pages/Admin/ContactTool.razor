@@ -2,7 +2,9 @@
 @attribute [Authorize(Roles = "Administrators")]
 @using Microsoft.AspNetCore.Components
 @using Kvota.Components.Admin
-
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject ISerializeService<ContactsModel> ContactSerialize
 
     @if (Tools != null)
     {

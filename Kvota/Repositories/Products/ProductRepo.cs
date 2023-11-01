@@ -44,6 +44,9 @@ namespace Kvota.Repositories.Products
 
             return null!;
         }
+        public IQueryable<Product> GetAllByQuery() =>  Table.OrderBy(o => o.Name)
+            .Include(i => i.Brand).Include(i => i.Category)
+            .Include(i => i.ProductOption);
 
     }
 }

@@ -1,11 +1,8 @@
 .page {
     display: flex;
     flex-direction: column;
-    background: rgba(230, 234, 247, 1);
-    
-    /*background: url(/image/vishnu-mohanan-pfR18JNEMv8-unsplash.jpg) 0 0 no-repeat;*/
+      background: rgba(230, 234, 247, 1);
 }
-
 
 main {
     flex: 1;
@@ -17,22 +14,17 @@ main {
     margin: 0.4rem 0.55rem;
    
     background-color: rgba(0, 0, 0, 0.32);
-    backdrop-filter: blur(10px);
+   
     position: sticky;
     top: 0;
     z-index: 10;
     align-content: center;
 }
-/*.top__con {
-    display: flex;
-    padding: 0.5rem 1rem 0 0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}*/
+
 .sidebar {
     /*background-image: linear-gradient(180deg, rgb(30, 144, 255 ) 10%, rgb(25, 25, 112) 70%);*/
-    background-color: rgba(119, 136, 153,0.9);
+    /*    background-color: rgba(119, 136, 153,0.9);*/
+    background-image: linear-gradient(270deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.55) 100%);
     color: lightgray;
     position: sticky;
 }

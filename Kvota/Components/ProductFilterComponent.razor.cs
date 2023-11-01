@@ -15,7 +15,7 @@ namespace Kvota.Components
         private  IEnumerable<Product>? _filteredList { get; set; }
         private IEnumerable<Brand> BrandList { get; set; }= default!;
         private IEnumerable<Category> CategoryList { get; set; } = default!;
-        //private string _sortString = "";
+        private string _sortString = "";
 
 
 
@@ -91,18 +91,18 @@ namespace Kvota.Components
                     .ToList();
             }
 
-            //if (_sortString != string.Empty)
-            //{
-            //    _filteredList = _sortString switch
-            //    {
-            //        "name" => _filteredList.OrderBy(o => o.Name).ToList(),
-            //        "nameDesc" => _filteredList.OrderByDescending(o => o.Name).ToList(),
-            //        "dateNews" => _filteredList.OrderByDescending(o => o.DateTimeUpdated).ToList(),
-            //        "priceMin" => _filteredList.OrderByDescending(o => o.Price).ToList(),
-            //        "priceMax" => _filteredList.OrderBy(o => o.Price).ToList(),
-            //        _ => _filteredList
-            //    };
-            //}
+            if (_sortString != string.Empty)
+            {
+                _filteredList = _sortString switch
+                {
+                    "name" => _filteredList.OrderBy(o => o.Name).ToList(),
+                    "nameDesc" => _filteredList.OrderByDescending(o => o.Name).ToList(),
+                    "dateNews" => _filteredList.OrderByDescending(o => o.DateTimeCreated).ToList(),
+                    "priceMin" => _filteredList.OrderByDescending(o => o.Price).ToList(),
+                    "priceMax" => _filteredList.OrderBy(o => o.Price).ToList(),
+                    _ => _filteredList
+                };
+            }
 
 
             await ProductListCallback.InvokeAsync(_filteredList);

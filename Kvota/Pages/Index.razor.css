@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-
+    background-image: linear-gradient(90deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.55) 100%);
 }
 .home_images {
     flex: 1 1 auto;
@@ -61,8 +61,6 @@
 }
 
 .partner__lable {
-    /*    display: inline-block;
-    position: relative;*/
     padding: 10px 4px;
     border-radius: 3px;
     margin: 0 14px 14px 0;
@@ -118,7 +116,7 @@
 
 
 .home_sliderblock {
-    padding: 0 0.5rem;
+    margin: 0 0.5rem;
     position: relative;
     flex: 1;
     overflow: hidden;

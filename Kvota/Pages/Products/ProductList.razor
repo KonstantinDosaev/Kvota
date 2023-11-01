@@ -27,7 +27,10 @@
         }
         @if (_pagedList.Count > 0)
         {
-            <ProductListComponent ProductList="_pagedList" />
+            foreach (var product in _pagedList)
+            {
+                <ProductListComponent Product="product" />
+            }
         }
         else
         {
