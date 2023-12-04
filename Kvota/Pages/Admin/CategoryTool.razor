@@ -4,7 +4,6 @@
 @using Kvota.Components.Admin
 @using Kvota.Interfaces
 @using Microsoft.AspNetCore.Components
-@inject IRepo<GrandCategory> GRepo
 @inject IRepo<Category> CategoryRepo
 @inject IServiceScopeFactory serviceScopeFactory
 
@@ -37,7 +36,7 @@
         {
             Id = null;
         }
-        @foreach (var item in ItemList.Where(w => w.GrandCategoryId == Id))
+        @foreach (var item in ItemList.Where(w => w.ParentId == Id))
         {
             <tr>
                 <td>@item.Name</td>

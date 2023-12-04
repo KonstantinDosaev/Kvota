@@ -1,6 +1,6 @@
 ﻿@page "/admin/product"
 @attribute [Authorize(Roles = "Administrators")]
-@using Kvota.Models.Products
+@using Kvota.Components.Admin.Products
 @using Kvota.Interfaces
 @using Kvota.Components.Admin
 @inject IRepo<Product> ProductRepo
@@ -26,6 +26,9 @@
         </div>
         <div class="col text-right">
             <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)Products!))" role="button">Выгрузить всё в Excel</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" @onclick="@(e =>_visibleStorageDialog=true)" role="button">Склады</a>
         </div>
         <div class="col text-right">
             <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteCheckedProduct(SelectedValues))" role="button">Удалить выделенные</button>
@@ -63,7 +66,7 @@
                         _checked = true;  
                         }  
                         <input type="checkbox" checked=@_checked  
-                       @onchange="eventArgs => { CheckboxClicked(item.Id, eventArgs.Value); }" />  
+                       @onchange="eventArgs => { CheckboxClicked(item.Id, eventArgs.Value!); }" />  
                     </td>
                     <td>
                             @if (item.Image == Links.DefaultImageProduct)
@@ -95,7 +98,12 @@
                     </td>
                     <td>@item.Price</td>
                     <td>@item.SalePrice</td>
-                    <td>@item.Quantity</td>
+                    <td>
+                        @if (item.ProductsInStorage != null)
+                        {
+                            @item.ProductsInStorage.Select(s => s.Quantity).Sum()
+                        }
+                    </td>
                     <td class="text-right">
                         <a class="btn btn-primary btn-sm" href="/admin/prodoptions/@item.Name/@item.CategoryId/@item.Id" role="button">Опции</a>
                         <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Изменить</a>
@@ -121,5 +129,9 @@
 
 
 </div>
-
+<MudDialog @bind-IsVisible="_visibleStorageDialog" Style="min-width: 900px" Options="new DialogOptions(){CloseButton = true}">
+    <DialogContent>
+        <StorageSettings/>
+    </DialogContent>
+</MudDialog>
 

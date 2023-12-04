@@ -1,5 +1,6 @@
 ﻿using BlazorBootstrap;
 using Kvota.Models.Products;
+using Kvota.Repositories.Products;
 using Microsoft.AspNetCore.Components;
 
 namespace Kvota.Components.Admin.Products
@@ -13,13 +14,23 @@ namespace Kvota.Components.Admin.Products
         public Guid Id { get; set; }
         public Product? Product { get; set; }
         private List<Brand> BrandList { get; set; } = new List<Brand>();
-        private List<GrandCategory>? GrandCategoryList { get; set; }
-        
+        private List<Category>? CategoryList { get; set; }
+        private List<Storage> Storages { get; set; } = new List<Storage>();
+        private Guid StorageId { get; set; }
+        private int Quantity { get; set; }
         protected override async Task OnInitializedAsync()
         {
             Product = await ProductRepo.GetOneAsync(Id);
             BrandList = (List<Brand>)await BrandRepo.GetAllAsync();
-            GrandCategoryList = (List<GrandCategory>)await GrandCategoryRepo.GetAllAsync();
+            CategoryList = (List<Category>)await CategoryRepo.GetAllAsync();
+            CategoryList = CategoryList.Where(w => w.Children == null || !w.Children.Any()).ToList();
+            Storages = (List<Storage>)await StorageRepo.GetAllAsync();
+         
+            if (Product.Storage != null && Product.Storage.Any())
+            {
+                var pId = Product.Storage.Select(s => s.Id);
+                Storages = Storages.Where(w=>!pId.Contains(w.Id)).ToList();
+            }
         }
 
         private async void SubmitProduct()
@@ -37,6 +48,17 @@ namespace Kvota.Components.Admin.Products
             if (Product != null)
                 Product.Image = patch;
             await ProductRepo.Update(Product);
+        }   
+        private async void UpdateStorageQuantity(ProductsInStorage item)
+        {
+            if (Product!.ProductsInStorage != null && Product.ProductsInStorage.Contains(item))
+            {
+                await ProductInStorageRepo.Update(item);
+            }
+            else
+            {
+                await ProductInStorageRepo.AddAsync(item);
+            }
         }
     }
 }

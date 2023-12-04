@@ -2,6 +2,7 @@
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
 using ClosedXML.Excel;
+using FastExcel;
 using Kvota.Constants;
 using Kvota.Models.Content;
 using Microsoft.JSInterop;
@@ -16,7 +17,7 @@ namespace Kvota.Pages.Admin
         protected IRepo<Product> ProductService { get; set; } = default!;
         private static List<Product>? _pagedList ;
         private static IEnumerable<Product>? _filteredList;
-        private static IEnumerable<GrandCategory>? GCategoryList { get; set; }
+
         [Parameter]
         public Guid CategoriesFilterId { get; set; }
         [Parameter]
@@ -27,12 +28,14 @@ namespace Kvota.Pages.Admin
         private int _quantityInPage = 10;
         private int _currentPageCount=10;
         private Home? _home;
+        private List<Storage> _storage;
+
+        private bool _visibleStorageDialog;
         protected override async Task OnInitializedAsync()
         {
             _pagedList = new List<Product>();
             using var scope = ServiceScopeFactory.CreateScope();
             ProductService = scope.ServiceProvider.GetService<IRepo<Product>>()!;
-            GCategoryList = await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
             Products = await ProductService.GetAllAsync();
             _filteredList = Products;
             _home = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
@@ -109,40 +112,89 @@ namespace Kvota.Pages.Admin
             _pagedList!.AddRange((_filteredList!.Skip((_currentPageCount)).Take(_quantityInPage)).ToList());
 
         }
-        private  void OutputExcel(List<Product> products)
+        private async void OutputExcel(List<Product> products)
         {
             var outputFile = new FileInfo($"{Links.RootPath}/excel/ExcelOutputKvota.xlsx");
-            var objectList = new List<MyObject>();
+            if (outputFile.Exists)
+            {
+                outputFile.Delete();
+            }
+            var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Лист1");
+       
+         
 
-                foreach (var item in products)
+                var rowData = new List<object[]>();
+
+                var header = await SetColumns();
+                rowData.Add(header);
+
+                foreach (var product in products)
                 {
-                    var genericObject = new MyObject();
-                    genericObject.NameColumn = item.Name;
-                    if (item.PartNumber != null) genericObject.PartColumn = item.PartNumber;
-                    if (item.Brand != null) genericObject.BrandColumn = item.Brand.Name;
-                    if (item.Category != null)
-                        if (item.Category.GrandCategoryId != null)
-                            genericObject.GCategotyColumn = GCategoryList!.FirstOrDefault(w => w.Id==item.Category.GrandCategoryId)!.Name;
-                    if (item.Category != null) genericObject.CategoryColumn = item.Category.Name;
-                    genericObject.DescriptionColumn = item.Description;
-                    genericObject.PriceColumn = item.Price;
-                    genericObject.QuntityColumn = item.Quantity;
-                    genericObject.TwoQuntityColumn = item.QuantityTwo;
-                    genericObject.DateDeleveyColumn = item.DayToDelivery;
-                    genericObject.SalePrice = item.SalePrice;
-                objectList.Add(genericObject);
-                }
-          
-                var workbook = new XLWorkbook();
-                var wsDetailedData = workbook.AddWorksheet("data");
-                wsDetailedData.Cell(1, 1).InsertTable(objectList);
-                workbook.SaveAs(outputFile.FullName);
-                var uri = new Uri(NavigationManager.Uri);
-                var urlSave = uri.GetLeftPart(UriPartial.Authority);
-                var fileName = "ExcelOutputKvota.xlsx";
-                var fileURL = $"{urlSave}/excel/ExcelOutputKvota.xlsx";
-               var result =  JsRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
 
+                    var row = new List<object?>
+                    {product.Name,
+                        product.PartNumber,
+                        (string?)product.Brand?.Name,
+                        product.Category?.Parent?.Name,
+                        product.Category?.Name,
+                        product.Description,
+                        product.Price,
+                        product.DayToDelivery,
+                        product.SalePrice
+                    };
+                    for (int i = 9; i < header.Length; i++)
+                    {
+
+                        if (product.Storage != null && product.Storage.Select(s => s.Name).Contains(header[i]))
+                        {
+                            row.Add(product.ProductsInStorage!.FirstOrDefault(f => f.Storage!.Name! == (string)header[i])!.Quantity);
+                        }
+                        else
+                        {
+                            row.Add(null);
+                        }
+                    }
+                    rowData.Add(row.ToArray()!);
+                }
+
+                worksheet.Cell(1, 1).InsertTable(rowData);
+
+                worksheet.Row(1).Style.Fill.BackgroundColor= XLColor.Green;
+            worksheet.Row(2).Style.Fill.BackgroundColor = XLColor.Gray;
+            worksheet.Columns().AdjustToContents();
+            workbook.SaveAs(outputFile.FullName);
+      
+
+            var uri = new Uri(NavigationManager.Uri);
+            var urlSave = uri.GetLeftPart(UriPartial.Authority);
+            var fileName = "ExcelOutputKvota.xlsx";
+            var fileURL = $"{urlSave}/excel/ExcelOutputKvota.xlsx";
+            var result = JsRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+        }
+       
+        private async Task<object[]> SetColumns()
+        {
+            List<object> result;
+            result= new List<object>()
+            {"Наименование",
+                "Парт-номер",
+                "Бренд",
+                "Категория",
+                "Подкатегория",
+                "Описание",
+                "Цена",
+                "Дней на доставку",
+                "Скидка",
+            };
+            using var scope = ServiceScopeFactory.CreateScope();
+            _storage = (List<Storage>)await scope.ServiceProvider.GetService<IRepo<Storage>>()!.GetAllAsync();
+            foreach (var storage in _storage)
+            {
+                result.Add(storage.Name);
+            }
+
+            return result.ToArray();
 
         }
         private async void AddProductToHome(Guid id)
@@ -160,6 +212,16 @@ namespace Kvota.Pages.Admin
             await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);
 
         }
+        private string ProductInStorageConverter(List<ProductsInStorage> items)
+        {
+            var result = "";
+            foreach (var productsInStorage in items)
+            {
+                result += $"{productsInStorage.Storage!.Name}:{productsInStorage.Quantity}|";
+            }
+
+            return result;
+        }
     }
     record MyObject
     {
@@ -171,7 +233,7 @@ namespace Kvota.Pages.Admin
         public string CategoryColumn { get; set; }
         public string? DescriptionColumn { get; set; }
         public decimal? PriceColumn { get; set; }
-        public int? QuntityColumn { get; set; }
+        public string? QuntityColumn { get; set; }
         public int? TwoQuntityColumn { get; set; }
         public int? DateDeleveyColumn { get; set; }
         public decimal? SalePrice { get; set; }

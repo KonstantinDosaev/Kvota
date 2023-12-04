@@ -40,7 +40,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.Category", b =>
@@ -66,7 +66,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasIndex("GrandCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.CategoryOption", b =>
@@ -89,7 +89,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("CategoryOptions");
+                    b.ToTable("CategoryOptions", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.GrandCategory", b =>
@@ -110,7 +110,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasKey("Id");
 
-                    b.ToTable("GrandCategories");
+                    b.ToTable("GrandCategories", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.Product", b =>
@@ -168,7 +168,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.ProductOption", b =>
@@ -193,7 +193,7 @@ namespace Kvota.Migrations.KvotaProduct
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductOptions");
+                    b.ToTable("ProductOptions", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.Category", b =>

@@ -3,9 +3,20 @@
 @attribute [Authorize(Roles = "Administrators")]
 @using Kvota.Models.Products
 @using Kvota.Interfaces
+@using Kvota.Repositories.Products
+@using Org.BouncyCastle.Math.EC
+@using DocumentFormat.OpenXml.Office2016.Excel
+@using Microsoft.AspNetCore.HttpLogging
+@using Org.BouncyCastle.Math.EC.Multiplier
+@using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle
+@using Microsoft.CodeAnalysis.CodeActions
+@using Microsoft.EntityFrameworkCore
+@using System.Runtime.InteropServices.ComTypes
+@using NuGet.Protocol
 @inject IRepo<Product> ProductRepo
-@inject IRepo<GrandCategory> GrandCategoryRepo
+@inject IRepo<CategoryRepo> CategoryRepo
 @inject IRepo<Brand> BrandRepo
+@inject IRepo<Storage> StorageRepo
 <div class="row">
     <div class="col-lg-9">
         <h1>Create</h1>
@@ -44,22 +55,11 @@
             <label>Категория</label>
             <select class="form-control" @bind="Product.CategoryId">
                 <option value=@Guid.Empty>Выбрать категорию</option>
-                @if (GrandCategoryList != null)
+                @if (CategoryList != null)
                 {
-                    foreach (var grandCategory in GrandCategoryList)
+                    foreach (var category in CategoryList)
                     {
-                        <optgroup label="@grandCategory.Name">
-                            @if (grandCategory.Categories != null)
-                            {
-                                foreach (var item in grandCategory.Categories)
-                                {
-                                    if (item != null)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
-                                }
-                            }
-                        </optgroup>
+                        <option value="@category.Id">@category.Name</option>
                     }
                 }
             </select>
@@ -73,8 +73,21 @@
             <InputNumber class="form-control" @bind-Value="Product.Price" />
         </div>
         <div class="form-group">
+            <label>Склад</label>
+            <select class="form-control" @bind="ProductsInStorage.StorageId">
+                <option value=@Guid.Empty>Выбрать склад</option>
+                @if (Storages != null)
+                {
+                    foreach (var storage in Storages)
+                    {
+                        <option value="@storage.Id">@storage.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group">
             <label>Количество</label>
-            <InputNumber class="form-control" @bind-Value="Product.Quantity" />
+            <InputNumber class="form-control" @bind-Value="ProductsInStorage.Quantity" />
         </div>
         
 

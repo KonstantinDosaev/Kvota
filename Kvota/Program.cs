@@ -11,7 +11,8 @@ using Kvota.Repositories.Products;
 using Kvota.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Options;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("KvotaContextConnection") ?? throw new InvalidOperationException("Connection string 'KvotaContextConnection' not found.");
@@ -23,10 +24,11 @@ builder.Services.AddScoped<IRepo<Home>, HomeRepo>();
 builder.Services.AddScoped<IRepo<ContactsModel>, ContactRepo>();
 builder.Services.AddScoped<IRepo<Product>, ProductRepo>();
 builder.Services.AddScoped<IRepo<Category>, CategoryRepo>();
-builder.Services.AddScoped<IRepo<GrandCategory>, GrandCategoryRepo>();
 builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddScoped<IRepo<CategoryOption>, CategoryOptionsRepo>();
 builder.Services.AddScoped<IRepo<ProductOption>, ProductOptionRepo>();
+builder.Services.AddScoped<IRepo<Storage>, StorageRepo>();
+builder.Services.AddScoped<IRepo<ProductsInStorage>, ProductInStorageRepo>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<ISerializeService<Home>, SerializeService<Home>>();
@@ -36,7 +38,7 @@ builder.Services.AddDbContext<KvotaContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddDbContext<KvotaProductContext>(options =>
-    options.UseNpgsql(connectionStringProduct));
+    options.UseLazyLoadingProxies().UseNpgsql(connectionStringProduct));
 
 builder.Services.AddDefaultIdentity<KvotaUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
@@ -45,6 +47,9 @@ builder.Services.AddDefaultIdentity<KvotaUser>(options => options.SignIn.Require
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazorBootstrap();
+
+
+builder.Services.AddMudServices();
 
 
 

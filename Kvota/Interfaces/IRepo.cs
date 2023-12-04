@@ -12,13 +12,13 @@ namespace Kvota.Interfaces
         
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllByIdAsync(Guid id, string name);
-        Task Update(T entity);
+        Task<bool> Update(T entity);
         Task<int> DeleteAsync(Guid id);
 
         Task<int> DeleteRangeAsync(IEnumerable<Guid> ids);
 
         Task<int> SaveAsync(T entity);
-
+        Task ManualSaveAsync();
         public T Add(T entity);
         int Save(T entity);
         T GetOne(Guid id); 

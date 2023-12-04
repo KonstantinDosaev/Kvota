@@ -4,6 +4,8 @@
 @using Kvota.Models.Content
 @using Kvota.Interfaces
 @using Kvota.Constants
+@using ButtonType = BlazorBootstrap.ButtonType
+@using Size = MudBlazor.Size
 @inject ISerializeService<ContactsModel> ContactSerialize
 @if (Product != null)
 {
@@ -15,7 +17,7 @@
         <div class="product-card__body">
 
             <a class="product-card__image-body" @onclick="@(e => GetModalImage())">
-                @if (Product.Image == Links.DefaultImageProduct)
+                @if (Product.Image is Links.DefaultImageProduct or null)
                 {
                     <div class="product-card__image" style="background: url(/image/products/default.jpg)50% 50%/contain no-repeat "></div>
                 }
@@ -83,7 +85,7 @@
                         </Dropdown>
                     </div>
                 </div>
-                @if (Product.Quantity is null or 0 && Product.QuantityTwo is null or 0)
+                @if (Product.ProductsInStorage ==null || !Product.ProductsInStorage.Any()|| Product.ProductsInStorage.Select(s=>s.Quantity).Sum()==0)
                 {
                     <span>Нет в наличии.</span>
                     if (Product.DayToDelivery != null)
@@ -95,13 +97,9 @@
                 }
                 else
                 {
-                    @if (Product.Quantity != null)
+                    foreach (var productsInStorage in Product.ProductsInStorage)
                     {
-                        <div class="product-card__quantity product__text">Склад 1-- @Product.Quantity шт. в наличии</div>
-                    }
-                    @if (Product.QuantityTwo != null)
-                    {
-                        <div class="product-card__quantity product__text">Склад 2-- @Product.QuantityTwo шт. в наличии</div>
+                        <div class="product-card__quantity product__text">@productsInStorage.Storage!.Name-- @productsInStorage.Quantity шт. в наличии</div>
                     }
                 }
             </div>
@@ -147,10 +145,11 @@
             @ref="_modalImage">
             <BodyTemplate>
                 <div class=modalImage__body>
-                    <button class="modalImage__closeBtn closeBtn" @onclick="OnHideModalClick">
+                    @*                    <button class="modalImage__closeBtn closeBtn" @onclick="OnHideModalClick">
                         <div class="closeBtn__btn closeBtn__up"></div>
                         <div class="closeBtn__btn closeBtn__down"></div>
-                    </button>
+                    </button>*@
+                    <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
                     <div class="slider">
                             @if (Directory.Exists(_directoryPath))
                             {
@@ -194,6 +193,7 @@
         transform: scale(0.8);
     }
     .closeBtn__btn {
+       
         width: 2rem;
         height: 2rem;
         border-bottom: 5px solid rgba(255,255,255,0.5);
@@ -205,6 +205,7 @@
         margin-bottom: 0.5rem;
     }
     .closeBtn__btn.closeBtn__down {
+        
         transform: rotate(-135deg);
     }
     .slider {

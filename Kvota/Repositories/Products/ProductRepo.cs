@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Kvota.Constants;
 using Kvota.Data;
 using Kvota.Migrations;
@@ -18,8 +20,8 @@ namespace Kvota.Repositories.Products
         
         }
         public override async Task<IEnumerable<Product>> GetAllAsync() => await Table.OrderBy(o => o.Name)
-            .Include(i => i.Brand).Include(i => i.Category)
-            .Include(i => i.ProductOption).ToListAsync();
+            .Include(i => i.Brand).Include(i => i.Category).Include(i=>i.Category.Parent)
+            .Include(i => i.ProductOption).Include(i=>i.ProductsInStorage).Include(i=>i.Storage).ToListAsync();
 
         public override async Task<IEnumerable<Product>> GetSearch(string searchString)
         {
@@ -48,5 +50,20 @@ namespace Kvota.Repositories.Products
             .Include(i => i.Brand).Include(i => i.Category)
             .Include(i => i.ProductOption);
 
+        public  override async Task<bool> Update(Product entity)
+        {
+            Context.Entry(entity).State = EntityState.Modified;
+
+            if (entity.ProductsInStorage != null)
+            {
+                foreach (var item in entity.ProductsInStorage)
+                {
+                    Context.Entry(item).State = item.Id != Guid.Empty ? EntityState.Modified : EntityState.Added;
+                }
+                
+            }
+            var t = await SaveChangesAsync();
+            return t > 0;
+        }
     }
 }

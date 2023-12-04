@@ -1,6 +1,8 @@
 ﻿@using Kvota.Pages.Products
 @using Kvota.Interfaces
 @using Kvota.Models.Content
+@using ButtonType = BlazorBootstrap.ButtonType
+@using Size = MudBlazor.Size
 @inject IRepo<ContactsModel> ContactService
 @inject ISerializeService<ContactsModel> ContactSerialize
 <div class="productlist__products">
@@ -68,9 +70,10 @@
                Size="ModalSize.ExtraLarge" 
                @ref="_modalProductCard">
             <BodyTemplate>
-                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
+                @*                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
                     <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
-                </Button>
+                </Button>*@
+                <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
                 <ProductCard Id="@IdCurrent"/>
 
             </BodyTemplate>

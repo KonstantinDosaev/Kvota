@@ -1,13 +1,13 @@
 ﻿@page "/productlist"
 @using Kvota.Constants
 @inject IServiceScopeFactory serviceScopeFactory
-
+@using Kvota.Components.CategoryDrawer
 
 <div class="catalog__body">
-    <div class="catalog__grands">
-        @if (GrandCategories != null)
+    @*    <div class="catalog__grands">
+        @if (Categories != null)
         {
-            @foreach (var items in GrandCategories.OrderBy(o=>o.Name))
+            @foreach (var items in Categories.OrderBy(o=>o.Name))
             {
                 <div class="catalog__grand grand kvota__body-shadow">
                     <div class="grand__image-body"><img class="grand__image" src="@items.Image"/></div>
@@ -15,16 +15,13 @@
                         <div class="grand__title">@items.Name</div>
                         <div class="grand__category category-grand">
 
-                            @if (items.Categories != null)
+                            @if (items.Children != null && !items.Children.Any())
                             {
-                                foreach (var item in items.Categories.OrderBy(o=>o.Name))
+                                foreach (var item in items.Children.OrderBy(o=>o.Name))
                                 {
                                     <div class="category-grand__body">
                                         <a class="category-grand__link" href="@GroupNames.GroupCategory/@item.Name/@item.Id">@item.Name</a>
-                                        @*<p class="category-grand__quant">
-                                            (@if (item.Products != null)
-                                            {@item.Products.Count})
-                                        </p>*@
+                                      
                                     </div>
                                 }
                             }
@@ -33,7 +30,9 @@
                 </div>
             }
         }
-    </div>
+    </div>*@
+    <CategoryDrawerComponent />
+
 </div>
 
 

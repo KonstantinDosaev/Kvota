@@ -1,6 +1,7 @@
 ﻿@using Kvota.Models.Content
 @using System.Text.Json
 @using Kvota.Constants
+@using Kvota.Components.CategoryDrawer
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         
@@ -21,7 +22,7 @@
         <div class="nav-item px-3">
             @if (CatalogView)
             {
-                <NavLink class="nav-link" href="productlist">
+                <NavLink class="nav-link" style="cursor: pointer" @onclick="() => _categoryDrawerRef.OpenCategoryDrawer()">
                     <span class="oi oi-book" aria-hidden="true"></span> Каталог
                 </NavLink>
             }
@@ -65,8 +66,10 @@
         </AuthorizeView>
     </nav>
 </div>
-
+@*<CategoryDrawerComponent @ref="_categoryDrawerRef" />*@
 @code {
+    [Parameter]
+    public CategoryDrawerComponent? _categoryDrawerRef { get; set; }
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;

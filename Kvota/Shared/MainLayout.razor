@@ -4,16 +4,21 @@
 @using Kvota.Models.Content
 @inject IWebHostEnvironment Env
 @inject ISerializeService<ContactsModel> ContactSerialize
+@using Kvota.Components.CategoryDrawer
 
 <PageTitle>Квота</PageTitle>
-
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 <div class="page">
+    <div style="z-index: 999">  <CategoryDrawerComponent @ref="_categoryDrawerRef" /></div>
+  
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu _categoryDrawerRef="_categoryDrawerRef"/>
     </div>
 
     <main >
-      
+
         <div id="up_position"></div>
         @if (Contact != null)
         {
@@ -34,5 +39,6 @@
 
 @code
 {
-   
+
+    private CategoryDrawerComponent? _categoryDrawerRef;
 }

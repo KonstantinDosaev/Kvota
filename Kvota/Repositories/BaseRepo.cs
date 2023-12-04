@@ -23,6 +23,12 @@ namespace Kvota.Repositories
 
             return entity;
         }
+
+        public async Task ManualSaveAsync()
+        {
+            await Context.SaveChangesAsync();
+        }
+
         public  T Add(T entity)
         {
              Table.Add(entity);
@@ -38,10 +44,12 @@ namespace Kvota.Repositories
             return entities;
         }
 
-        public async Task Update(T entity)
+        public virtual async Task<bool> Update(T entity)
         {
             Table.Update(entity);
+            var t=
             await SaveChangesAsync();
+            return t>0;
         }
 
         public async Task<int> DeleteAsync(Guid id)

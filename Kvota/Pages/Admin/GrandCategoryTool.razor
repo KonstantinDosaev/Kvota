@@ -1,10 +1,10 @@
-﻿@page "/admin/category"
+﻿@*@page "/admin/category"
 @attribute [Authorize(Roles = "Administrators")]
 @using Kvota.Models.Products
 @using Kvota.Components.Admin
 @using Kvota.Interfaces
 @using Microsoft.AspNetCore.Components
-@inject IRepo<GrandCategory> GRepo
+@inject IRepo<Category> GRepo
 
 <NavAdmin></NavAdmin>
 <div class="row">
@@ -92,3 +92,4 @@
 @code {
 
 }
+*@

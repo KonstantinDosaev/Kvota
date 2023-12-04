@@ -26,7 +26,11 @@ namespace Kvota.Pages.Products
         {
             using var scope = ServiceScopeFactory.CreateScope();
             Product = await scope.ServiceProvider.GetService<IRepo<Product>>()!.GetOneAsync(Id);
-            _directoryPath = $"{Links.RootPath}/{Product.Image}";
+            if (Product.Image!= null)
+            {
+                _directoryPath = $"{Links.RootPath}/{Product.Image}";
+            }
+            
             await InvokeAsync(StateHasChanged);
         }
 

@@ -16,7 +16,7 @@ namespace Kvota.Pages.Admin
         private Category? Item { get; set; }
         public Category? ItemUpdate { get; set; }
         private List<Category>? ItemList { get; set; }
-        private List<GrandCategory>? GcList { get; set; }
+        private List<Category>? GcList { get; set; }
         [Parameter] 
         public  Guid? Id { get; set; }
         [Parameter]
@@ -26,8 +26,9 @@ namespace Kvota.Pages.Admin
         {
 
             ItemList = (List<Category>)await CategoryRepo.GetAllAsync();
-            using var scope = serviceScopeFactory.CreateScope();
-            GcList = (List<GrandCategory>?)await scope.ServiceProvider.GetService<IRepo<GrandCategory>>()!.GetAllAsync();
+            //using var scope = serviceScopeFactory.CreateScope();
+           // GcList = (List<Category>?)await scope.ServiceProvider.GetService<IRepo<Category>>()!.GetAllAsync();
+            GcList = ItemList.Where(w => w.ParentId == null).ToList();
             await InvokeAsync(StateHasChanged);
 
         }
@@ -57,7 +58,7 @@ namespace Kvota.Pages.Admin
         private void GetModalAdd()
         {
 
-            Item = new Category { GrandCategoryId = Id };
+            Item = new Category { ParentId = Id };
             _modalAdd?.ShowAsync();
 
         }
@@ -76,7 +77,7 @@ namespace Kvota.Pages.Admin
         }
         private async void SubmitUpdateGrand()
         {
-            ItemUpdate!.GrandCategoryId = _tempId;
+            ItemUpdate!.ParentId = _tempId;
             await CategoryRepo.Update(ItemUpdate);
 
         }

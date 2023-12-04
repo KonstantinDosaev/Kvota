@@ -4,9 +4,9 @@
 @using Kvota.Models.Products
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject IRepo<Brand> BrandService
-@inject IRepo<GrandCategory> GrandCategoryService
 @inject IRepo<Category> CategoryService
 @inject IRepo<Product> ProductService
+@inject IRepo<Storage> StorageRepo
 
 
 <h3>Загрузить продукты из Excel</h3>
@@ -18,4 +18,22 @@
     <button class="btn btn-secondary" type="submit">Загрузить</button>
 </form>
 <br/>
+<label>Выберите основной склад</label>
+<select class="form-control" @bind="_mainStorageId">
+    @if (Storages != null)
+    {
+        foreach (var storage in Storages)
+        {
+            <option value="@storage.Id">@storage.Name</option>
+        }
+    }
+</select>
 <button class="btn btn-danger btn" @onclick="@(e => ReadExcel())" role="button">Применить</button>
+@if (_errors != null && _errors.Any())
+{
+    <h3 class="m-2">Ошибки!!!</h3>
+    @foreach (var error in _errors)
+    {
+        <p>@error</p>
+    }
+}

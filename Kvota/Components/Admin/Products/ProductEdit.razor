@@ -3,8 +3,11 @@
 @using Kvota.Models.Products
 @using Kvota.Interfaces
 @inject IRepo<Product> ProductRepo
-@inject IRepo<GrandCategory> GrandCategoryRepo
+@inject IRepo<Category> CategoryRepo
 @inject IRepo<Brand> BrandRepo
+@inject IRepo<Storage> StorageRepo
+@inject IRepo<ProductsInStorage> ProductInStorageRepo
+
 <div class="row">
     <div class="col-lg-3 text-right">
         <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Вернуться назад</a>
@@ -41,22 +44,11 @@
             <label>Категория</label>
             <select class="form-control" @bind="Product.CategoryId">
                 <option value=@Product.CategoryId>@if (Product.Category != null){@Product.Category.Name}</option>
-                @if (GrandCategoryList != null)
+                @if (CategoryList != null)
                 {
-                    foreach (var grandCategory in GrandCategoryList)
+                    foreach (var category in CategoryList)
                     {
-                        <optgroup label="@grandCategory.Name">
-                            @if (grandCategory.Categories != null)
-                            {
-                                foreach (var item in grandCategory.Categories)
-                                {
-                                    if (item != null)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
-                                }
-                            }
-                        </optgroup>
+                        <option value="@category.Id">@category.Name</option>
                     }
                 }
             </select>
@@ -73,14 +65,28 @@
             <label>Скидка %</label>
             <InputNumber class="form-control" @bind-Value="Product.SalePrice" />
         </div>
-        <div class="form-group">
-            <label>Склад 1</label>
-            <InputNumber class="form-control" @bind-Value="Product.Quantity" />
-        </div>
-        <div class="form-group">
-            <label>Склад 2</label>
-            <InputNumber class="form-control" @bind-Value="Product.QuantityTwo" />
-        </div>
+        @if (Product.ProductsInStorage != null)
+        {
+            foreach (var productIn in Product.ProductsInStorage)
+            {
+                <div class="form-group d-flex m-1">
+                    <label>@productIn.Storage!.Name</label>
+                    <InputNumber class="form-control" @bind-Value="@productIn.Quantity" /> <button type="button" @onclick="()=>UpdateStorageQuantity(productIn)" class="btn btn-primary">Сохранить</button>
+                </div>
+            }
+        }
+       
+        @if (Storages!= null)
+        {
+            foreach (var storage in Storages)
+            {
+                <div class="form-group d-flex m-1">
+                    <label>@storage.Name</label>
+                    <InputNumber class="form-control" @bind-Value="@Quantity" /> <button type="button" @onclick="()=>UpdateStorageQuantity(new ProductsInStorage(){ProductId = Product.Id, StorageId = storage.Id,Quantity = Quantity})" class="btn btn-primary">Сохранить</button>
+                </div>
+            }
+        }
+       
         <div class="form-group">
             <label>Cрок поставки (дней)</label>
             <InputNumber class="form-control" @bind-Value="Product.DayToDelivery" />
