@@ -17,6 +17,7 @@
     <div class="row">
         <div class="col text-right">
             <a  class="btn btn-success btn-sm" href="/admin/product/create" role="button">Создать продукт</a>
+    @*        <a  class="btn btn-success btn-sm"@onclick="() => _visibleCreatedProductDialog=true" role="button">Создать продукт</a>*@
         </div>
         <div class="col text-right">
             <a class="btn btn-success btn-sm" href="/admin/product/excel" role="button">Загрузить из Excel</a>
@@ -107,6 +108,7 @@
                     <td class="text-right">
                         <a class="btn btn-primary btn-sm" href="/admin/prodoptions/@item.Name/@item.CategoryId/@item.Id" role="button">Опции</a>
                         <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Изменить</a>
+                          @*  <a class="btn btn-secondary btn-sm" @onclick="()=>OpenUpdateProductDialog(item.Id)" role="button">Изменить</a>*@
                             @if (!_home.ProductInHome.Contains(item.Id))
                             {
                                 <button class="btn btn-success btn-sm" @onclick="@(e =>  {AddProductToHome(item.Id); })" role="button">Добавить на главную</button>
@@ -134,4 +136,10 @@
         <StorageSettings/>
     </DialogContent>
 </MudDialog>
-
+<CreateProductDialog VisibleDialog="_visibleCreatedProductDialog"
+                     RefreshProductList="OnParametersSetAsync"
+                     Close="() => _visibleCreatedProductDialog = false"/>
+<EditProductDialog VisibleDialog="_visibleEditProductDialog"
+                   ProductId="ProductId"
+                   RefreshProductList="OnParametersSetAsync"
+                   Close="() => _visibleEditProductDialog = false"/>

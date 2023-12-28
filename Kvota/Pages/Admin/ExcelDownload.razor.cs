@@ -61,76 +61,7 @@ namespace Kvota.Pages.Admin
                 Message = "загружено";
             this.StateHasChanged();
         }
-        private List<ProductsInStorage> ProductInStorageConverter(string convertedString, Product product)
-        {
-
-            if (product.ProductsInStorage == null)
-            {
-                product.ProductsInStorage = new List<ProductsInStorage>();
-            }
-
-            if (convertedString != null && convertedString != string.Empty)
-            {
-                //if (Convert.ToInt32(convertedString.Trim()).)
-                //{
-                //    try
-                //    {
-                    
-                //    }
-                //    catch
-                //    {
-                //        Console.WriteLine(e);
-                //        throw;
-                //    }
-               // }
-
-                if (convertedString[^1]=='|')
-                {
-                     convertedString=convertedString.Remove(convertedString.Length-1);
-                }
-                if (convertedString[0] == '|')
-                {
-                    convertedString = convertedString.Remove(convertedString[0]);
-                }
-
-                var arr = convertedString.Split('|');
-                try
-                {
-                    foreach (var str in arr)
-                    {
-
-                        var res = str.Split(':');
-                        var storage = Storages.FirstOrDefault(w => w.Name == res[0].Trim());
-                        if (product.Storage != null && storage != null && product.Storage.Contains(storage))
-                        {
-                            product.ProductsInStorage!.FirstOrDefault(f => f.StorageId == storage.Id)!.Quantity =
-                                Convert.ToInt32(res[1].Trim());
-
-
-                        }
-                        else
-                        {
-                            var productsInStorage = new ProductsInStorage()
-                            {
-                                StorageId = storage.Id,
-                                ProductId = product.Id,
-                                Quantity = Convert.ToInt32(res[1].Trim())
-                            };
-                            product.ProductsInStorage.Add(productsInStorage);
-                        }
-                    }
-
-                   // ProductService.ManualSaveAsync();
-                }
-                catch
-                {
-                    _errors.Add($"Ошибка: проверьте правильность ячейки количества в продукте:---> {product.Name}");
-                }
-               
-            }
-
-            return product.ProductsInStorage;
-        }
+       
         public async Task ReadExcel()
         {
             if (string.IsNullOrEmpty(Patch)) return;
@@ -179,11 +110,6 @@ namespace Kvota.Pages.Admin
                                     if (_productsName != null && _productsName.Contains(product.Name))
                                     {
                                         var tempProduct = _prodList!.FirstOrDefault(w => w.Name == product.Name)!;
-                                        //product.Id = tempProduct.Id;
-                                        //product.DateTimeCreated = tempProduct.DateTimeCreated;
-                                        //product.Image = tempProduct.Image;
-                                        //product.ProductsInStorage = tempProduct.ProductsInStorage;
-                                        //product.Storage = tempProduct.Storage;
                                         product = tempProduct;
                                         _update = true;
                                     }
@@ -255,11 +181,9 @@ namespace Kvota.Pages.Admin
                                 }
                                 else if (cellItem.ColumnNumber == 6) product.Description = cellItem.Value.ToString();
                                 else if (cellItem.ColumnNumber == 7) product.Price = Math.Round((Convert.ToDecimal(cellItem.Value, CultureInfo.InvariantCulture)), 2);
-                                
                                 else if (cellItem.ColumnNumber == 8) product.DayToDelivery = Convert.ToInt32(Convert.ToDouble(cellItem.Value, CultureInfo.InvariantCulture));
                                 else if (cellItem.ColumnNumber == 9) product.SalePrice = Math.Round((Convert.ToDecimal(cellItem.Value, CultureInfo.InvariantCulture)), 2);
                                 
-                                //else if (col == 10) order.QuantityTwo = Convert.ToInt32(worksheet.Cells[row, col].Value.ToString());
                             }
                             if (cellItem.ColumnNumber >= 10)
                             {
@@ -293,13 +217,6 @@ namespace Kvota.Pages.Admin
                         if (!_update)
                         {
                             product.Image = Links.DefaultImageProduct;
-                            //if (product.ProductsInStorage!=null && product.ProductsInStorage.Any())
-                            //{
-                            //    foreach (var VARIABLE in COLLECTION)
-                            //    {
-
-                            //    }
-                            //}
                             product.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
                             product.DateTimeUpdated = product.DateTimeCreated;
                             products.Add(product);
@@ -307,8 +224,6 @@ namespace Kvota.Pages.Admin
                         else
                         {
                             product.DateTimeUpdated = DateTime.UtcNow + new TimeSpan(0, 3, 0, 0);
-                            //using var scope = ServiceScopeFactory.CreateScope();
-                            //await scope.ServiceProvider.GetService<IRepo<Product>>()!.Update(product);
                             await ProductService.ManualSaveAsync();
 
                         }
@@ -325,8 +240,6 @@ namespace Kvota.Pages.Admin
 
             if (products.Count!=0)
             {
-                //using var scope = ServiceScopeFactory.CreateScope();
-                //await scope.ServiceProvider.GetService<IRepo<Product>>()!.AddRangeAsync(products);
                 await ProductService.AddRangeAsync(products);
             }
             

@@ -6,10 +6,11 @@ using FastExcel;
 using Kvota.Constants;
 using Kvota.Models.Content;
 using Microsoft.JSInterop;
+using MudBlazor;
 
 namespace Kvota.Pages.Admin
 {
-    partial class ProductsTool
+    partial class ProductsToolV2
     {
         [Inject]
         public NavigationManager? NavigationManager { get; set; }
@@ -31,22 +32,21 @@ namespace Kvota.Pages.Admin
         private List<Storage> _storage;
 
         private bool _visibleStorageDialog;
-        bool _visibleCreatedProductDialog;
-        bool _visibleEditProductDialog;
-        public Guid ProductId;
         protected override async Task OnInitializedAsync()
         {
-            _pagedList = new List<Product>();
-            using var scope = ServiceScopeFactory.CreateScope();
-            ProductService = scope.ServiceProvider.GetService<IRepo<Product>>()!;
-            Products = await ProductService.GetAllAsync();
-            _filteredList = Products;
-            _home = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
+            //_pagedList = new List<Product>();
+            //using var scope = ServiceScopeFactory.CreateScope();
+            //ProductService = scope.ServiceProvider.GetService<IRepo<Product>>()!;
+            //Products = await ProductService.GetAllAsync();
+            //_filteredList = Products;
+            //_home = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
 
-            LoadMore(0);
-           // GetPagedList(_filteredList);
-           // await InvokeAsync(StateHasChanged);
+            //LoadMore(0);
+            if (table != null) await table.ReloadServerData();
         }
+
+ 
+
         //private async void DeleteProduct(Guid id,string pathImage)
         //{
         //    var path = $"{Env.WebRootPath}\\{pathImage}";
@@ -66,11 +66,6 @@ namespace Kvota.Pages.Admin
             }
             await ProductRepo.DeleteRangeAsync(ids);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        }
-        private void OpenUpdateProductDialog(Guid id)
-        {
-            ProductId = id;
-            _visibleEditProductDialog = true;
         }
         protected  void GetFilterList(IEnumerable<Product> filteredList)
         {
@@ -231,19 +226,5 @@ namespace Kvota.Pages.Admin
             return result;
         }
     }
-    record MyObject
-    {
-        public string NameColumn { get; set; }
-        public string PartColumn { get; set; }
-        public string BrandColumn { get; set; }
-        public string GCategotyColumn { get; set; }
-        
-        public string CategoryColumn { get; set; }
-        public string? DescriptionColumn { get; set; }
-        public decimal? PriceColumn { get; set; }
-        public string? QuntityColumn { get; set; }
-        public int? TwoQuntityColumn { get; set; }
-        public int? DateDeleveyColumn { get; set; }
-        public decimal? SalePrice { get; set; }
-    }
+   
 }

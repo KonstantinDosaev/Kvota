@@ -1,20 +1,10 @@
 ﻿<h3>CreateProduct</h3>
 @page "/admin/product/create"
 @attribute [Authorize(Roles = "Administrators")]
-@using Kvota.Models.Products
 @using Kvota.Interfaces
 @using Kvota.Repositories.Products
-@using Org.BouncyCastle.Math.EC
-@using DocumentFormat.OpenXml.Office2016.Excel
-@using Microsoft.AspNetCore.HttpLogging
-@using Org.BouncyCastle.Math.EC.Multiplier
-@using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle
-@using Microsoft.CodeAnalysis.CodeActions
-@using Microsoft.EntityFrameworkCore
-@using System.Runtime.InteropServices.ComTypes
-@using NuGet.Protocol
 @inject IRepo<Product> ProductRepo
-@inject IRepo<CategoryRepo> CategoryRepo
+@inject IRepo<Category> CategoryRepo
 @inject IRepo<Brand> BrandRepo
 @inject IRepo<Storage> StorageRepo
 <div class="row">

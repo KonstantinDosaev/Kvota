@@ -3,7 +3,7 @@
 @if (category.Children == null || !category.Children.Any())
  {
    
-     <MudListItem Dense="true" OnClick="@CloseCategoryDrawerCallback" Href=@($"/ddd/{category.Id}") Value="@category.Name">
+     <MudListItem Dense="true"  Href=@($"/ddd/{category.Id}") Value="@category.Name">
          <CategoryRelocatedButtonPanel CurrentCategory="@category" 
                                        CheckedParentCategory="@CheckedParentCategory" 
                                        CheckedRelocatedCategory="@CheckedRelocatedCategory" 
@@ -35,7 +35,7 @@
 
              @foreach (var subCategory in @category.Children.OrderBy(o => o.Name))
              {
-                 <CategoryMenuItemComponent CloseCategoryDrawerCallback="@CloseCategoryDrawerCallback"
+                 <CategoryMenuItemComponent 
                                             category="@subCategory"
                                             CheckedRelocatedCategory="CheckedRelocatedCategory"
                                             CheckedParentCategory="@CheckedParentCategory"

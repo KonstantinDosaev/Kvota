@@ -6,20 +6,21 @@
 
 
 @if (_pagedList != null)
-{
+{   
     <div class="productlist">
+        <h4>@Title</h4>
         <div class="productlist__items"></div>
         @if (Groups != null)
         {
-            if (Groups==GroupNames.GroupBrand)
+            if (Groups == GroupNames.GroupBrand)
             {
                 <ProductFilterComponent Products="Products" BrandsFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
             }
-            if (Groups==GroupNames.GroupCategory)
+            if (Groups == GroupNames.GroupCategory)
             {
                 <ProductFilterComponent Products="Products" CategoriesFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
             }
-           
+
         }
         else
         {
@@ -29,14 +30,14 @@
         {
             foreach (var product in _pagedList)
             {
-                <ProductListComponent Product="product" />
+                <ProductListComponent Product="product"/>
             }
         }
         else
         {
             <div>Список пуст...</div>
         }
-        
+
         @if (_filteredList!.Count() > _quantityInPage)
         {
             <div class="button__block" style="text-align: center">

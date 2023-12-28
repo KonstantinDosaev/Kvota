@@ -2,9 +2,8 @@
 
 namespace Kvota.Models.Products
 {
-    public class ProductsInStorage: IIdentifiable
+    public class ProductsInStorage
     {
-        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public virtual Product? Product { get; set; }
         public Guid StorageId { get; set; }

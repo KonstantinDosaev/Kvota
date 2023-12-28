@@ -49,16 +49,16 @@ namespace Kvota.Components.Admin.Products
                 Product.Image = patch;
             await ProductRepo.Update(Product);
         }   
-        private async void UpdateStorageQuantity(ProductsInStorage item)
-        {
-            if (Product!.ProductsInStorage != null && Product.ProductsInStorage.Contains(item))
-            {
-                await ProductInStorageRepo.Update(item);
-            }
-            else
-            {
-                await ProductInStorageRepo.AddAsync(item);
-            }
-        }
+        //private async void UpdateStorageQuantity(ProductsInStorage item)
+        //{
+        //    if (Product!.ProductsInStorage != null && Product.ProductsInStorage.Contains(item))
+        //    {
+        //        await ProductInStorageRepo.Update(item);
+        //    }
+        //    else
+        //    {
+        //        await ProductInStorageRepo.AddAsync(item);
+        //    }
+        //}
     }
 }

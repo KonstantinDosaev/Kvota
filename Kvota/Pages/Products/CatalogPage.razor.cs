@@ -1,5 +1,7 @@
 ﻿using Kvota.Interfaces;
 using Kvota.Models.Products;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Kvota.Pages.Products
 {
@@ -7,7 +9,36 @@ namespace Kvota.Pages.Products
     {
         private IEnumerable<Category>? Categories { get; set; }
 
+   
+        MudListItem? _selectedItem;
+        [Parameter]
+        public object? SelectedValue { get; set; } = 1;
+        string _value;
+
+        
+        [Parameter]
+        public Category? SelectedCategory
+        {
+            get => (Category?)SelectedValue;
+            set => SelectedValue = value;
+        }
+        [Parameter]
+        public EventCallback<Category> SelectedCategoryChanged { get; set; }
+        [Parameter]
+        public EventCallback<Category> IsSetCategory { get; set; }
         protected override async Task OnInitializedAsync()
+        {
+            await GetCategories();
+        }
+
+        async Task ChangeValue()
+        {
+            SelectedCategory = (Category?)SelectedValue;
+            await SelectedCategoryChanged.InvokeAsync((Category?)SelectedValue);
+            await IsSetCategory.InvokeAsync((Category?)SelectedValue);
+        }
+
+        private async Task GetCategories()
         {
             using var scope = serviceScopeFactory.CreateScope();
             Categories = await scope.ServiceProvider.GetService<IRepo<Category>>()!.GetAllAsync();

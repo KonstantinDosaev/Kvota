@@ -1,10 +1,10 @@
-﻿@page "/productlist"
+﻿@page "/categories"
 @using Kvota.Constants
 @inject IServiceScopeFactory serviceScopeFactory
 @using Kvota.Components.CategoryDrawer
 
 <div class="catalog__body">
-    @*    <div class="catalog__grands">
+        <div class="catalog__grands">
         @if (Categories != null)
         {
             @foreach (var items in Categories.OrderBy(o=>o.Name))
@@ -12,26 +12,33 @@
                 <div class="catalog__grand grand kvota__body-shadow">
                     <div class="grand__image-body"><img class="grand__image" src="@items.Image"/></div>
                     <div class="grand__body">
-                        <div class="grand__title">@items.Name</div>
+                        @if (items.Children == null || !items.Children.Any())
+                        {<a class="grand__title" href="@GroupNames.GroupCategory/@items.Name/@items.Id">@items.Name</a>}
+                        else{<div class="grand__title">@items.Name</div>}
+                        
                         <div class="grand__category category-grand">
 
-                            @if (items.Children != null && !items.Children.Any())
-                            {
-                                foreach (var item in items.Children.OrderBy(o=>o.Name))
-                                {
-                                    <div class="category-grand__body">
-                                        <a class="category-grand__link" href="@GroupNames.GroupCategory/@item.Name/@item.Id">@item.Name</a>
-                                      
-                                    </div>
-                                }
-                            }
+                            <div class="category-grand__body">
+                                @*<a class="category-grand__link" href="@GroupNames.GroupCategory/@item.Name/@item.Id">@item.Name</a>*@
+                                <MudList Style="" Clickable="true" @bind-SelectedItem="_selectedItem" @bind-SelectedValue="SelectedValue" Color="Color.Primary">
+                                    @if (items.Children != null)
+                                    {
+                                        foreach (var category in items.Children.OrderBy(o => o.Name))
+                                        {
+                                            <CategoriesListReqursion Category="@category"
+                                                                     RefreshCategoryListCallback="GetCategories"
+                                                                     ChangeValue="ChangeValue"/>
+                                        }
+                                    }
+                                </MudList>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
         }
-    </div>*@
-    <CategoryDrawerComponent />
+    </div>
+ 
 
 </div>
 

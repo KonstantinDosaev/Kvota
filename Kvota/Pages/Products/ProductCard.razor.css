@@ -1,6 +1,10 @@
 ﻿.product-card__name {
     padding: 0.5rem 3.5rem 0 0;
     margin: 0 0 1.5rem 0;
+    max-width: 600px;
+    overflow-wrap:break-word;
+
+  
 }
 .product-card__body {
     display: flex;
@@ -22,6 +26,7 @@
 .product-card__top-body {
     flex: 0 0 60%;
     padding: 0 1rem;
+    
 }
 .top-body__num {
     display: flex;

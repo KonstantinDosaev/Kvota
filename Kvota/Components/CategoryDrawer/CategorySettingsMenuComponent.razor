@@ -1,7 +1,9 @@
 ﻿@using Size = MudBlazor.Size
 @using Kvota.Interfaces
+@using Kvota.Components.Admin
 @inject IRepo<Category> CategoryService
 @inject IRepo<Product> ProductService
+@inject IRepo<CategoryOption> CategoryOptionService
 
 <MudMenu  ActivationEvent="@MouseEvent.LeftClick">
     <ActivatorContent>
@@ -38,7 +40,7 @@
     <DialogContent>
         <MudText Class="pb-3"><MudIcon Size="Size.Large" Color="Color.Warning" Icon="@Icons.Material.Filled.WarningAmber" />Подтвердите удаление</MudText>
        
-        @if (CurrentCategory.Products != null && CurrentCategory.Products.Any())
+        @if (CurrentCategory!.Products != null && CurrentCategory.Products.Any())
         {
             @if(AllCategories!=null && _visibleRelocatedProductDialog){
                 <MudText Class="pb-3 text-decoration-underline text-danger">Выберите категорию в которую переместить содержимое</MudText>
@@ -56,7 +58,7 @@
                 <MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="OpenRelocatedProductDialog" Color="Color.Warning">Переместить</MudButton>
             }
         }
-       @if (CurrentCategory.Children.Any())
+       @if (CurrentCategory.Children!.Any())
        {
             <MudText Class="pb-3 text-decoration-underline text-danger">Все под категории по данной категории переместятся в корневой раздел категорий!!!</MudText>
        }
@@ -73,9 +75,48 @@
         <MudCard>
             <MudForm @ref="_updateCategoryForm" Model="@CurrentCategory">
                 <MudCardContent>
-                    <MudTextField @bind-Value="CurrentCategory.Name" T="string" Label="Название категории" Required="true" RequiredError="Введите название категории!" />
+                    <MudTextField @bind-Value="CurrentCategory!.Name" T="string" Label="Название категории" Required="true" RequiredError="Введите название категории!" />
                 </MudCardContent>
+                @if (CurrentCategory!.Children == null || !CurrentCategory.Children.Any())
+                {
+                    <p class="mt-6 fs-5">Характеристики продуктов категории</p>
+                    @if (CurrentCategory.CategoryOptions != null)
+                    {
+                        @foreach (var option in CurrentCategory.CategoryOptions)
+                        {
+                            <div class="d-flex align-items-center mb-3">
+                                <MudIconButton Icon="@Icons.Material.Sharp.DeleteOutline" Color="Color.Warning" OnClick="() => DeleteCategoryOption(option)"></MudIconButton>
+                                <MudTextField @bind-Value="@option.Name"
+                                              For="@(() => @option.Name)"
+                                              Immediate="true"
+                                              Label="Название" />
+                                <MudTextField @bind-Value="@option.Measure"
+                                              For="@(() => @option.Measure)"
+                                              Immediate="true"
+                                              Label="Мера измерения" />
+                                <MudIconButton Icon="@Icons.Material.Sharp.Check" Color="Color.Success" OnClick="() => SaveCategoryOption(option)"></MudIconButton>
+                            </div>
+                        }
+                        <MudButton Class="m-1" Variant="Variant.Filled" Size="Size.Small"
+                                   OnClick="() => CurrentCategory.CategoryOptions.Add(new CategoryOption() { CategoryId = CurrentCategory.Id })"
+                                   Style="margin-top: 4rem;" Color="Color.Primary">
+                            Добавить характеристику
+                            <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2" />
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Class="m-1" Variant="Variant.Filled" Size="Size.Small"
+                                   OnClick="() => CurrentCategory.CategoryOptions = new List<CategoryOption>() { new CategoryOption() { CategoryId = CurrentCategory.Id } }"
+                                   Style="margin-top: 4rem;" Color="Color.Primary">
+                            Добавить характеристику
+                            <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2" />
+                        </MudButton>
+                        <br />
+                    }
+                }
             </MudForm>
+            <FileUploads MyDirectory="categories" Name="@CurrentCategory!.Id.ToString()" OnClickCallback="AddImagePatch"></FileUploads> <br />
             <MudCardActions>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await UpdateCategory())">Применить</MudButton>
             </MudCardActions>
@@ -94,14 +135,14 @@
     private MudForm? _createCategoryForm;    
     private MudForm? _updateCategoryForm;
 
-    MudListItem selectedItem;
+    MudListItem? selectedItem;
     object selectedValue = 1;
     List<Category>? AllCategories { get; set; }
     [Parameter]
-    public Category CurrentCategory { get; set; }
+    public Category? CurrentCategory { get; set; }
 
-    public Category CategoryToRelocateProduct { get; set; }
-    private string _categoryName;
+    public Category? CategoryToRelocateProduct { get; set; }
+    private string? _categoryName;
 
     [Parameter]
     public EventCallback RefreshCategoryListCallback { get; set; }
@@ -135,8 +176,8 @@
     }
     private async Task RelocateProductsInOtherCategory()
     {
-        var relocatedId = CategoryToRelocateProduct.Id;
-        var tempListProduct = CurrentCategory.Products;
+        var relocatedId = CategoryToRelocateProduct!.Id;
+        var tempListProduct = CurrentCategory!.Products;
         foreach (var product in tempListProduct!)
         {
             product.CategoryId = relocatedId;
@@ -154,5 +195,23 @@
             _visibleUpdateCategoryDialog = false;
         }
     }
-
+    private async Task DeleteCategoryOption(CategoryOption option)
+    {
+        await CategoryOptionService.DeleteAsync(option.Id);
+        
+            CurrentCategory!.CategoryOptions?.Remove(option);
+    }
+    private async Task SaveCategoryOption(CategoryOption option)
+    {
+        await CategoryOptionService.Update(option);
+        await InvokeAsync(StateHasChanged);
+     
+    }
+    private async void AddImagePatch(string patch)
+    {
+        if (patch == string.Empty) return;
+        if (CurrentCategory != null)
+            CurrentCategory.Image = patch;
+        await CategoryService.Update(CurrentCategory);
+    }   
 }

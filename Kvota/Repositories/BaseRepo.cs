@@ -1,6 +1,7 @@
 ﻿using Kvota.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
+using Kvota.Models.Products;
 
 namespace Kvota.Repositories
 {
@@ -97,6 +98,7 @@ namespace Kvota.Repositories
 
         public virtual async Task<IEnumerable<T>> GetSearch(string searchString) => await Table.ToListAsync();
 
+        public virtual async  Task<SortPagedResponse<ProductsDto>> GetBySortPagedSearchChapterAsync(SortPagedRequest request)=> throw new InvalidOperationException();
 
         public async Task<int> SaveAsync(T entity)
         {

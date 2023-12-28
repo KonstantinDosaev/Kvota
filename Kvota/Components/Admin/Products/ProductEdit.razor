@@ -6,7 +6,7 @@
 @inject IRepo<Category> CategoryRepo
 @inject IRepo<Brand> BrandRepo
 @inject IRepo<Storage> StorageRepo
-@inject IRepo<ProductsInStorage> ProductInStorageRepo
+@*@inject IRepo<ProductsInStorage> ProductInStorageRepo*@
 
 <div class="row">
     <div class="col-lg-3 text-right">
@@ -70,8 +70,13 @@
             foreach (var productIn in Product.ProductsInStorage)
             {
                 <div class="form-group d-flex m-1">
-                    <label>@productIn.Storage!.Name</label>
-                    <InputNumber class="form-control" @bind-Value="@productIn.Quantity" /> <button type="button" @onclick="()=>UpdateStorageQuantity(productIn)" class="btn btn-primary">Сохранить</button>
+                    <label>
+                        @if (productIn.Storage != null)
+                        {
+                            @productIn.Storage!.Name
+                        }
+                    </label>
+                    <InputNumber class="form-control" @bind-Value="@productIn.Quantity" /> 
                 </div>
             }
         }
@@ -82,7 +87,8 @@
             {
                 <div class="form-group d-flex m-1">
                     <label>@storage.Name</label>
-                    <InputNumber class="form-control" @bind-Value="@Quantity" /> <button type="button" @onclick="()=>UpdateStorageQuantity(new ProductsInStorage(){ProductId = Product.Id, StorageId = storage.Id,Quantity = Quantity})" class="btn btn-primary">Сохранить</button>
+                    <InputNumber class="form-control" @bind-Value="@Quantity" /> <button type="button" 
+                                                                                         @onclick="()=> { Product.ProductsInStorage ??=new List<ProductsInStorage>(); Product.ProductsInStorage.Add(new ProductsInStorage() { ProductId = Product.Id, StorageId = storage.Id, Quantity = Quantity }); }" class="btn btn-primary">Сохранить</button>
                 </div>
             }
         }

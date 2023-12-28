@@ -10,10 +10,7 @@
 @if (Product != null)
 {
     <div class="product-card">
-        
-        <div >
-            
-        </div>
+
         <div class="product-card__body">
 
             <a class="product-card__image-body" @onclick="@(e => GetModalImage())">
@@ -35,18 +32,18 @@
             <div class="product-card__top-body top-body">
                 <h1 class="product-card__name">@Product.Name</h1>
                 <div class="top-body__num">
-                    <p class="product-card__pnumber product__text">Парт-номер:
+                    <span class="product-card__pnumber product__text">Парт-номер:
                         @if (Product.PartNumber != null)
                         {
                             @Product.PartNumber
                         }
-                    </p>
+                    </span>
                     <div>
                         @if (Product.Brand != null)
                         {
                             if (Product.Brand.Image==null)
                             {
-                                <span class="product-card__brand product__text">@Product.Brand!.Name</span>
+                                <span class="product-card__brand product__text"><span class="product__text">Производитель:</span> @Product.Brand!.Name</span>
                             }
                             else
                             {

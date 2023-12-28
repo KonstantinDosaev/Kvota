@@ -1,0 +1,34 @@
+﻿@using Kvota.Interfaces
+@using Size = MudBlazor.Size
+@inject IRepo<Product> ProductRepo
+<MudDialog @bind-IsVisible="VisibleDialog" Options="new DialogOptions() { FullWidth = true }">
+    <TitleContent>
+        <div style="text-align: right">
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="Close" Color="Color.Info">Закрыть</MudButton>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudCard>
+            <ProductForm
+                OnValidSubmit="CreateProduct"
+                Product="Product"
+                ButtonText="Сохранить"
+                TitleText="Создание продукта"/>
+
+        </MudCard>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    [Parameter] public bool VisibleDialog { get; set; }
+    [Parameter] public EventCallback RefreshProductList { get; set; }
+    [Parameter] public EventCallback Close { get; set; }
+    public Product Product { get; set; }= new Product(){Id = Guid.NewGuid()};
+
+    async Task CreateProduct()
+    {
+        await ProductRepo.AddAsync(Product);
+        await RefreshProductList.InvokeAsync();
+    }
+}

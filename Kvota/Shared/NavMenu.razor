@@ -5,7 +5,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         
-        <a class="navbar-brand" href=""><i style="margin-right: 10px" class="bi bi-cpu"></i>CVOTA.RU</a>
+        <a class="navbar-brand" href=""><i style="margin-right: 10px" class="bi bi-cpu"></i>CINTY.RU</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,7 +22,7 @@
         <div class="nav-item px-3">
             @if (CatalogView)
             {
-                <NavLink class="nav-link" style="cursor: pointer" @onclick="() => _categoryDrawerRef.OpenCategoryDrawer()">
+                <NavLink class="nav-link" style="cursor: pointer" href="categories">
                     <span class="oi oi-book" aria-hidden="true"></span> Каталог
                 </NavLink>
             }
@@ -66,7 +66,7 @@
         </AuthorizeView>
     </nav>
 </div>
-@*<CategoryDrawerComponent @ref="_categoryDrawerRef" />*@
+
 @code {
     [Parameter]
     public CategoryDrawerComponent? _categoryDrawerRef { get; set; }

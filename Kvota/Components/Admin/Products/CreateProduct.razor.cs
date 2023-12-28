@@ -21,7 +21,7 @@ namespace Kvota.Components.Admin.Products
             Storages = (List<Storage>)await StorageRepo.GetAllAsync();
             Product = new Product();
             BrandList = (List<Brand>)await BrandRepo.GetAllAsync();
-            CategoryList = (List<Category>)await CategoryRepo.GetAllAsync();
+            CategoryList = await CategoryRepo.GetAllAsync() as List<Category>;
             CategoryList = CategoryList.Where(w => w.Children == null || !w.Children.Any());
             ProductsInStorage.ProductId = Product.Id;
             await InvokeAsync(StateHasChanged);
@@ -29,7 +29,8 @@ namespace Kvota.Components.Admin.Products
 
         private async void SubmitProduct()
         {
-            Product.ProductsInStorage = new List<ProductsInStorage>(){ProductsInStorage};
+            if (ProductsInStorage.ProductId != Guid.Empty || ProductsInStorage.StorageId!=Guid.Empty )
+                Product.ProductsInStorage = new List<ProductsInStorage>() { ProductsInStorage };
             Product.Image = Links.DefaultImageProduct;
             Product.DateTimeCreated = DateTime.UtcNow + new TimeSpan(0,3,0,0);
             Product.DateTimeUpdated = Product.DateTimeCreated;

@@ -1,0 +1,39 @@
+﻿@using Kvota.Constants
+@if (Category!.Children == null || !Category.Children.Any())
+{
+
+    <MudListItem Dense="true" Href=@($"{GroupNames.GroupCategory}/{Category.Name}/{Category.Id}") OnClick="ChangeValue" Value="@Category">
+        @Category.Name
+    </MudListItem>
+
+}
+else
+{
+
+    <MudListItem Text="">
+        <ChildContent>
+            @Category.Name
+        </ChildContent>
+        <NestedList>
+            @foreach (var subCategory in @Category.Children.OrderBy(o => o.Name))
+            {
+                <CategoriesListReqursion Category="@subCategory"
+                                                 RefreshCategoryListCallback="RefreshCategoryListCallback"
+                                                 ChangeValue = "ChangeValue"/>
+            }
+        </NestedList>
+
+    </MudListItem>
+}
+@code {
+    [Parameter]
+    public Category? Category { get; set; }
+    
+
+    [Parameter]
+    public EventCallback ChangeValue { get; set; }
+    
+
+    [Parameter]
+    public EventCallback RefreshCategoryListCallback { get; set; }
+}

@@ -146,7 +146,7 @@
                         <div class="product-home__item">
                             <div class="product-home__body kvota__body-shadow">
                                 <a @onclick="@(e => GetModalUpdate(product.Id))">
-                                    @if (Directory.Exists($"{Links.RootPath}{product.Image}"))
+                                    @if (Directory.Exists($"{Links.RootPath}{product.Image}") && product.Image!=null)
                                     {
                                         var imageFirst = Directory.GetFiles($"{Links.RootPath}{product.Image.Replace("\\", "/")}").FirstOrDefault();
                                         var fileInfo = (product.Image.Replace("\\", "/")) + "/" + (new FileInfo(imageFirst!).Name);

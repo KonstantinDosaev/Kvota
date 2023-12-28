@@ -23,6 +23,7 @@ namespace Kvota.Interfaces
         int Save(T entity);
         T GetOne(Guid id); 
         Task<IEnumerable<T>> GetSearch(string searchString);
+        Task<SortPagedResponse<ProductsDto>> GetBySortPagedSearchChapterAsync(SortPagedRequest request);
 
 
     }

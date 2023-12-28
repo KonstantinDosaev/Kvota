@@ -20,6 +20,7 @@ namespace Kvota.Pages.Products
         public Guid GroupId { get; set; }
         private int _quantityInPage = 10;
         private int _currentPageCount = 10;
+        private string? Title;
         protected override async Task OnInitializedAsync()
         {
            await InitList();
@@ -42,7 +43,9 @@ namespace Kvota.Pages.Products
             }
             _pagedList = new List<Product>();
             _filteredList = Products;
-
+            var tempCategoryNameList = _filteredList.Where(w=>w.Category!=null).Select(s => s.Category!.Name).Distinct().ToList();
+         
+            Title = tempCategoryNameList.Count()==1 ? tempCategoryNameList.SingleOrDefault() : null;
             LoadMore(0);
         }
         private void LoadMore(int newPageNumber)
