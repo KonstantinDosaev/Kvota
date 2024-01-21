@@ -60,10 +60,11 @@ namespace Kvota.Pages.Admin
         //}
         private async void DeleteCheckedProduct(List<Guid> ids)
         {
-            foreach (var id in ids)
-            {
-                DeleteImage(id);
-            }
+          
+            //foreach (var id in ids)
+            //{
+            //    DeleteImage(id);
+            //}
             await ProductRepo.DeleteRangeAsync(ids);
             NavigationManager!.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
@@ -174,7 +175,7 @@ namespace Kvota.Pages.Admin
             workbook.SaveAs(outputFile.FullName);
       
 
-            var uri = new Uri(NavigationManager.Uri);
+            var uri = new Uri(NavigationManager!.Uri);
             var urlSave = uri.GetLeftPart(UriPartial.Authority);
             var fileName = "ExcelOutputKvota.xlsx";
             var fileURL = $"{urlSave}/excel/ExcelOutputKvota.xlsx";
@@ -207,14 +208,14 @@ namespace Kvota.Pages.Admin
         }
         private async void AddProductToHome(Guid id)
         {
-            if (_home.ProductInHome.Contains(id)) return;
+            if (_home!.ProductInHome != null && _home.ProductInHome.Contains(id)) return;
             _home.ProductInHome ??= new List<Guid>();
             _home.ProductInHome.Add(id);
             await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);
         }
         private async void RemoveProductFromHome(Guid id)
         {
-            if (_home.ProductInHome == null) return;
+            if (_home!.ProductInHome == null) return;
             _home.ProductInHome.Remove(id);
               
             await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);

@@ -1,8 +1,11 @@
-﻿@using Kvota.Models.Products;
-@using Kvota.Interfaces
+﻿@using Kvota.Interfaces
 @inject IRepo<Product> ProductRepo
 @page "/search/{searchstring}"
 @using Kvota.Components
+@using Kvota.Constants
+@using Kvota.Models.Content
+
+@inject ISerializeService<Home> HomeSerialize
 
 
 <div class="searchPage__block">
@@ -25,13 +28,31 @@
     private List<Product>? SearchList { get; set; } 
     [Parameter]
     public string SearchString { get; set; } = string.Empty;
+    private Home? _home;
 
     protected override async Task OnParametersSetAsync()
     {
         if (!string.IsNullOrEmpty(SearchString))
         {
             SearchList = (List<Product>)await ProductRepo.GetSearch(SearchString);
+            var productSearchingByPartnumber = SearchList.FirstOrDefault(f => f.PartNumber == SearchString);
+            if (productSearchingByPartnumber!= null)
+            {
+                _home = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
+                await AddProductToHome(productSearchingByPartnumber.Id);
+            }
         }
+    }
+    private async Task AddProductToHome(Guid id)
+    {
+        if (_home!.HotSearchProducts != null && _home.HotSearchProducts.Contains(id)) return;
+        _home.HotSearchProducts ??= new List<Guid>();
+        _home.HotSearchProducts.Add(id);
+        if (_home.HotSearchProducts.Count>15)
+        {
+            _home.HotSearchProducts.RemoveAt(0);
+        }
+        await HomeSerialize.Serialize($"{Links.RootPath}/{Links.HomeContentJson}", _home);
     }
 }
 <style>

@@ -10,7 +10,7 @@
 @inject IRepo<Product> ProductRepos
 @inject IJSRuntime JsRuntime
 @inject ISerializeService<Home> HomeSerialize
-<PageTitle>Квота</PageTitle>
+<PageTitle>Cinty</PageTitle>
 @if (Content != null)
 {
     <div class="home_body">
@@ -25,72 +25,54 @@
          
         </div>
         <div class="home_search sticky-top kvota__body-shadow"><SerchCotactLineComponent /></div>
-        <div class="partner kvota__body-shadow">
-            <h2 class="home_image_text1">@Content.PartnerTitle</h2>
-            @if (!BrandView)
-            {
-                <div class="row partner__lables">
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
-                    <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
-                </div>
-            }
-            else
-            {
-                <div class="row partner__lables">
-                    @if (BrandList != null)
-                    {
-                        foreach (var item in BrandList)
-                        {
-                            var uri  = item.Image!.Replace("\\", "/");
-
-                            <a title="@item.Name" class="partner__lable" href="@GroupNames.GroupBrand/@item.Name/@item.Id" style="background-image: url(@uri);"></a>
-                        }
-                    }
-                </div>
-            }
-        </div>
-
-        <div class="company">
-            <div class="text_col company__text kvota__body-shadow">
-                <h2> О нас</h2> <br/>
-                @foreach (var item in AboutArr)
+    <div class="partner kvota__body-shadow">
+        <div class="partner__background"></div>
+        <h2 class="home_image_text1">@Content.PartnerTitle</h2>
+        @if (!BrandView)
+        {
+            <div class="row partner__lables">
+                <span class="partner__lable" style="background-image: url(/image/manufactures/1.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/2.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/3.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/4.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/5.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/6.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/7.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/8.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/9.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/10.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/11.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/12.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/13.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/14.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/15.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/16.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/17.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/18.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/19.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/20.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/21.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/22.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/23.jpg);"></span>
+                <span class="partner__lable" style="background-image: url(/image/manufactures/24.jpg);"></span>
+            </div>
+        }
+        else
+        {
+            <div class="row partner__lables">
+                @if (BrandList != null)
                 {
-                    if (!item.Contains('~'))
+                    foreach (var item in BrandList)
                     {
-                        <div style="font-size: 1.25rem">@item</div>
-                    }
-                    else
-                    {
-                        <br/>
+                        var uri = item.Image!.Replace("\\", "/");
+
+                        <a title="@item.Name" class="partner__lable" href="/categories/brand/@item.Id" style="background-image: url(@uri);"></a>
                     }
                 }
             </div>
-            <div class="company__image kvota__body-shadow">
-
-            </div>
-        </div>
+        }
+        <div class="text-end m-2"><a class="partner__button" href="/brands">Все производители</a></div>
+    </div>
         <div class="home_sliderblock kvota__body-shadow">
             <div class="homeslider">
                 <div class="homeslider_item" style="background: url(/image/background/aboutbg2.jpg) 50%/cover no-repeat;">
@@ -125,6 +107,26 @@
                 </div>
             </div>
         </div>
+        <div class="company">
+            <div class="text_col company__text kvota__body-shadow">
+                <h2> О нас</h2> <br/>
+                @foreach (var item in AboutArr)
+                {
+                    if (!item.Contains('~'))
+                    {
+                        <div style="font-size: 1.25rem">@item</div>
+                    }
+                    else
+                    {
+                        <br/>
+                    }
+                }
+            </div>
+            <div class="company__image kvota__body-shadow">
+
+            </div>
+        </div>
+
         <div class="form kvota__body-shadow">
             <div class="form__text">
                 <div style="font-size: 1.25rem">Текст о том какие мы молодцы и как своевременно  и профессионально обрабатываем заявки и вопросы</div>
@@ -137,10 +139,15 @@
         </div>
         @if (ProductList is {Count: > 0 })
         {
-            <div class="home__product product-home">
+            <div class="home__product product-home kvota__body-shadow">
                 <h2 class="home_image_text1 product-home__title">@Content.ProductTitle</h2> <br/>
-
-                <div class="product-home__slider">
+              
+                    @foreach (var product in ProductList)
+                    {
+                        <ProductListComponent Product="product"/>
+                    }
+             
+                @*<div class="product-home__slider">
                     @foreach (var product in ProductList)
                     {
                         <div class="product-home__item">
@@ -171,7 +178,20 @@
 
                         </div>
                     }
-                </div>
+                </div>*@
+
+            </div>
+        }
+        @if (SearchingProducts is { Count: > 0 })
+        {
+            <div class="home__product product-home kvota__body-shadow">
+                <h2 class="home_image_text1 product-home__title">Частые запросы поиска</h2> <br />
+
+                @foreach (var product in SearchingProducts)
+                {
+                    <ProductListComponent Product="product" />
+                }
+
 
             </div>
         }
@@ -280,10 +300,10 @@
         }
 
     .home__product {
-        background-image: linear-gradient(90deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.3) 100%);
+    /*    background-image: linear-gradient(90deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.3) 100%);*/
         position: relative;
         margin: 0.5rem;
-        padding: 1rem 0;
+        padding: 1rem 1rem;
     }
 
     .product-home__title {
@@ -298,6 +318,7 @@
         height: 520px;
         cursor: pointer;
         border-radius: 5px;
+        overflow-wrap: break-word;
     }
 
     .product-home__image {

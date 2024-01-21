@@ -24,6 +24,7 @@ namespace Kvota.Interfaces
         T GetOne(Guid id); 
         Task<IEnumerable<T>> GetSearch(string searchString);
         Task<SortPagedResponse<ProductsDto>> GetBySortPagedSearchChapterAsync(SortPagedRequest request);
+         IQueryable<T> GetAllByQuery();
 
 
     }

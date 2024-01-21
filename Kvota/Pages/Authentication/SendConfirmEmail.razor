@@ -1,0 +1,46 @@
+﻿@page "/Account/SendConfirmEmail/{userName}"
+@using Kvota.Models.UserAuth
+@using Kvota.Services.Auth
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Text
+@using System.Text.Encodings.Web
+@using Kvota.Interfaces
+@inject NavigationManager NavigationManager
+@inject UserManager<KvotaUser> UserManager
+@inject AuthenticationStateProvider StateProvider
+@inject IAuthService AuthService
+@inject IEmailSender EmailSender
+
+<div style="padding: 4rem">
+<h6>На вашу электронную почту отправлено письмо для подтверждения учетной записи</h6>
+    <MudButton Variant="Variant.Filled" Color="Color.Info" Href="/">На главную</MudButton>
+</div>
+@code {
+
+    [Parameter]
+    public string UserName { get; set; } = null!;
+
+    string Message { get; set; }
+    protected override async Task OnParametersSetAsync()
+    {
+        await SendEmailToAskForEmailConfirmationAsync(UserName);
+    }
+
+    private async Task SendEmailToAskForEmailConfirmationAsync(string userName)
+    {
+
+        var uri = new Uri(ImpNavigationManager!.Uri);
+        var urlSave = uri.GetLeftPart(UriPartial.Authority);
+        
+        var user = await UserManager.FindByNameAsync(userName);
+        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var callbackUrl = ($"{urlSave}/Account/ConfirmEmail/{user.Id}/{code}");
+
+        await EmailSender.SendEmailAsync("dosaevk@yandex.ru", "Подтвердите свой адрес электронной почты",
+            $"Ссылка для подтверждения учетной записи: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>подтвердить</a>.");
+        //await EmailSender.SendEmailAsync(user.Email, "Подтвердите свой адрес электронной почты",
+        //    $"Ссылка для подтверждения учетной записи: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>подтвердить</a>.");
+    }
+}

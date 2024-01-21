@@ -1,11 +1,9 @@
-﻿@page "/usermanager"
+﻿@*@page "/usermanager"
 @attribute [Authorize(Roles = "Administrators")]
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Identity;
-@using Kvota.Areas.Identity.Data
 @using Org.BouncyCastle.Tls
-@inject UserManager<KvotaUser> _UserManager
-@inject RoleManager<IdentityRole> _RoleManager
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Administration</h3>
@@ -124,3 +122,4 @@
 @code {
 
 }
+*@

@@ -13,5 +13,7 @@ namespace Kvota.Models.Content
         public string? PhoneThree { get; set; }
         public string? EmailOne { get; set; }
         public string? EmailTwo { get; set; }
+
+        public List<CallOperator>? CallOperators { get; set; }
     }
 }

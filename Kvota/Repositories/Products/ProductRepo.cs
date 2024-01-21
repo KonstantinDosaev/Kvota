@@ -2,7 +2,6 @@
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Kvota.Constants;
-using Kvota.Data;
 using Kvota.Migrations;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Http;
@@ -51,9 +50,10 @@ namespace Kvota.Repositories.Products
 
             return null!;
         }
-        public IQueryable<Product> GetAllByQuery() =>  Table.OrderBy(o => o.Name)
-            .Include(i => i.Brand).Include(i => i.Category)
-            .Include(i => i.ProductOption);
+        //public IQueryable<Product> GetAllByQuery() =>  Table.OrderBy(o => o.Name)
+        //    .Include(i => i.Brand).Include(i => i.Category)
+        //    .Include(i => i.ProductOption);
+      
 
         public override async Task<SortPagedResponse<ProductsDto>> GetBySortPagedSearchChapterAsync(SortPagedRequest request)
         {

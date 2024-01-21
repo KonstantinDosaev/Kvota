@@ -92,7 +92,8 @@ a, .btn-link {
     transition: all 0.5s ease;
 }*/
 .kvota__body-shadow {
-    box-shadow: 0 20px 30px -17px rgba(30, 144, 255,0.55);
+    /*  box-shadow: 0 20px 30px -17px rgba(30, 144, 255,0.55);*/
+    box-shadow: 0 0 10px rgba(30, 144, 255,0.9);
     border-radius: 5px;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -102,7 +103,7 @@ a, .btn-link {
     .kvota__body-shadow:hover {
         -moz-box-shadow: 0 0 10px #000;
         -webkit-box-shadow: 0 0 10px #000;
-        box-shadow: 0 0 10px rgba(30, 144, 255,0.9);
+        box-shadow: 0 0 10px rgba(0, 0, 0,0.99);
         -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
         transition: all 0.5s ease;

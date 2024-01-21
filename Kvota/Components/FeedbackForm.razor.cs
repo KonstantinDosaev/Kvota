@@ -9,7 +9,7 @@ namespace Kvota.Components
         private Feedback _feedback = new();
         private Modal? _modal;
 
-        private string _subject = "Сообщение от клиента Квота";
+        private string _subject = "Сообщение от клиента Cinty";
          
         async void Submit()
         {

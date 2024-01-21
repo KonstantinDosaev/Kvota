@@ -1,12 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity;
-@using Kvota.Areas.Identity.Data
-@using Kvota.Components.Admin
+﻿@using Kvota.Components.Admin
 @page "/admin"
-@inject SignInManager<KvotaUser> SignInManager
-@inject UserManager<KvotaUser> UserManager
 
 
-
+<CascadingAuthenticationState>
 <AuthorizeView>
     <Authorized>
         @if (@context.User.IsInRole("Administrators"))
@@ -23,6 +19,7 @@
         <NavLink href="/login">Войти</NavLink>
     </NotAuthorized>
 </AuthorizeView>
+</CascadingAuthenticationState>
 @code {
     
 }

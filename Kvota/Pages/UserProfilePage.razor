@@ -1,0 +1,117 @@
+﻿@page "/userprofile"
+@using Kvota.Models.UserAuth
+@using Kvota.Services.Auth
+@using Microsoft.AspNetCore.Identity
+@using Kvota.Models
+@using Size = MudBlazor.Size
+
+@inject UserManager<KvotaUser> UserManager
+@inject AuthenticationStateProvider StateProvider
+@inject IAuthService AuthService
+<MudText Typo="Typo.h4" Style="margin: 1rem 0 0 1rem;">Профиль пользователя</MudText>
+@if (User != null)
+{
+    <MudCard Class="px-6">
+        <MudForm Model="@User" @ref="@_userProfileForm">
+            <MudCardContent>
+                <MudTextField @bind-Value="User.UserName"
+                              For="@(() => User.UserName)"
+                              Immediate="true"
+                              Label="Ник/Email"
+                              Required="true"
+                              />
+
+                <MudTextField @bind-Value="User.Position"
+                          For="@(() => User.Position)"
+                          Immediate="true"
+                          Label="Должность" />
+
+                <MudTextField @bind-Value="User.FirstName"
+                              For="@(() => User.FirstName)"
+                              Immediate="true"
+                              Label="Имя" 
+                              Required="true"/>
+                <MudTextField @bind-Value="User.MiddleName"
+                              For="@(() => User.MiddleName)"
+                              Immediate="true"
+                              Label="Отчество"/>
+
+            <MudTextField @bind-Value="User.LastName"
+                          For="@(() => User.LastName)"
+                          Immediate="true"
+                          Label="Фамилия" />
+
+                <MudTextField @bind-Value="User.PhoneNumber"
+                              For="@(() => User.PhoneNumber)"
+                              Immediate="true"
+                              Label="Телефонный номер" />
+
+                <p class="mt-6 fs-4">Компания</p>
+                <MudTextField @bind-Value="User.CompanyName"
+                              For="@(() => User.CompanyName)"
+                              Immediate="true"
+                              Label="Название компании" 
+                              Required="true"/>
+
+                <MudTextField @bind-Value="User.CompanyInn"
+                              For="@(() => User.CompanyInn)"
+                              Immediate="true"
+                              Label="ИНН компании" 
+                              Required="true"/>
+                
+
+
+
+                  @if (User.Address != null)
+            {
+                <p class="mt-6 fs-4">Адрес</p>
+                <MudTextField @bind-Value="User.Address.Country"
+                          For="@(() => User.Address.Country)"
+                          Immediate="true"
+                          Label="Страна" />
+
+                <MudTextField @bind-Value="User.Address.City"
+                          For="@(() => User.Address.City)"
+                          Immediate="true"
+                          Label="Город" />
+
+                <MudTextField @bind-Value="User.Address.Street"
+                          For="@(() => User.Address.Street)"
+                          Immediate="true"
+                          Label="Улица" />
+
+                <MudTextField @bind-Value="User.Address.Home"
+                          For="@(() => User.Address.Home)"
+                          Immediate="true"
+                          Label="Дом/Сторение" />
+
+                <MudTextField @bind-Value="User.Address.Placement"
+                          For="@(() => User.Address.Placement)"
+                          Immediate="true"
+                          Label="Помещение/Квартира" />
+
+                <MudTextField @bind-Value="User.Address.PostalCode"
+                          For="@(() => User.Address.PostalCode)"
+                          Immediate="true"
+                          Label="Почтовый код" />
+            }
+            else
+            {
+                <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => User.Address = new Address()" Style="margin-top: 2rem;" Color="Color.Tertiary">
+                    Добавить основной адрес
+                    <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2" />
+                </MudButton>
+
+                <br />
+            }
+
+            </MudCardContent>
+        </MudForm>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Применить</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+@code {
+
+}

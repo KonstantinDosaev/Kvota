@@ -8,9 +8,10 @@ namespace Kvota.Pages.Products
     partial class CatalogPage
     {
         private IEnumerable<Category>? Categories { get; set; }
-
-   
-        MudListItem? _selectedItem;
+        [Parameter]
+        public Guid? BrandId { get; set; }
+        public Brand? Brand { get; set; }
+            MudListItem? _selectedItem;
         [Parameter]
         public object? SelectedValue { get; set; } = 1;
         string _value;
@@ -29,6 +30,11 @@ namespace Kvota.Pages.Products
         protected override async Task OnInitializedAsync()
         {
             await GetCategories();
+            if (BrandId!=null)
+            {
+                using var scope = serviceScopeFactory.CreateScope();
+                Brand = await scope.ServiceProvider.GetService<IRepo<Brand>>()!.GetOneAsync((Guid)BrandId);
+            }
         }
 
         async Task ChangeValue()
@@ -42,7 +48,7 @@ namespace Kvota.Pages.Products
         {
             using var scope = serviceScopeFactory.CreateScope();
             Categories = await scope.ServiceProvider.GetService<IRepo<Category>>()!.GetAllAsync();
-            Categories = Categories.Where(w => w.ParentId == null);
+           Categories = Categories.Where(w => w.ParentId == null);
         }
     }
 }

@@ -18,12 +18,14 @@ namespace Kvota.Pages.Products
 
         [Parameter]
         public Guid GroupId { get; set; }
+        [Parameter]
+        public Guid? BrandId { get; set; }
         private int _quantityInPage = 10;
         private int _currentPageCount = 10;
         private string? Title;
         protected override async Task OnInitializedAsync()
         {
-           await InitList();
+           //await InitList();
         }
         protected override async Task OnParametersSetAsync()
         {
@@ -34,8 +36,11 @@ namespace Kvota.Pages.Products
             using var scope = serviceScopeFactory.CreateScope();
             if (Groups != null)
             {
-
                 Products = await scope.ServiceProvider.GetService<IRepo<Product>>()!.GetAllByIdAsync(GroupId, Groups);
+                if (BrandId!=null)
+                {
+                    Products = Products.Where(w => w.BrandId == BrandId);
+                }
             }
             else
             {

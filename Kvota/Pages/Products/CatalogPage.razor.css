@@ -1,7 +1,20 @@
 ﻿.catalog_body {
    
 }
-
+.brndincategory__lable {
+    /* padding: 10px 4px;*/
+    border-radius: 3px;
+    margin: 0 14px 14px 0;
+    text-align: center;
+    width: 126px;
+    height: 86px;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100px 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0,0.99);
+    flex: 0 0 auto;
+}
 
 .catalog__grands {
     display: flex;

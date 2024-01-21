@@ -1,4 +1,4 @@
-﻿using Kvota.Data;
+﻿using Kvota.Migrations;
 using Kvota.Models.Content;
 
 namespace Kvota.Repositories
@@ -7,7 +7,7 @@ namespace Kvota.Repositories
     {
         public HomeRepo(KvotaContext context) : base(context)
         {
-            Table = context.Homes;
+            //Table = context.Homes;
         }
     }
 }

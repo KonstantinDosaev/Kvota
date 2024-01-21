@@ -78,6 +78,7 @@ namespace Kvota.Repositories
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync() => await Table.ToListAsync();
+        public IQueryable<T> GetAllByQuery() => Table;
         public virtual async Task<IEnumerable<T>> GetAllByIdAsync(Guid id, string name) => await Table.Where(w=>w.Id==id).ToListAsync();
      
 

@@ -1,4 +1,6 @@
 ﻿using BlazorBootstrap;
+using Kvota.Constants;
+using Kvota.Models.Content;
 using Kvota.Models.Products;
 using Kvota.Repositories.Products;
 using Microsoft.AspNetCore.Components;
@@ -11,7 +13,8 @@ namespace Kvota.Components.Admin.Products
         [Inject]
         public NavigationManager? NavigationManager { get; set; }
         protected string SearchString { get; set; } = string.Empty;
-        protected  void SearchProducts()
+   
+        protected async Task SearchProducts()
         {
                 if (!string.IsNullOrEmpty(SearchString))
                 {
@@ -19,14 +22,15 @@ namespace Kvota.Components.Admin.Products
                 }
                
         }
-        protected  void Enter(KeyboardEventArgs e)
+        protected async  void Enter(KeyboardEventArgs e)
         {
             if (e.Code == "Enter" || e.Code == "NumpadEnter")
             {
                 if (!string.IsNullOrEmpty(SearchString))
-                    SearchProducts();
+                    await SearchProducts();
             }
         }
+       
 
     }
 }

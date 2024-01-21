@@ -25,7 +25,7 @@
                     </span>
                     @if (Product.Brand != null)
                     {
-                        <span class="product__brand product__text">@Product.Brand!.Name</span>
+                        <span class="product__brand product__text">Производитель: @Product.Brand!.Name</span>
                     }
                 </div>
         <div class="product__prices">
@@ -73,7 +73,7 @@
                 @*                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
                     <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
                 </Button>*@
-                <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.TwoTone.Cancel"  Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
                 <ProductCard Id="@IdCurrent"/>
 
             </BodyTemplate>

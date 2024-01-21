@@ -1,5 +1,6 @@
 ﻿@page "/productlists"
 @page "/{groups}/{groupname}/{groupid:guid}"
+@page "/{groups}/{groupname}/{groupid:guid}/{brandid:guid}"
 @using Kvota.Components
 @using Kvota.Constants
 @inject IServiceScopeFactory serviceScopeFactory
@@ -15,6 +16,7 @@
             if (Groups == GroupNames.GroupBrand)
             {
                 <ProductFilterComponent Products="Products" BrandsFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
+                
             }
             if (Groups == GroupNames.GroupCategory)
             {

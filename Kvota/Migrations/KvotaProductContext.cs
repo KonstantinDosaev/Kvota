@@ -1,4 +1,5 @@
 ﻿
+using Kvota.Models;
 using Kvota.Models.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -20,6 +21,14 @@ namespace Kvota.Migrations
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Product>()
+                .HasQueryFilter(x => x.IsDeleted == false);
+            builder.Entity<Storage>()
+                .HasQueryFilter(x => x.IsDeleted == false);
+            builder.Entity<ApplicationOrderingProducts>()
+                .HasQueryFilter(x => x.IsDeleted == false);
+
+
             builder.Entity<Category>(entity =>
             {
                 entity.HasOne(d => d.Parent)
@@ -46,9 +55,14 @@ namespace Kvota.Migrations
                     j => j
                         .HasOne(pt => pt.Storage)
                         .WithMany(p => p.ProductsInStorage)
-                        .HasForeignKey(pt => pt.StorageId)
+                        .HasForeignKey(pt => pt.StorageId),
+                    j =>
+                    {
+                        j.Property(pt => pt.Quantity).HasDefaultValue(0);
+                        j.HasKey(t => new { t.StorageId, t.ProductId });
+                        j.ToTable("ProductsInStorages");
+                    });
 
-                );
 
         }
 
@@ -60,5 +74,6 @@ namespace Kvota.Migrations
         public virtual DbSet<ProductOption> ProductOptions { get; set; } = null!;
         public DbSet<Storage> Storages { get; set; } = null!;
         public DbSet<ProductsInStorage> ProductsInStorages { get; set; } = null!;
+        public DbSet<ApplicationOrderingProducts> ApplicationOrderingProducts { get; set; } = null!;
     }
 }

@@ -17,6 +17,7 @@ namespace Kvota.Models.Content
         public string? ProductTitle { get; set; }
         public bool CatalogView { get; set; }
         public bool BrandView { get; set; }
-        public List<Guid> ProductInHome { get; set; }
+        public List<Guid>? ProductInHome { get; set; }
+        public List<Guid>? HotSearchProducts { get; set; }
     }
 }

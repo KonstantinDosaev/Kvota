@@ -20,5 +20,15 @@ namespace Kvota.Pages.Admin
             await ContactSerialize.Serialize($"{Links.RootPath}/{Links.ContactsJson}", Tools);
             modal?.ShowAsync();
         }
+        private void AddOperator()
+        {
+            Tools.CallOperators ??= new List<CallOperator>();
+            Tools.CallOperators.Add(new CallOperator() { });
+        }
+        private void RemoveOperator(CallOperator callOperator)
+        {
+            Tools.CallOperators!.Remove(callOperator);
+            StateHasChanged();
+        }
     }
 }
