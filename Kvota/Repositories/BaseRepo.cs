@@ -17,7 +17,7 @@ namespace Kvota.Repositories
 
         protected DbSet<T> Table = null!;
 
-        public async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             await Table.AddAsync(entity);
             await SaveChangesAsync();
@@ -48,8 +48,7 @@ namespace Kvota.Repositories
         public virtual async Task<bool> Update(T entity)
         {
             Table.Update(entity);
-            var t=
-            await SaveChangesAsync();
+            var t= await SaveChangesAsync();
             return t>0;
         }
 
@@ -99,7 +98,6 @@ namespace Kvota.Repositories
 
         public virtual async Task<IEnumerable<T>> GetSearch(string searchString) => await Table.ToListAsync();
 
-        public virtual async  Task<SortPagedResponse<ProductsDto>> GetBySortPagedSearchChapterAsync(SortPagedRequest request)=> throw new InvalidOperationException();
 
         public async Task<int> SaveAsync(T entity)
         {

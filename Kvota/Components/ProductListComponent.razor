@@ -5,6 +5,10 @@
 @using Size = MudBlazor.Size
 @inject IRepo<ContactsModel> ContactService
 @inject ISerializeService<ContactsModel> ContactSerialize
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Kvota.Constants
+@inject ProtectedLocalStorage LocalStorage
+
 <div class="productlist__products">
 
     @if (Product != null)
@@ -16,7 +20,7 @@
                     <img class="product__image"src="@items.Image">
                 </div>*@
                 <div class="product__body">
-                    <a class="product__name product__text" @onclick="@(e => GetModalUpdate(Product.Id))">@Product.Name</a>
+                    <a class="product__name product__text" @onclick="@(e => GetModalCard(Product.Id))">@Product.Name</a>
                     <span class="product__pnumber product__text">Парт-номер :
                         @if (Product.PartNumber != null)
                         {
@@ -40,7 +44,7 @@
                 }
             </div>
                 <div class="product__feetback ">
-                    <Dropdown OnShowing="OnDropdownShowingAsync">
+                    @*                    <Dropdown OnShowing="OnDropdownShowingAsync">
                         <DropdownToggleButton Color="ButtonColor.Secondary">Уточнить наличие и цену</DropdownToggleButton>
                         <DropdownMenu>
                             @if (Contacts != null)
@@ -57,44 +61,56 @@
                                 </DropdownItem>
                             }
                         </DropdownMenu>
-                    </Dropdown>
+                    </Dropdown>*@
+                    <AuthorizeView Roles="@RoleNames.User">
+                        <Authorized>
+                            <div class="d-flex align-items-center justify-content-center" style="height: 2rem">
+                                  
+                                     
+                                        <MudNumericField @bind-Value="_quantity" 
+                                                         @onchange="async () => await AddProductToOrder(Product.Id, _quantity)"
+                                                          Variant="Variant.Outlined" Min="0" Style="height: 2.2rem; width: 6rem; "/>
+                          
+                                    <button type="button" @onclick="async () => await AddProductToOrder(Product.Id, _quantity)" class="btn btn-outline-primary has-icon  mx-1"><i class="bi bi-basket2-fill"></i></button>
+                            
+                                    @if (ProductInOrderList != null && ProductInOrderList.Select(s => s.Id).Contains(Product.Id))
+                                    {
+                                        <button type="button" class="btn btn-close" @onclick="async () => await DeleteProductFromOrder(Product.Id)"></button>
+                                    }
+                                </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            <div class="d-flex align-items-center justify-content-center" style="height: 2rem">
+                                     <MudNumericField @bind-Value="_quantity"
+                                                      Variant="Variant.Outlined" Min="0" Style="height: 2.2rem; width: 6rem; "/>
+                                    <button type="button" class="btn btn-outline-primary has-icon  mx-1" @onclick="() => NotAuthClick()"><i class="bi bi-basket2-fill"></i></button>
+                            </div>
+
+                        </NotAuthorized>
+                    </AuthorizeView>
+                    
+                    
                 </div>
             </div>
                 
-            </div>
+        </div>
   
         
     }
-    <div class="product__modal">
-        <Modal ShowCloseButton="false" 
-               Size="ModalSize.ExtraLarge" 
-               @ref="_modalProductCard">
-            <BodyTemplate>
-                @*                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
-                    <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
-                </Button>*@
-                <MudIconButton Icon="@Icons.Material.TwoTone.Cancel"  Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
-                <ProductCard Id="@IdCurrent"/>
 
-            </BodyTemplate>
-
-
-        </Modal>
-    </div>
+    <MudDialog @bind-IsVisible="_visibleProductCard"  
+               Options="new DialogOptions() { FullScreen = true, CloseOnEscapeKey = true}">
+        <TitleContent>
+            <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" 
+                           Color="Color.Info" 
+                           Size="Size.Large" 
+                           Class="modalImage__closeBtn" 
+                           OnClick="()=>_visibleProductCard=false"></MudIconButton>
+        </TitleContent>
+        <DialogContent>
+            <ProductCard Id="@IdCurrent"/>
+        </DialogContent>
+    </MudDialog>
 </div>
-<style>
-    .product-modal__closeBtn {
-        top: 0rem;
-        right: 0.5rem;
-        position: absolute;
-        font-size: 3rem;
-        padding: 0;
-    }
-    .product-modal__closeBtn:active {
-        transform: scale(0.8);
-    }
-    .product-modal__btn {
-        background-color: rgba(178, 34, 34, 0.8);
-        font-size: 1rem;
-    }
-</style>
+
+

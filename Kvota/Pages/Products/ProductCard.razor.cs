@@ -1,8 +1,6 @@
 ﻿using Kvota.Interfaces;
 using Kvota.Models.Products;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using BlazorBootstrap;
 using Kvota.Constants;
 using Kvota.Models.Content;
 
@@ -17,11 +15,8 @@ namespace Kvota.Pages.Products
         public Guid Id { get; set; }
         public Product Product { get; set; } = null!;
         private string? _directoryPath;
-        [Inject]
-        protected IJSRuntime JsRuntime { get; set; } = null!;
-        private Modal? _modalImage;
         private ContactsModel Contacts { get; set; } = null!;
-
+        private bool _visibleImageSlider;
         protected override async Task OnParametersSetAsync()
         {
             using var scope = ServiceScopeFactory.CreateScope();
@@ -35,19 +30,19 @@ namespace Kvota.Pages.Products
         }
 
 
-        protected async Task GetModalImage()
+        protected void GetModalImage()
         {
-           // await JsRuntime.InvokeVoidAsync("unslickSlider");
-           await _modalImage?.ShowAsync()!;
+            _visibleImageSlider = true;
         }
 
-        private async void OnModalShown()
+        //private async void OnModalShown()
+        //{
+        //    await JsRuntime.InvokeVoidAsync("onBlazorReady");
+        //}
+        private void OnHideModalClick()
         {
-            await JsRuntime.InvokeVoidAsync("onBlazorReady");
-        }
-        private async Task OnHideModalClick()
-        {
-            await _modalImage?.HideAsync()!;
+            //await _modalImage?.HideAsync()!;
+            _visibleImageSlider = false;
         }
         private async void OnDropdownShowingAsync()
         {

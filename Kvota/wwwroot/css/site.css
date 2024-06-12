@@ -108,3 +108,15 @@ a, .btn-link {
         -moz-transition: all 0.5s ease;
         transition: all 0.5s ease;
     }
+
+.product-modal__closeBtn {
+    top: 0rem;
+    right: 0.5rem;
+    position: absolute;
+    font-size: 3rem;
+    padding: 0;
+}
+
+.product-modal__closeBtn:active {
+    transform: scale(0.8);
+}

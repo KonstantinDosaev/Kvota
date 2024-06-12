@@ -25,7 +25,7 @@ namespace Kvota.Models.Products
 
 
         public virtual ICollection<ApplicationOrderingProducts>? ApplicationOrderingList { get; set; }
-
+        public virtual ICollection<ApplicationOrderingProductsProduct>? ApplicationOrderingProductProduct { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsFullDeleted { get; set; }
         public DateTime? DateTimeUpdate { get; set; }

@@ -1,8 +1,8 @@
 ﻿<h3>CreateProduct</h3>
 @page "/admin/product/create"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Interfaces
-@using Kvota.Repositories.Products
+@using Kvota.Constants
 @inject IRepo<Product> ProductRepo
 @inject IRepo<Category> CategoryRepo
 @inject IRepo<Brand> BrandRepo

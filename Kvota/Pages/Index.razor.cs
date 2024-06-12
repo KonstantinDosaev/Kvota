@@ -18,9 +18,6 @@ namespace Kvota.Pages
         private string[] AboutArr { get; set; } = default!;
         private bool BrandView { get; set; }
 
-        private Modal? _modalProductCard;
-        private Guid IdCurrent { get; set; }
-
         protected override async Task OnInitializedAsync()
         {
             Content = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
@@ -28,27 +25,17 @@ namespace Kvota.Pages
             AboutArr = Content.AboutHomeText!.Split('^');
             if (BrandView)
             {
-                BrandList = (List<Brand>)await BrandRepos.GetAllAsync();
-                BrandList = BrandList.Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
+                BrandList = BrandRepos.GetAllByQuery().Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
             }
             ProductList = ((ProductRepo)ProductRepos).GetAllByQuery().Where( w=> Content.ProductInHome != null && Content.ProductInHome.Contains(w.Id)).OrderBy(o=>o.Name).ToList();
             SearchingProducts= ((ProductRepo)ProductRepos).GetAllByQuery().Where(w => Content.HotSearchProducts != null && Content.HotSearchProducts.Contains(w.Id)).ToList();
             SearchingProducts.Reverse(0, SearchingProducts.Count);
         }
-        protected override void OnAfterRender(bool firstRender)
-        {
-            var t = JsRuntime.InvokeVoidAsync("onHomeReady");
-            base.OnAfterRender(firstRender);
-        }
-        private void GetModalUpdate(Guid id)
-        {
-            IdCurrent = id;
-            _modalProductCard?.ShowAsync();
-
-        }
-        private async Task OnHideModalClick()
-        {
-            await _modalProductCard?.HideAsync()!;
-        }
+        //protected override void OnAfterRender(bool firstRender)
+        //{
+        //    var t = JsRuntime.InvokeVoidAsync("onHomeReady");
+        //    base.OnAfterRender(firstRender);
+        //}
+ 
     }
 }

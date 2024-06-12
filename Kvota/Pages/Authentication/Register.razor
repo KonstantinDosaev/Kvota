@@ -11,12 +11,19 @@
 @inject IAuthService AuthService
 @inject IEmailSender EmailSender
 
+<a href="/" class="btn btn-lg btn-primary btn-block mb-6">
+    <i class="bi bi-arrow-left-square fs-4"></i>
+    Вернуться на главную страницу
+</a>
+<div class="d-flex justify-content-center align-items-center mt-6">
+<MudPaper Width="500px" Class="p-3" Style="background-color: rgba(237, 237, 237, 0.522); border-radius: 5px"
+          Outlined="true">
 <h1 class="h2 font-weight-normal login-title">
     Регистрация пользователя
 </h1>
 <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="RegisterRequest">
     <DataAnnotationsValidator />
-    <label for="inputUsername" class="sr-only">Логин</label>
+    <label for="inputUsername" class="sr-only">E-mail</label>
     <InputText id="inputUsername" class="form-control" placeholder="Логин" autofocus @bind-Value="@RegisterRequest.UserName" />
     <ValidationMessage For="@(() => RegisterRequest.UserName)" />
     <label for="inputPassword" class="sr-only">Пароль</label>
@@ -30,11 +37,10 @@
     @*    <NavLink href="login">
         <h6 class="font-weight-normal text-center">У вас уже есть учетная запись? Нажмите здесь, чтобы войти в систему</h6>
     </NavLink>*@
-    <NavLink href="@($"/Account/SendConfirmEmail/{RegisterRequest.UserName}")">
-        <h6 style="cursor: pointer" class="font-weight-normal text-center">отправить письмо на почту для подтверждения</h6>
-    </NavLink>
-</EditForm>
 
+</EditForm>
+</MudPaper>
+</div>
 @functions{
     RegisterRequest RegisterRequest { get; set; } = new RegisterRequest();
     string Error { get; set; }

@@ -1,7 +1,8 @@
 ﻿@page "/admin/catoptions/{title}/{id:guid}"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Models.Products
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @using Kvota.Pages.Products
 @using Microsoft.AspNetCore.Components

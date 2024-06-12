@@ -133,50 +133,84 @@
             
             </Tabs>
         </div>
-        <Modal 
-            ShowCloseButton="false"
-            OnShown="OnModalShown"
-            UseStaticBackdrop="true" 
-            Size="ModalSize.ExtraLarge"
-              IsScrollable="true"
-            @ref="_modalImage">
-            <BodyTemplate>
-                <div class=modalImage__body>
-                    @*                    <button class="modalImage__closeBtn closeBtn" @onclick="OnHideModalClick">
-                        <div class="closeBtn__btn closeBtn__up"></div>
-                        <div class="closeBtn__btn closeBtn__down"></div>
-                    </button>*@
-                    <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" Color="Color.Info" Size="Size.Large" Class="modalImage__closeBtn" OnClick="OnHideModalClick"></MudIconButton>
-                    <div class="slider">
-                            @if (Directory.Exists(_directoryPath))
+
+        <MudDialog @bind-IsVisible="_visibleImageSlider" ClassContent="product-image__dialog" Class="m-0"  Options="new DialogOptions() {  NoHeader = true,FullScreen = true}" >
+            <DialogContent>
+                <MudIconButton Icon="@Icons.Material.TwoTone.Cancel" 
+                               Color="Color.Info" 
+                               Size="Size.Large" 
+                               Class="modalImage__closeBtn" 
+                               OnClick="OnHideModalClick"></MudIconButton>
+                @if (Directory.Exists(_directoryPath))
+                {
+                    <MudCarousel Class="mud-width-full" Style="height: 100%" AutoCycle="false" TData="object">
+                        <BulletTemplate Context="selected">
+                            <div Class="mud-button-root mud-icon-button mud-icon-button-color-inherit mud-ripple mud-ripple-icon">
+                                <span class="mud-icon-button-label">
+                                    <MudIcon Icon="@(selected ? Icons.Material.TwoTone.CheckCircle : Icons.Material.TwoTone.Circle)" Color="@Color.Info"/>
+                                </span>
+                            </div>
+                        </BulletTemplate>
+                        <PreviousButtonTemplate>
+                            <div Class="product-image__arrow prev"></div>
+                        </PreviousButtonTemplate>
+                        <NextButtonTemplate>
+                            <div Class="product-image__arrow next"></div>
+                        </NextButtonTemplate>
+                        <ChildContent>
+                            @foreach (var file in Directory.GetFiles(_directoryPath!))
                             {
-                                @foreach (var file in Directory.GetFiles(_directoryPath!))
-                                {
-                                    var fileInfo = new FileInfo(file).Name;
-                                    <div class="slider_item">
-                                        <img class="slider_image" src="@Product.Image/@fileInfo" />
+                                var fileInfo = new FileInfo(file).Name;
+                                <MudCarouselItem>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        @*<img class="slider_image" src="@Product.Image/@fileInfo"/>*@
+                                        <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Center" Style="height: 100VH; width: 100%" Src="@($"{Product.Image}/{fileInfo}")" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
                                     </div>
-                                }
+                                </MudCarouselItem>
                             }
-                            else
-                            {
-                            <img class="slider_image" src="@Links.DefaultImageProduct" />
-                            }
-                    </div>
-                </div>
-            </BodyTemplate>
-        </Modal>
+
+
+                        </ChildContent>
+                    </MudCarousel>
+                }
+                else
+                {
+                    <MudImage ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Center" Style="height: 100VH; width: 100%" Src="@($"{Links.DefaultImageProduct}")" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
+                }
+            </DialogContent>
+        </MudDialog>
     </div>
 }
 <style>
-    .modal-body {
-        padding: 0;
-      /*  min-height: 70vh;*/
-       
+    .product-image__dialog {
+        padding: 0 !important;
+        height: 100vh;
     }
-    .modalImage__body {
-        position: relative;
-        
+    .product-image__arrow {
+        font-size: 0;
+        width: 3rem;
+        height: 3rem;
+        border-top: none;
+        border-left: none;
+        border-bottom: 5px solid rgba(119, 136, 153,0.5);
+        border-right: 5px solid rgba(119, 136, 153,0.5);
+        box-shadow: inset -5px -5px rgba(255,255,255,0.5);
+        background: none;
+        margin: 0 1rem;
+    }
+    .product-image__arrow:active {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+    .product-image__arrow.prev {
+            left: 0;
+            transform: rotate(135deg);
+        }
+
+    .product-image__arrow.next {
+            right: 0;
+            transform: rotate(-45deg);
     }
     .modalImage__closeBtn {
         position: absolute;
@@ -189,62 +223,5 @@
     .modalImage__closeBtn:active {
         transform: scale(0.8);
     }
-    .closeBtn__btn {
-       
-        width: 2rem;
-        height: 2rem;
-        border-bottom: 5px solid rgba(255,255,255,0.5);
-        border-right: 5px solid rgba(255,255,255,0.5);
-        box-shadow: inset -5px -5px rgba(119, 136, 153,0.5);
-    }
-    .closeBtn__btn.closeBtn__up {
-        transform: rotate(45deg);
-        margin-bottom: 0.5rem;
-    }
-    .closeBtn__btn.closeBtn__down {
-        
-        transform: rotate(-135deg);
-    }
-    .slider {
-        min-width: 0;
-    }
-    .slick-list {
-        overflow: hidden;
-    }
-    .slick-track {
-        display: flex;
-    }
-    .slider_image {
-        height: 100%;
-        width: 100%;
-    }
-    .slider .slick-arrow{ 
-        position: absolute;
-        top: 50%;
-        z-index: 10;
-        font-size: 0;
-        width: 3rem;
-        height:3rem;
-        border-top: none;
-        border-left: none;
-        border-bottom: 5px solid rgba(119, 136, 153,0.5);
-        border-right: 5px solid rgba(119, 136, 153,0.5);
-        box-shadow: inset -5px -5px rgba(255,255,255,0.5);
-        background: none;
-        margin: 0 1rem;
-    }
-    .slider .slick-arrow:active {
-        width: 2.5rem;
-        height:2.5rem;
-    }
-    .slider .slick-arrow.slick-prev {
-        left: 0;
-        transform: rotate(135deg);
-    }
-
-    .slider .slick-arrow.slick-next {
-    right: 0;
-    transform: rotate(-45deg);
-    }
-
+  
 </style>

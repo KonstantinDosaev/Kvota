@@ -1,96 +1,117 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using Kvota.Constants;
+using Kvota.Models.Products;
 using Kvota.Models.UserAuth;
+using Kvota.Repositories.Products;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
+using static MudBlazor.CategoryTypes;
+using System.Net.Http;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Kvota.Pages.Admin
 {
     public partial class UsersTool
     {
+        private MudTable<KvotaUser>? table;
         private List<KvotaUser> Elements = new List<KvotaUser>();
-        private List<IdentityRole> Roles = new List<IdentityRole>();
-
-        private List<string> editEvents = new();
-        private string searchString = "";
-        private KvotaUser elementBeforeEdit;
+        private List<IdentityRole>? Roles { get; set; }
+        private string _searchString = "";
 
         private HashSet<KvotaUser> selectedItems = new HashSet<KvotaUser>();
         private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.Start;
         private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.Start;
-        private TableEditTrigger editTrigger = TableEditTrigger.EditButton;
 
-
-        private void OpenDialog() => _visibleRegisterDialog = true;
-        private DialogOptions _registerDialogOptions = new() { FullWidth = true, CloseButton = true };
-        private bool _visibleRegisterDialog;
 
         private KvotaUser _currentUser;
         private static List<string> _currentRoles;
         private DialogOptions _roleDialogOptions = new() { FullWidth = true, CloseButton = true };
         private bool _visibleRoleDialog;
-        private string value { get; set; } = "Nothing selected";
-        private async void OpenRoleDialog(KvotaUser user)
+        private string Value { get; set; } = "Nothing selected";
+        private string? RoleFilterValue { get; set; }
+        private int _totalItems;
+        private bool getNotEmailConfirmed;
+        private async Task OpenRoleDialog(KvotaUser user)
         {
+            await LoadRoles();
             _currentUser = user;
             _currentRoles = (List<string>)await UserManager.GetRolesAsync(user);
-            value = _currentRoles.FirstOrDefault()!;
+            Value = _currentRoles.FirstOrDefault()!;
             _visibleRoleDialog = true;
         }
 
         protected override async Task OnInitializedAsync()
         {
-
-            Elements = await UserManager.Users.ToListAsync();
-            Roles = await RoleManager.Roles.ToListAsync();
-
-
+            if (table != null) await table.ReloadServerData();
         }
-
-        private void AddEditionEvent(string message)
+        private async Task<TableData<KvotaUser>> ServerReload(TableState state)
         {
-            editEvents.Add(message);
-            StateHasChanged();
-        }
+            IEnumerable<KvotaUser> data;
+            if ((!string.IsNullOrEmpty(RoleFilterValue)||!string.IsNullOrWhiteSpace(RoleFilterValue)) && !getNotEmailConfirmed)
+                data = await UserManager.GetUsersInRoleAsync(RoleFilterValue);
+            else
+                data = getNotEmailConfirmed ? UserManager.Users.IgnoreQueryFilters().Where(w=>!w.EmailConfirmed) : UserManager.Users;
+            
 
-        private void BackupItem(object element)
-        {
-            elementBeforeEdit = new()
+            if (!string.IsNullOrEmpty(_searchString) || !string.IsNullOrWhiteSpace(_searchString))
             {
-                Email = ((KvotaUser)element).Email,
-                UserName = ((KvotaUser)element).UserName,
-            };
-            AddEditionEvent($"RowEditPreview event: made a backup of Element {((KvotaUser)element).UserName}");
-        }
-
-        private async void ItemHasBeenCommitted(object element)
-        {
-            elementBeforeEdit = new()
+                data = data.Where(w =>
+                    w.UserName != null && w.UserName.ToLower().Contains(_searchString.ToLower()) ||
+                    w.CompanyName != null && w.CompanyName.ToLower().Contains(_searchString.ToLower()) ||
+                    w.LastName != null && w.LastName.ToLower().Contains(_searchString.ToLower()));
+            }
+            _totalItems = data.Count();
+            switch (state.SortLabel)
             {
-                Email = ((KvotaUser)element).Email,
-                UserName = ((KvotaUser)element).UserName,
-            };
-            await UserManager.UpdateAsync(elementBeforeEdit);
-            AddEditionEvent($"RowEditCommit event: Changes to Element {((KvotaUser)element).UserName} committed");
-        }
+                case "name_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.UserName);
+                    break;
+                case "date_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.DateTimeUpdate);
+                    break; 
+                case "employee_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.LastName);
+                    break; 
+                case "company_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.CompanyName);
+                    break;
+            }
 
-        private void ResetItemToOriginalValues(object element)
+           data = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
+            return new TableData<KvotaUser>() { TotalItems = _totalItems, Items = data };
+        }
+       
+        private void OnSearch(string text)
         {
-            ((KvotaUser)element).Email = elementBeforeEdit.Email;
-            ((KvotaUser)element).UserName = elementBeforeEdit.UserName;
-            AddEditionEvent($"RowEditCancel event: Editing of Element {((KvotaUser)element).UserName} canceled");
+            _searchString = text;
+            table!.ReloadServerData();
+        } 
+        private void OnFilter(string text)
+        {
+            RoleFilterValue = text;
+            table!.ReloadServerData();
+        }
+        private async Task GetNotEmailConfirmed()
+        {
+            getNotEmailConfirmed = getNotEmailConfirmed != true; 
+            await table!.ReloadServerData();
+        }
+        private async Task LoadRoles()
+        {
+            Roles ??= await RoleManager.Roles.ToListAsync();
         }
 
         private bool FilterFunc(KvotaUser element)
         {
-            if (string.IsNullOrWhiteSpace(searchString))
+            if (string.IsNullOrWhiteSpace(_searchString))
                 return true;
-            if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (element.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            if (element.UserName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                 return true;
-            if ($"{element.Id}".Contains(searchString))
+            if ($"{element.Id}".Contains(_searchString))
                 return true;
             return false;
         }
@@ -121,10 +142,12 @@ namespace Kvota.Pages.Admin
 
         private async Task UpdateRoles()
         {
+            _currentUser.DateTimeUpdate = DateTime.UtcNow;
             var oldRole = await UserManager.GetRolesAsync(_currentUser);
             await UserManager.RemoveFromRolesAsync(_currentUser, oldRole);
-            var result = await UserManager.AddToRoleAsync(_currentUser, value);
+            await UserManager.AddToRoleAsync(_currentUser, Value);
             _visibleRoleDialog = false;
         }
+       
     }
 }

@@ -1,9 +1,10 @@
 .navbar-toggler {
    /* background-color: rgba(255, 255, 255, 0.1);*/
+
 }
 
+
 .top-row {
-    
     /*background-color: rgba(0,0,0,0.1);*/
 }
 
@@ -20,9 +21,6 @@
     font-size: 1.1rem;
     vertical-align: text-top;
     top: -2px;
-
-}
-.linkt {
 
 }
 .nav-item {
@@ -51,15 +49,15 @@
 
         .nav-item ::deep a.active {
             background: rgba(0, 0, 0, 0.5) 70%;
-            border: 2px solid rgba(255, 0, 0, 0.4);
+            border: 2px solid rgba(30, 144, 255,0.9);
             color: white;
         }
 
         .nav-item ::deep a:hover {
             /*   background-color: rgba(255,255,255,0.1);*/
-            background: rgba(0, 0, 0, 0.5) 70%;
+            background: rgba(0, 0, 0, 0.4) 70%;
             color: white;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 10px rgba(30, 144, 255,0.9);
         }
 .nav__contakts {
     display: flex;
@@ -98,7 +96,13 @@
     line-height: 3rem;
     background: rgba(30, 144, 255,0.9);
 }
-
+.nav-item__count {
+    background-color: gray;
+    padding: 0rem 1rem 0rem 1rem;
+    margin-right: -1rem;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    border-radius: 5px;
+}
 @media (min-width: 800px) {
     .navbar-toggler {
         display: none;

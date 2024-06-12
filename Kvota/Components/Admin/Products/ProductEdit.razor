@@ -1,7 +1,7 @@
 ﻿@page "/admin/product/edit/{id:guid}"
-@attribute [Authorize(Roles = "Administrators")]
-@using Kvota.Models.Products
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Interfaces
+@using Kvota.Constants
 @inject IRepo<Product> ProductRepo
 @inject IRepo<Category> CategoryRepo
 @inject IRepo<Brand> BrandRepo

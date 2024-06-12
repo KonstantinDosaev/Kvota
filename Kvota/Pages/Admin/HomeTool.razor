@@ -1,6 +1,7 @@
-﻿@attribute [Authorize(Roles = "Administrators")]
+﻿@attribute [Authorize(Roles = RoleNames.Admin)]
 @page "/hometool"
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @inject ISerializeService<Home> HomeSerialize

@@ -1,8 +1,9 @@
 ﻿@page "/admin/brand"
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @inject IRepo<Brand> BrandRepos
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @inject IWebHostEnvironment Env
 
 <NavAdmin></NavAdmin>

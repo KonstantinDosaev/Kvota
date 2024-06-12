@@ -4,9 +4,12 @@ namespace Kvota.Models.UserAuth
 {
     public class LoginRequest
     {
-        [Required]
+        [Required(ErrorMessage = "Введите e-mail!")]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage = "Не является e-mail адресом")]
         public string UserName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Введите пароль!")]
         public string Password { get; set; }
         public bool RememberMe { get; set; }
     }

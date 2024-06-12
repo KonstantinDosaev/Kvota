@@ -70,13 +70,13 @@ namespace Kvota.Services.Auth
             if (_currentUser != null ) return _currentUser;
             var userSessionStorageResult = await _sessionStorage.GetAsync<CurrentUser>("CurrentUser");
             var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
-            _currentUser = new CurrentUser()
-            {
-                UserName = userSession.UserName,
-                Claims = userSession.Claims,
-       
-                Role = userSession.Role
-            };
+            if (userSession == null) return null;
+                _currentUser = new CurrentUser()
+                {
+                    UserName = userSession.UserName,
+                    Claims = userSession.Claims,
+                    Role = userSession.Role
+                };
             return _currentUser;
         }
     }

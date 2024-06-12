@@ -22,21 +22,6 @@ namespace Kvota.Migrations.KvotaProduct
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ApplicationOrderingProductsProduct", b =>
-                {
-                    b.Property<Guid>("ApplicationOrderingListId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductListId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ApplicationOrderingListId", "ProductListId");
-
-                    b.HasIndex("ProductListId");
-
-                    b.ToTable("ApplicationOrderingProductsProduct");
-                });
-
             modelBuilder.Entity("Kvota.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,10 +72,16 @@ namespace Kvota.Migrations.KvotaProduct
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("DateTimeCreated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DateTimeTake")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DateTimeUpdate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
 
                     b.Property<bool?>("InWork")
                         .HasColumnType("boolean");
@@ -101,15 +92,28 @@ namespace Kvota.Migrations.KvotaProduct
                     b.Property<bool>("IsFullDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("MissingProductsInCatalog")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Number")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TakerUser")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TakerUserId")
                         .HasColumnType("text");
 
                     b.Property<string>("UpdatedUser")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("UserName")
                         .HasColumnType("text");
@@ -117,6 +121,26 @@ namespace Kvota.Migrations.KvotaProduct
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationOrderingProducts");
+                });
+
+            modelBuilder.Entity("Kvota.Models.ApplicationOrderingProductsProduct", b =>
+                {
+                    b.Property<Guid>("ApplicationOrderingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("ApplicationOrderingId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ApplicationOrderingProductsProducts", (string)null);
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.Brand", b =>
@@ -205,13 +229,13 @@ namespace Kvota.Migrations.KvotaProduct
                         .HasColumnType("date");
 
                     b.Property<DateTime?>("DateTimeCreated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DateTimeUpdate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DateTimeUpdated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("DayToDelivery")
                         .HasColumnType("integer");
@@ -308,7 +332,7 @@ namespace Kvota.Migrations.KvotaProduct
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("DateTimeUpdate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -330,19 +354,23 @@ namespace Kvota.Migrations.KvotaProduct
                     b.ToTable("Storages");
                 });
 
-            modelBuilder.Entity("ApplicationOrderingProductsProduct", b =>
+            modelBuilder.Entity("Kvota.Models.ApplicationOrderingProductsProduct", b =>
                 {
-                    b.HasOne("Kvota.Models.ApplicationOrderingProducts", null)
-                        .WithMany()
-                        .HasForeignKey("ApplicationOrderingListId")
+                    b.HasOne("Kvota.Models.ApplicationOrderingProducts", "ApplicationOrdering")
+                        .WithMany("ApplicationOrderingProductProduct")
+                        .HasForeignKey("ApplicationOrderingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kvota.Models.Products.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductListId")
+                    b.HasOne("Kvota.Models.Products.Product", "Product")
+                        .WithMany("ApplicationOrderingProductProduct")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ApplicationOrdering");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Kvota.Models.Products.Category", b =>
@@ -431,6 +459,11 @@ namespace Kvota.Migrations.KvotaProduct
                     b.Navigation("Address");
                 });
 
+            modelBuilder.Entity("Kvota.Models.ApplicationOrderingProducts", b =>
+                {
+                    b.Navigation("ApplicationOrderingProductProduct");
+                });
+
             modelBuilder.Entity("Kvota.Models.Products.Brand", b =>
                 {
                     b.Navigation("Products");
@@ -452,6 +485,8 @@ namespace Kvota.Migrations.KvotaProduct
 
             modelBuilder.Entity("Kvota.Models.Products.Product", b =>
                 {
+                    b.Navigation("ApplicationOrderingProductProduct");
+
                     b.Navigation("ProductOption");
 
                     b.Navigation("ProductsInStorage");

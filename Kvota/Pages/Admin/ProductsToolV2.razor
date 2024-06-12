@@ -1,5 +1,5 @@
 ﻿@page "/admin/2"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Components.Admin.Products
 @using Kvota.Interfaces
 @using Kvota.Components.Admin
@@ -7,11 +7,12 @@
 @inject ISerializeService<Home> HomeSerialize
 @inject IServiceScopeFactory ServiceScopeFactory
 @using Kvota.Components
+@using Kvota.Constants
 @using Kvota.Models.Content
+@using Kvota.Repositories.Products
 @using FileInfo = System.IO.FileInfo
 @inject IJSRuntime JsRuntime
 @using Microsoft.AspNetCore.Components
-
 @using Microsoft.Data.OData.Query
 @using SortDirection = MudBlazor.SortDirection
 @using Size = MudBlazor.Size
@@ -38,7 +39,7 @@
         </div>
     </div>
 
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<ProductsDto>>>(ServerReload))"
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<Product>>>(ServerReload))"
               Dense="false"
               Hover="true"
               ReadOnly="false"
@@ -49,7 +50,7 @@
               Striped="true"
               Bordered="true"
               HeaderClass="mud-table-header table-head-bordered"
-              OnRowClick="RowClickEvent" T="ProductsDto"
+              OnRowClick="RowClickEvent" T="Product"
               @ref="table">
 
         <ToolBarContent>
@@ -80,10 +81,10 @@
 
         </ColGroup>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortLabel="category_field" T="ProductsDto">Категория</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortLabel="name_field" T="ProductsDto">Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="partNumber_field" T="ProductsDto">P/N</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="brand_field" T="ProductsDto">Производитель</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="category_field" T="Product">Категория</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortLabel="name_field" T="Product">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="partNumber_field" T="Product">P/N</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="brand_field" T="Product">Производитель</MudTableSortLabel></MudTh>
             <MudTh Style="max-width: 4rem; text-align: center">Количество
                 <MudIconButton Icon="@Icons.Material.Filled.FormatLineSpacing"
                                OnClick="() => _isOpenQuantityAtStorages = _isOpenQuantityAtStorages != true"></MudIconButton>
@@ -91,17 +92,17 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Категория">
-                @if (context.CategoryName != null)
+                @if (context.Category != null)
                 {
-                    @context.CategoryName
+                    @context.Category.Name
                 }
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Email">@context.PartNumber</MudTd>
             <MudTd DataLabel="Brand">
-                @if (context.BrandName != null)
+                @if (context.Brand != null)
                 {
-                    @context.BrandName
+                    @context.Brand.Name
                 }
             </MudTd>
             <MudTd Style="max-width: 4rem; text-align: center" DataLabel="Quntity">
@@ -174,27 +175,27 @@
     bool _visibleDetailProductDialog;
    
 
-    private IEnumerable<ProductsDto>? pagedData;
-    private MudTable<ProductsDto>? table ;
+    private IEnumerable<Product>? pagedData;
+    private MudTable<Product>? table ;
 
     private int totalItems;
     private string searchString = null;
 
-    private async Task<TableData<ProductsDto>> ServerReload(TableState state)
+    private async Task<TableData<Product>> ServerReload(TableState state)
     {
-        var t = new SortPagedRequest()
+        var t = new SortPagedRequest<FilterProductTuple>()
         {
             PageIndex = state.Page,
             PageSize = state.PageSize,
             SearchString = searchString,
             SortLabel = state.SortLabel,
 
-            SortDirection = (OrderByDirection?)(state.SortDirection)
+            SortDirection =state.SortDirection
 
         };
-        var response = await ProductRepo.GetBySortPagedSearchChapterAsync(t);
+        var response = await ((ProductRepo)ProductRepo).GetBySortPagedSearchChapterAsync(t);
         pagedData = response.Items;
-        return new TableData<ProductsDto>() { TotalItems = response.TotalItems, Items = response.Items };
+        return new TableData<Product>() { TotalItems = response.TotalItems, Items = response.Items };
     }
     private void OpenUpdateProductDialog(Guid id)
     {
@@ -206,7 +207,7 @@
         searchString = text;
         table!.ReloadServerData();
     }
-    private void RowClickEvent(TableRowClickEventArgs<ProductsDto> tableRowClickEventArgs)
+    private void RowClickEvent(TableRowClickEventArgs<Product> tableRowClickEventArgs)
     {
         ProductId = tableRowClickEventArgs.Item.Id;
         _visibleDetailProductDialog = true;
@@ -227,7 +228,7 @@
 
         public Guid ProductId;
 
-        private HashSet<ProductsDto> selectedItems = new HashSet<ProductsDto>();
+        private HashSet<Product> selectedItems = new HashSet<Product>();
         private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.Start;
 
         private StorageSettings? _storageSettings;
@@ -280,9 +281,9 @@
             }
             StateHasChanged();
         }
-        private async void RemoveElement(HashSet<ProductsDto> selectedItems)
+        private async void RemoveElement(HashSet<Product> selectedItems)
         {
-            var tempList = new List<ProductsDto>(selectedItems);
+            var tempList = new List<Product>(selectedItems);
             foreach (var item in tempList)
             {
                 await ProductService.DeleteAsync(item.Id);

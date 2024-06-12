@@ -62,6 +62,25 @@ namespace Kvota.Migrations
                         j.HasKey(t => new { t.StorageId, t.ProductId });
                         j.ToTable("ProductsInStorages");
                     });
+            builder
+                .Entity<ApplicationOrderingProducts>()
+                .HasMany(c => c.ProductList)
+                .WithMany(s => s.ApplicationOrderingList)
+                .UsingEntity<ApplicationOrderingProductsProduct>(
+                    j => j
+                        .HasOne(pt => pt.Product)
+                        .WithMany(t => t.ApplicationOrderingProductProduct)
+                        .HasForeignKey(pt => pt.ProductId),
+                    j => j
+                        .HasOne(pt => pt.ApplicationOrdering)
+                        .WithMany(p => p.ApplicationOrderingProductProduct)
+                        .HasForeignKey(pt => pt.ApplicationOrderingId),
+                    j =>
+                    {
+                        j.Property(pt => pt.Quantity).HasDefaultValue(0);
+                        j.HasKey(t => new { t.ApplicationOrderingId, t.ProductId });
+                        j.ToTable("ApplicationOrderingProductsProducts");
+                    });
 
 
         }
@@ -75,5 +94,6 @@ namespace Kvota.Migrations
         public DbSet<Storage> Storages { get; set; } = null!;
         public DbSet<ProductsInStorage> ProductsInStorages { get; set; } = null!;
         public DbSet<ApplicationOrderingProducts> ApplicationOrderingProducts { get; set; } = null!;
+        public DbSet<ApplicationOrderingProductsProduct> ApplicationOrderingProductsProducts { get; set; } = null!;
     }
 }

@@ -39,12 +39,13 @@
             <MudTextField @bind-Value="User.LastName"
                           For="@(() => User.LastName)"
                           Immediate="true"
-                          Label="Фамилия" />
+                          Label="Фамилия"/>
 
                 <MudTextField @bind-Value="User.PhoneNumber"
                               For="@(() => User.PhoneNumber)"
                               Immediate="true"
-                              Label="Телефонный номер" />
+                              Label="Телефонный номер"
+                              Required="true"/>
 
                 <p class="mt-6 fs-4">Компания</p>
                 <MudTextField @bind-Value="User.CompanyName"
@@ -110,6 +111,7 @@
         <MudCardActions>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Применить</MudButton>
         </MudCardActions>
+        <MudText Typo="Typo.body2">* - обязательные поля</MudText>
     </MudCard>
 }
 @code {

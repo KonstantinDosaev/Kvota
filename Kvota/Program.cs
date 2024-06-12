@@ -28,11 +28,13 @@ builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddScoped<IRepo<CategoryOption>, CategoryOptionsRepo>();
 builder.Services.AddScoped<IRepo<ProductOption>, ProductOptionRepo>();
 builder.Services.AddScoped<IRepo<Storage>, StorageRepo>();
+builder.Services.AddScoped<IRepo<ApplicationOrderingProducts>, OrderRepo>();
 //builder.Services.AddScoped<IRepo<ProductsInStorage>, ProductInStorageRepo>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<ISerializeService<Home>, SerializeService<Home>>();
 builder.Services.AddScoped<ISerializeService<ContactsModel>, SerializeService<ContactsModel>>();
+builder.Services.AddScoped<IMissingProductConverter, MissingProductConverter>();
 
 builder.Services.AddAuthenticationCore();
 builder.Services.AddScoped<IAuthService, AuthService>();

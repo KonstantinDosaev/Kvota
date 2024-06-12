@@ -64,7 +64,11 @@ namespace Kvota.Pages.Admin
        
         public async Task ReadExcel()
         {
-            if (string.IsNullOrEmpty(Patch)) return;
+            if (string.IsNullOrEmpty(Patch))
+            {
+                _snackBar.Add("Не загружен файл Excel");
+                return;
+            }
         
             var products = new List<Product>();
             var productsToUpdate = new List<Product>();
@@ -247,6 +251,7 @@ namespace Kvota.Pages.Admin
             if (!_errors.Any())
             {
                 _navigationManager.NavigateTo("/admin/product/", forceLoad: true);
+                _snackBar.Add("Загрузка произведена успешно");
             }
            
          

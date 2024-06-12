@@ -6,6 +6,7 @@
 @using System.Text.Json
 @using Kvota.Constants
 @using Kvota.Models.Products
+@using Size = MudBlazor.Size
 @inject IRepo<Brand> BrandRepos
 @inject IRepo<Product> ProductRepos
 @inject IJSRuntime JsRuntime
@@ -73,40 +74,66 @@
         }
         <div class="text-end m-2"><a class="partner__button" href="/brands">Все производители</a></div>
     </div>
-        <div class="home_sliderblock kvota__body-shadow">
-            <div class="homeslider">
-                <div class="homeslider_item" style="background: url(/image/background/aboutbg2.jpg) 50%/cover no-repeat;">
-                    <div class="homeslider_text">
-                        <h3 class="homeslider_textup">Только оригинальная продукция</h3><br />
-                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+    <div class="home__slider kvota__body-shadow">
+            <MudCarousel Class=" " Style="height: 600px" AutoCycle="true" AutoCycleTime="TimeSpan.FromSeconds(10)"  TData="object">
+                <BulletTemplate Context="selected">
+                    <div Class="mud-button-root mud-icon-button mud-icon-button-color-inherit mud-ripple mud-ripple-icon">
+                        <span class="mud-icon-button-label">
+                            <MudIcon Icon="@(selected ? Icons.Material.TwoTone.CheckCircle : Icons.Material.TwoTone.Circle)" Size="Size.Medium" Color="@Color.Info"/>
+                        </span>
                     </div>
-                </div>
-                <div class="homeslider_item" style="background: url(/image/background/aboutbg1.jpg) 50%/cover no-repeat;">
-                    <div class="homeslider_text">
-                        <h3 class="homeslider_textup">100% входной контроль</h3><br />
-                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
-                    </div>
-                </div>
-                <div class="homeslider_item" style="background: url(/image/background/feedback.jpg) 50%/cover no-repeat;">
-                    <div class="homeslider_text">
-                        <h3 class="homeslider_textup">Безналичный расчет</h3><br />
-                        <p style="font-size: 1.5rem">Работаем только с юридическими лицами по безналичному расчету</p>
-                    </div>
-                </div>
-                <div class="homeslider_item" style="background: url(/image/background/homeImage.jpg) 50%/cover no-repeat;">
-                    <div class="homeslider_text">
-                        <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
-                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
-                    </div>
-                </div>
-                <div class="homeslider_item" style="background: white">
-                    <div class="homeslider_text">
-                        <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
-                        <p style="font-size: 1.5rem">Только оригинальная продукция</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </BulletTemplate>
+                <PreviousButtonTemplate>
+                    <div Class="product-image__arrow prev"></div>
+                </PreviousButtonTemplate>
+                <NextButtonTemplate>
+                    <div Class="product-image__arrow next"></div>
+                </NextButtonTemplate>
+                <ChildContent>
+                    <MudCarouselItem>
+                        <div class="homeslider_item" style="background: url(/image/background/aboutbg2.jpg) 50%/cover no-repeat;">
+                            <div class="homeslider_text">
+                                <h3 class="homeslider_textup">Только оригинальная продукция</h3><br />
+                                <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                            </div>
+                        </div>
+                    </MudCarouselItem>
+                    <MudCarouselItem>
+                        <div class="homeslider_item" style="background: url(/image/background/aboutbg1.jpg) 50%/cover no-repeat;">
+                            <div class="homeslider_text">
+                                <h3 class="homeslider_textup">100% входной контроль</h3><br />
+                                <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                            </div>
+                        </div>
+                    </MudCarouselItem>
+                    <MudCarouselItem>
+                        <div class="homeslider_item" style="background: url(/image/background/feedback.jpg) 50%/cover no-repeat;">
+                            <div class="homeslider_text">
+                                <h3 class="homeslider_textup">Безналичный расчет</h3><br />
+                                <p style="font-size: 1.5rem">Работаем только с юридическими лицами по безналичному расчету</p>
+                            </div>
+                        </div>
+                    </MudCarouselItem>
+                    <MudCarouselItem>
+                        <div class="homeslider_item" style="background: url(/image/background/homeImage.jpg) 50%/cover no-repeat;">
+                            <div class="homeslider_text">
+                                <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
+                                <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                            </div>
+                        </div>
+                    </MudCarouselItem>
+                    <MudCarouselItem>
+                        <div class="homeslider_item" style="background: white">
+                            <div class="homeslider_text">
+                                <h3 class="homeslider_textup">Сертификат качества ISO:9001</h3><br />
+                                <p style="font-size: 1.5rem">Только оригинальная продукция</p>
+                            </div>
+                        </div>
+                    </MudCarouselItem>
+
+                </ChildContent>
+            </MudCarousel>
+    </div>
         <div class="company">
             <div class="text_col company__text kvota__body-shadow">
                 <h2> О нас</h2> <br/>
@@ -123,7 +150,7 @@
                 }
             </div>
             <div class="company__image kvota__body-shadow">
-
+                <div style="font-size: 2.5rem; color: brown;background-color: rgba(255, 255, 255, 0.62)">If there is a logo. Or we will leave only the text about the company</div>
             </div>
         </div>
 
@@ -241,21 +268,6 @@
                     </div>
                 }
         </div>
-    </div>
-    <div class="product__modal">
-        <Modal ShowCloseButton="false" 
-               Size="ModalSize.ExtraLarge" 
-               @ref="_modalProductCard">
-            <BodyTemplate>
-                <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalClick">
-                    <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
-                </Button>
-                <ProductCard Id="@IdCurrent"/>
-
-            </BodyTemplate>
-
-
-        </Modal>
     </div>
 }
 

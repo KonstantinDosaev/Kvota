@@ -30,7 +30,7 @@
                         <div class="grand__image-body"><img class="grand__image" src="@items.Image"/></div>
                         <div class="grand__body">
                             @if (items.Children == null || !items.Children.Any())
-                            {<a class="grand__title" href="@GroupNames.GroupCategory/@items.Name/@items.Id/@BrandId">@items.Name (@items.Products?.Where(w => w.BrandId == BrandId).Count()</a>}
+                            {<a class="grand__title" href="@GroupNames.GroupCategory/@items.Name/@items.Id/@BrandId">@items.Name (@items.Products?.Where(w => w.BrandId == BrandId).Count())</a>}
                             else
                             {
                                 <div class="grand__title">@items.Name</div>}

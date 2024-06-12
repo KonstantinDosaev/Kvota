@@ -1,7 +1,8 @@
-﻿@attribute [Authorize(Roles = "Administrators")]
+﻿@attribute [Authorize(Roles = RoleNames.Admin)]
 @page "/admin/prodoptions/{title}/{id:guid}/{idp:guid}"
 @using Kvota.Models.Products
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @using Microsoft.AspNetCore.Components
 @inject IRepo<ProductOption> OptionsRepo

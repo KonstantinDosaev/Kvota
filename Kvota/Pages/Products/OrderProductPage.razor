@@ -1,0 +1,450 @@
+﻿@page "/orders-buyer"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Kvota.Interfaces
+@using Kvota.Models
+@using Kvota.Models.UserAuth
+@using Kvota.Components
+@using Kvota.Services.Auth
+@using Microsoft.AspNetCore.Components
+@using Size = MudBlazor.Size
+@using Kvota.Repositories.Products
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using Microsoft.Data.OData.Query
+@using SortDirection = MudBlazor.SortDirection
+@inject IAuthService AuthService
+@inject ProtectedLocalStorage LocalStorage
+@inject IRepo<Product> ProductService
+@inject IRepo<Category> CategoryService
+@inject IRepo<Brand> BrandService
+@inject IRepo<ApplicationOrderingProducts> OrderService
+@inject IMissingProductConverter MissingProductConverter
+
+<div style="min-width: 720px">
+    <MudPaper Class="m-3 p-3">
+        <h4>Список продуктов для заявки</h4>
+        @if (ProductList != null)
+        {
+            foreach (var product in ProductList)
+            {
+                <ProductListComponent Product="product" ProductInOrderList="ProductsInLocal" ReloadListCallback="GetProductList"></ProductListComponent>
+            }
+            @if (MissingProductInCatalogList != null)
+            {<div class="p-3">
+                 <h5 class="my-3">Список продуктов добавленных пользователем</h5>
+                 <table class="table table-bordered table-striped table-sm">
+                     <thead>
+                     <tr>
+                         <th>Парт-номер</th>
+                         <th>Наименование</th>
+                         <th>Производитель</th>
+                         <th>Количество</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                     @foreach (var item in MissingProductInCatalogList)
+                     {
+                         <tr>
+                             <td>@item.PartNumber</td>
+                             <td>@item.Name</td>
+                             <td>@item.BrandName</td>
+                             <td>@item.Quantity</td>
+                             <td style="text-align: end; width: 12rem">
+                                 <button type="button" class="btn btn-primary mx-1" @onclick="async () => await OpenEditMissingProductDialog(item)">Изменить</button>
+                                 <button type="button" class="btn btn-close mx-1" @onclick="async () => await DeleteMissFromStorage(item)"></button>
+                             </td>
+                         </tr>
+                     }
+                     </tbody>
+                 </table>
+             </div>
+            }
+            <MudText Class="fw-bold">Если вы не нашли продукт в каталоге, вы можете  <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="OpenAddMissingProductDialog">Добавить продукт</MudButton>  в запрос.</MudText>
+            <MudButton Variant="Variant.Filled" Class="my-3" Color="Color.Primary" 
+                       OnClick="() => (string.IsNullOrEmpty(User!.CompanyInn) ? GetErrorProfileMessage(): AddOrder())">Отправить заявку</MudButton>
+        }
+            
+    </MudPaper>
+    <div class="m-3 p-3">
+        <h4>История заявок</h4>
+        @if (HistoryList != null)
+        {
+            <MudPaper Class="m-1 p-1">
+                <MudExpansionPanels>
+                    <MudPaper class="d-flex flex-wrap justify-content-start align-items-center  m-3 px-4 py-2" style="">
+                        <div class="d-flex align-items-center">
+                            <MudIconButton 
+                                Icon="@(_sortDirection==SortDirection.Descending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward)"
+                                OnClick="Sorted"
+                                Variant="Variant.Filled"
+                                Class="mr-2"></MudIconButton>
+                            <MudText>С</MudText>
+                            <MudDatePicker Editable="true"
+                                           @bind-Date="_filterDateFirst"
+                                           Mask="@(new DateMask("dd/MM/yyyy"))"
+                                           DateFormat="dd/MM/yyyy"
+                                           Placeholder="день/месяц/год"
+                                           Variant="Variant.Outlined"
+                                           Style="width: 200px; margin: 0 1rem;" />
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <MudText>ПО</MudText>
+                            <MudDatePicker Editable="true"
+                                           @bind-Date="_filterDateLast"
+                                           Mask="@(new DateMask("dd/MM/yyyy"))"
+                                           DateFormat="dd/MM/yyyy"
+                                           Placeholder="день/месяц/год"
+                                           Variant="Variant.Outlined"
+                                           Style="width: 200px; margin: 0 1rem" />
+                        </div>
+                           
+                        <MudButton Variant="Variant.Filled" Class="my-3"
+                                   Color="Color.Primary"
+                                   OnClick="ReloadHistoryList"
+                                   Size="Size.Medium"
+                                   Style="margin-top: 4px">Показать</MudButton>
+                        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))"
+                                      Placeholder="Найти по номеру заявки" Adornment="Adornment.Start"
+                                      Variant="Variant.Outlined"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium" Class="mt-0 mx-2"></MudTextField>
+                    </MudPaper>
+                    @foreach (var application in HistoryList)
+                    {
+
+                        <MudExpansionPanel MaxHeight="1000">
+                            <TitleContent>
+                                <div class="d-flex">
+                                    <MudText Class="fw-bold">@($"Заявка от: {application.DateTimeCreated} ")</MudText>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudText Class="fw-bold p-1">@($"№: {application.Number} ")</MudText>
+                                   
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                    <tr style="background-color: rgba(0, 169, 255, 0.388)">
+                                        <th>Парт-номер</th>
+                                        <th>Наименование</th>
+                                        <th>Производитель</th>
+                                        <th>Количество</th>
+                                        <th>Подробнее</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if (application.ApplicationOrderingProductProduct != null)
+                                    {
+                                        @foreach (var item in application.ApplicationOrderingProductProduct)
+                                        {
+                                            <tr>
+                                                <td>@item.Product?.PartNumber</td>
+                                                <td>@item.Product?.Name</td>
+                                                <td>@item.Product?.Brand?.Name</td>
+                                                <td>@item.Quantity</td>
+                                                <td> <button class="btn btn-link" @onclick="@(e => GetModalProductCard(item.ProductId))">Подробнее</button></td>
+                                            </tr>
+                                        }
+                                    }
+                                    @if (application.MissingProductsInCatalog != null)
+                                    {
+                                        <tr style="background-color: rgba(0, 169, 255, 0.388)">
+
+                                            <th colspan="5" style="text-align: center">Добавлено пользователем</th>
+
+                                        </tr>
+                                        foreach (var itemMissingProductInCatalog in MissingProductConverter.ConvertMissingProductStringToList(application.MissingProductsInCatalog))
+                                        {
+                                            <tr>
+                                                <td>@itemMissingProductInCatalog.PartNumber</td>
+                                                <td>@itemMissingProductInCatalog.Name</td>
+                                                <td>@itemMissingProductInCatalog.BrandName</td>
+                                                <td>@itemMissingProductInCatalog.Quantity</td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                    }
+                                    </tbody>
+                                </table>
+                                    
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels >
+                <MudButton Variant="Variant.Filled" Class="my-3" Color="Color.Primary" OnClick="LoadMore">Загрузить еще</MudButton>
+            </MudPaper>
+        }
+    </div>
+
+    <MudDialog @bind-IsVisible="_visibleAddProductDialog" Options="new DialogOptions() { FullWidth = true }">
+        <TitleContent>
+            <div style="text-align: right">
+                <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="() => _visibleAddProductDialog=false" Color="Color.Info">Закрыть</MudButton>
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <MudCard>
+                <MudForm @ref="ProductFormRef">
+                    <MudCard>
+                        <MudCardContent>
+                            @if (CreatedProduct != null)
+                            {
+                                <MudTextField Variant="Variant.Outlined"
+                                              @bind-Value="@CreatedProduct.Name"
+                                              For="@(() => CreatedProduct.Name)"
+                                              Immediate="true"
+                                              Label="Название продукта/ не обязательно для ввода"/>
+                                <MudTextField Variant="Variant.Outlined"
+                                              @bind-Value="@CreatedProduct.PartNumber"
+                                              For="@(() => CreatedProduct.PartNumber)"
+                                              Immediate="true"
+                                              Label="Парт-номер"
+                                              Required="true"
+                                              RequiredError="Введите парт-номер продукта"/>
+
+                                <MudSelect Variant="Variant.Outlined" @bind-Value="CreatedProduct!.BrandName"
+                                           Label="Производитель/ не обязательно для ввода"
+                                           T="string" ToStringFunc="b => Brands!.Select(b => b).FirstOrDefault(w => w.Name == CreatedProduct.BrandName)!.Name"
+                                           CloseIcon="@Icons.Material.Filled.Flag"
+                                           AdornmentColor="Color.Tertiary">
+                                    @if (Brands != null)
+                                    {
+                                        @foreach (var item in Brands)
+                                        {
+                                            <MudSelectItem T="string" Value="@item.Name">@item.Name</MudSelectItem>
+                                        }
+                                    }
+                                </MudSelect>
+
+                                <MudTextField Variant="Variant.Outlined"
+                                              @bind-Value="CreatedProduct.Quantity"
+                                              For="@(() =>CreatedProduct.Quantity)"
+                                              Immediate="true"
+                                              Label="Количество"/>
+                            }
+                        </MudCardContent>
+
+                    </MudCard>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="CreateMissingProduct" Color="Color.Info">Сохранить</MudButton>
+                    </MudCardActions>
+                </MudForm>
+            </MudCard>
+        </DialogContent>
+    </MudDialog>
+    <Modal ShowCloseButton="false"
+           Size="ModalSize.ExtraLarge"
+           @ref="_modalProductCard">
+        <BodyTemplate>
+            <Button class="product-modal__closeBtn closeBtn" @onclick="OnHideModalProductCardClick">
+                <i style=" background: rgba(255, 255, 255, 0.5);" class="bi bi-x-lg"></i>
+            </Button>
+            <ProductCard Id="@IdCurrentProduct" />
+        </BodyTemplate>
+    </Modal>
+</div>
+
+@code {
+    List<MissingProductInCatalog>? MissingProductInCatalogList { get; set; }
+    private bool _visibleAddProductDialog;
+
+    public MissingProductInCatalog? CreatedProduct { get; set; }
+    public MudForm? ProductFormRef { get; set; }
+    public List<Brand>? Brands { get; set; }
+
+    List<Product>? ProductList { get; set; }
+    List<ProductInOrder>? ProductsInLocal { get; set; }
+    List<ApplicationOrderingProductsProduct>? ProductAndQuantityList { get; set; }
+    List<ApplicationOrderingProducts>? HistoryList { get; set; }
+    KvotaUser? User { get; set; }
+
+    private int _itemInPageIndex=0;
+    private int _itemHistoryInPage = 5;
+    private int _totalItems;
+    DateTime? _filterDateFirst = DateTime.UtcNow - new TimeSpan(30, 0, 0, 0);
+    DateTime? _filterDateLast = DateTime.UtcNow;
+    private Modal? _modalProductCard;
+    private Guid IdCurrentProduct { get; set; }
+    private string? _searchString;
+    private SortDirection _sortDirection = SortDirection.Descending;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetProductList();
+        User = await AuthService.CurrentUserInfo();
+        await ReloadHistoryList();
+
+    }
+    
+    private async Task<List<ApplicationOrderingProducts>> GetHistoryList()
+    {
+        var request = new SortPagedRequest<FilterOrderTuple>()
+        {
+            PageIndex = _itemInPageIndex,
+            PageSize = _itemHistoryInPage,
+            SearchString = _searchString,
+            SortLabel = "create_field",
+            SortDirection = _sortDirection,
+            FilterTuple = new FilterOrderTuple()
+            {
+                CreateDateFirst = _filterDateFirst,
+                CreateDateLast = _filterDateLast,
+                UserId = User!.Id
+            }
+
+        };
+        var response = await ((OrderRepo)OrderService).GetBySortPagedSearchChapterAsync(request);
+        _totalItems = response.TotalItems;
+        return response.Items!.ToList();
+    }
+    private async Task ReloadHistoryList()
+    {
+        _itemInPageIndex = 0;
+        HistoryList = await GetHistoryList();
+    }
+    private async Task Sorted()
+    {
+        _sortDirection = _sortDirection == SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending;
+        await ReloadHistoryList();
+    }
+    private async Task LoadMore()
+    {
+        if (HistoryList!.Count == _totalItems)
+            return ;
+        _itemInPageIndex += 1;
+        HistoryList!.AddRange(await GetHistoryList());
+        
+    }
+    private async Task GetProductList()
+    {
+        var responseMiss = await LocalStorage.GetAsync<List<MissingProductInCatalog>>("MissingProducts");
+        MissingProductInCatalogList = responseMiss.Value ?? null;
+
+        var response = await LocalStorage.GetAsync<List<ProductInOrder>>("OrderList");
+        if (response.Value != null) ProductsInLocal = response.Value;
+        ProductList = ProductsInLocal != null && ProductsInLocal.Any() ? 
+            ProductService.GetAllByQuery().Where(w => ProductsInLocal.Select(s => s.Id).Contains(w.Id)).ToList() : null;
+       
+    }
+
+    [Inject] private IDialogService? DialogService { get; set; }
+    private async Task GetErrorProfileMessage()
+    {
+        var options = new DialogOptions() { ClassBackground = "my-custom-class", };
+        var result = await DialogService!.ShowMessageBox(
+            "",
+            "Пожалуйста, заполните профиль!",
+            yesText: "Прейти в профиль!  ", cancelText: "  Отменить", options: options);
+
+        if (result != null && (bool)result)
+        {
+            ImpNavigationManager.NavigateTo("/userprofile");
+        }
+    }
+    private async Task AddOrder()
+    {
+        if (ProductList != null && ProductList.Any())
+        {
+            ProductAndQuantityList = ProductList.Join(ProductsInLocal!, p => p.Id, l => l.Id,
+                (p, l) => new ApplicationOrderingProductsProduct() { Product = p, Quantity = l.Quantity }).ToList();
+        }
+        await OrderService.AddAsync(new ApplicationOrderingProducts()
+            {
+                ProductList = ProductList,
+                UserName = $"{User!.LastName} {User.FirstName} {User.MiddleName}",
+                UserId = User.Id,
+                CompanyName = User.CompanyName,
+                CompanyInn = User.CompanyInn,
+                Email = User.Email,
+                Phone = User.PhoneNumber,
+                ApplicationOrderingProductProduct = ProductAndQuantityList,
+                DateTimeCreated = DateTime.Now,
+                MissingProductsInCatalog = MissingProductConverter.ConvertMissingProductListToString(MissingProductInCatalogList),
+                InWork = false
+            });
+        
+        await LocalStorage.DeleteAsync("OrderList");
+            await LocalStorage.DeleteAsync("MissingProducts");
+            await ReloadHistoryList();
+            await GetProductList();
+    }
+    
+    private async Task OpenAddMissingProductDialog()
+    {
+        Brands ??= (List<Brand>?)await BrandService.GetAllAsync();
+        CreatedProduct = new MissingProductInCatalog();
+        _visibleAddProductDialog = true;
+    }  
+    private async Task OpenEditMissingProductDialog(MissingProductInCatalog missing)
+    {
+        Brands ??= (List<Brand>?)await BrandService.GetAllAsync();
+        CreatedProduct = missing;
+        _visibleAddProductDialog = true;
+    }
+    async Task CreateMissingProduct()
+    {
+        if (ProductFormRef!.IsValid)
+        {
+            MissingProductInCatalogList ??= new List<MissingProductInCatalog>();
+            if (CreatedProduct != null)
+            {
+                await AddMissingProductToStorage(CreatedProduct);
+            }
+            _visibleAddProductDialog = false;
+            await GetProductList();
+        }
+        else
+            await ProductFormRef.Validate();
+    }
+    private async Task AddMissingProductToStorage(MissingProductInCatalog product)
+    {
+        MissingProductInCatalogList ??= new List<MissingProductInCatalog>();
+        if (!MissingProductInCatalogList.Select(s => s.PartNumber).Contains(product.PartNumber))
+        {
+            if (product.Quantity == 0)
+                return;
+
+            MissingProductInCatalogList.Add(product);
+        }
+               
+        else
+        {
+            if (product.Quantity == 0)
+            {
+                await DeleteMissFromStorage(product);
+                return;
+            }
+        }
+        await LocalStorage.SetAsync("MissingProducts", MissingProductInCatalogList);
+    }
+    private async Task DeleteMissFromStorage(MissingProductInCatalog product)
+    {
+        if (MissingProductInCatalogList != null)
+        {
+            MissingProductInCatalogList.Remove(product);
+            await LocalStorage.SetAsync("MissingProducts", MissingProductInCatalogList);
+
+           await GetProductList();
+        }
+    }
+
+    private void GetModalProductCard(Guid id)
+    {
+        IdCurrentProduct = id;
+        _modalProductCard?.ShowAsync();
+
+    }
+    private async Task OnHideModalProductCardClick()
+    {
+        await _modalProductCard?.HideAsync()!;
+    }
+    private async Task OnSearch(string text)
+    {
+        _searchString = text;
+        await ReloadHistoryList();
+    }
+    internal record ProductAndQuantity
+    {
+        internal Product Product;
+        internal int Quantity;
+    }
+}

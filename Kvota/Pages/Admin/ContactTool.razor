@@ -1,7 +1,8 @@
 ﻿@page "/admin/contacttool"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Microsoft.AspNetCore.Components
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @using Kvota.Models.Content
 @inject ISerializeService<ContactsModel> ContactSerialize

@@ -149,11 +149,8 @@
     /* background: url(/image/background/feedback.jpg)0 0/cover no-repeat;*/
 }
 
-
-.home_sliderblock {
+.home__slider {
     margin: 0.5rem 0.5rem;
-    position: relative;
-    flex: 1;
     overflow: hidden;
 }
 .homeslider_item {

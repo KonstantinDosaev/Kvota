@@ -1,7 +1,8 @@
 ﻿@page "/admin/product/excel"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Interfaces
 @using Kvota.Models.Products
+@using Kvota.Constants
 @inject IServiceScopeFactory ServiceScopeFactory
 @inject IRepo<Brand> BrandService
 @inject IRepo<Category> CategoryService
@@ -18,7 +19,7 @@
     <button class="btn btn-secondary" type="submit">Загрузить</button>
 </form>
 <br/>
-<label>Выберите основной склад</label>
+<label>Выберите основной склад(В случае если в таблице не указан склад, он будет применен по умолчанию)</label>
 <select class="form-control" @bind="_mainStorageId">
     @if (Storages != null)
     {
@@ -28,7 +29,8 @@
         }
     }
 </select>
-<button class="btn btn-danger btn" @onclick="@(e => ReadExcel())" role="button">Применить</button>
+
+<button class="btn btn-danger btn" @onclick="@(e => ReadExcel())" role="button">Интегрировать в базу</button>
 @if (_errors != null && _errors.Any())
 {
     <h3 class="m-2">Ошибки!!!</h3>

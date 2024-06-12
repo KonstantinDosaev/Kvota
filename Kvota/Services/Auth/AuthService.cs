@@ -86,6 +86,8 @@ namespace Kvota.Services.Auth
         {
 
             var userAuth = await ((CustomStateProvider)_authenticationStateProvider).GetCurrentUser();
+            if (userAuth == null)
+                return null!;
             var user = await _userManager.FindByNameAsync(userAuth.UserName);
             return user;
 

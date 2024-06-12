@@ -3,36 +3,53 @@
 @page "/{groups}/{groupname}/{groupid:guid}/{brandid:guid}"
 @using Kvota.Components
 @using Kvota.Constants
-@inject IServiceScopeFactory serviceScopeFactory
+@inject IServiceScopeFactory ServiceScopeFactory
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using SortDirection = MudBlazor.SortDirection
+@using Size = MudBlazor.Size
+@inject ProtectedLocalStorage LocalStorage
 
 
 @if (_pagedList != null)
 {   
     <div class="productlist">
-        <h4>@Title</h4>
-        <div class="productlist__items"></div>
-        @if (Groups != null)
-        {
-            if (Groups == GroupNames.GroupBrand)
-            {
-                <ProductFilterComponent Products="Products" BrandsFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
-                
-            }
-            if (Groups == GroupNames.GroupCategory)
-            {
-                <ProductFilterComponent Products="Products" CategoriesFilterId="GroupId" Category="@Groups" ProductListCallback="GetFilterList"></ProductFilterComponent>
-            }
-
-        }
-        else
-        {
-            <ProductFilterComponent Products="Products" ProductListCallback="GetFilterList"></ProductFilterComponent>
-        }
-        @if (_pagedList.Count > 0)
+        <h4>@_title</h4>
+        <div class="d-flex flex-wrap align-items-center my-4">
+            <MudButton OnClick="OnSortDirection"
+                       Variant="Variant.Filled"
+                       Class=" p-0 mb-2"
+                       Style="width: 40px; height: 37px">
+                @if (_sortDirection == SortDirection.Descending)
+                {
+                    <i class="bi bi-sort-up" style="font-size: 30px"></i>
+                }
+                else
+                {
+                    <i class="bi bi-sort-down" style="font-size: 30px"></i>
+                }
+            </MudButton>
+            <div style=" border-radius: 6px; margin: 0.1rem 1rem 0.5rem 0;height: 38px;">
+                <select style="width: 250px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;height: 100%" title="Сортировка" class="form-control" @bind="_sortString" @onclick="OnSorted">
+                    <option value="@SortLabelsProduct.NameField">По имение</option>
+                    <option value="@SortLabelsProduct.CreateField">По дате</option>
+                    <option value="@SortLabelsProduct.PriceField">По цене</option>
+                </select>
+            </div>
+            <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleProductFilter=true" Style="margin: 0 1rem 0.5rem 0;" Color="Color.Warning">
+                Фильтр
+                <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.FilterAlt" Class="pa-0"/>
+            </MudButton>
+            <MudTextField Clearable="true" T="string" ValueChanged="@(OnSearch)" Placeholder="Поиск"
+                          Style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; border-radius: 6px; height: 2.4rem"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-2" Variant="Variant.Outlined"></MudTextField>
+        </div>
+        @if (_pagedList.Any())
         {
             foreach (var product in _pagedList)
             {
-                <ProductListComponent Product="product"/>
+                <ProductListComponent Product="product" ProductInOrderList="ProductInOrderList"/>
             }
         }
         else
@@ -40,14 +57,26 @@
             <div>Список пуст...</div>
         }
 
-        @if (_filteredList!.Count() > _quantityInPage)
+        @if (_totalItems > _quantityInPage)
         {
-            <div class="button__block" style="text-align: center">
-                <button class="btn btn-danger " @onclick="@(e => LoadMore(_pagedList.Count))" role="button">Загрузить еще</button>
+            <div class="button__block" style="text-align: start">
+                <button class="btn btn-danger " @onclick="@(e => LoadMore())" role="button">Загрузить еще</button>
                 <button class="btn btn-secondary " onclick="document.getElementById('up_position').scrollIntoView({behavior:'smooth'})">Вверх</button>
             </div>
         }
     </div>
+    @if (_visibleProductFilter)
+    {
+        <MudDrawer @bind-Open="@_visibleProductFilter" Anchor="@Anchor.Start" Elevation="1" Variant="@DrawerVariant.Temporary" Height="100VH">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">Фильтр</MudText>
+            </MudDrawerHeader>
+            <ProductFilterNVComponent Chapter="@Groups"
+                                      ChapterId="@GroupId"
+                                      IsSetOption="OnFilter"
+                                      ActivateBrandId="BrandId"/>
+        </MudDrawer>
+    }
 }
 
 

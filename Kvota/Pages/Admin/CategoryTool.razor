@@ -1,7 +1,8 @@
 ﻿@page "/admin/category"
-@attribute [Authorize(Roles = "Administrators")]
+@attribute [Authorize(Roles = RoleNames.Admin)]
 @using Kvota.Components.CategoryDrawer
 @using Kvota.Components.Admin
+@using Kvota.Constants
 @using Kvota.Interfaces
 @using Microsoft.AspNetCore.Components
 
