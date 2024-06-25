@@ -1,0 +1,303 @@
+﻿@page "/admin/2"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Components.Admin.Products
+@using Kvota.Interfaces
+@using Kvota.Components.Admin
+@inject IRepo<Product> ProductRepo
+@inject ISerializeService<Home> HomeSerialize
+@inject IServiceScopeFactory ServiceScopeFactory
+@using Kvota.Components
+@using Kvota.Constants
+@using Kvota.Models.Content
+@using Kvota.Repositories.Products
+@using FileInfo = System.IO.FileInfo
+@inject IJSRuntime JsRuntime
+@using Microsoft.AspNetCore.Components
+@using Microsoft.Data.OData.Query
+@using SortDirection = MudBlazor.SortDirection
+@using Size = MudBlazor.Size
+
+    <NavAdmin></NavAdmin>
+    <div class="row">
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" href="/admin/product/create" role="button">Создать продукт</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" href="/admin/product/excel" role="button">Загрузить из Excel</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)_filteredList!))" role="button">Выгрузить отфильтрованное в Excel</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" @onclick="@(e => OutputExcel((List<Product>)Products!))" role="button">Выгрузить всё в Excel</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-success btn-sm" @onclick="@(e => _visibleStorageDialog = true)" role="button">Склады</a>
+        </div>
+        <div class="col text-right">
+            <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteCheckedProduct(SelectedValues))" role="button">Удалить выделенные</button>
+        </div>
+    </div>
+
+    <MudTable ServerData="@(new Func<TableState, Task<TableData<Product>>>(ServerReload))"
+              Dense="false"
+              Hover="true"
+              ReadOnly="false"
+              @bind-SelectedItems="@selectedItems"
+              ApplyButtonPosition="@applyButtonPosition"
+              MultiSelection="true"
+              SelectOnRowClick="false"
+              Striped="true"
+              Bordered="true"
+              HeaderClass="mud-table-header table-head-bordered"
+              OnRowClick="RowClickEvent" T="Product"
+              @ref="table">
+
+        <ToolBarContent>
+            <MudText Typo="Typo.h4">@(_currentCategoryName ?? "Список продуктов")</MudText>
+            <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleCreatedProductDialog = true" Style="margin-left: 1rem;" Color="Color.Tertiary">
+                Добавить продукт
+                <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2"/>
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleProductFilter = true" Style="margin-left: 1rem;" Color="Color.Warning">
+                Фильтр
+                <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.FilterAlt" Class="pa-0 ml-2"/>
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleStorageDialog = true" Style="margin-left: 1rem;" Color="Color.Warning">
+                Склады
+                <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.FilterAlt" Class="pa-0 ml-2"/>
+            </MudButton>
+            @if (selectedItems.Any())
+            {
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonDeleteClicked" Style="margin-left: 1rem;">Удалить</MudButton>
+            }
+
+            <MudSpacer/>
+            <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <ColGroup>
+
+
+        </ColGroup>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="category_field" T="Product">Категория</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortLabel="name_field" T="Product">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="partNumber_field" T="Product">P/N</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="brand_field" T="Product">Производитель</MudTableSortLabel></MudTh>
+            <MudTh Style="max-width: 4rem; text-align: center">Количество
+                <MudIconButton Icon="@Icons.Material.Filled.FormatLineSpacing"
+                               OnClick="() => _isOpenQuantityAtStorages = _isOpenQuantityAtStorages != true"></MudIconButton>
+            </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Категория">
+                @if (context.Category != null)
+                {
+                    @context.Category.Name
+                }
+            </MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Email">@context.PartNumber</MudTd>
+            <MudTd DataLabel="Brand">
+                @if (context.Brand != null)
+                {
+                    @context.Brand.Name
+                }
+            </MudTd>
+            <MudTd Style="max-width: 4rem; text-align: center" DataLabel="Quntity">
+                @if (context.ProductsInStorage != null)
+                {
+
+                    @if (_isOpenQuantityAtStorages)
+                    {
+                        @foreach (var item in context.ProductsInStorage)
+                        {
+                            <div>@item.Storage!.Name <b>@item.Quantity</b></div>
+                        }
+                    }
+                    else
+                    {
+                        <b>@context.ProductsInStorage.Select(s => s.Quantity).Sum()</b>
+                    }
+                }
+            </MudTd>
+            <MudTd Style="max-width: 2rem; text-align: center" DataLabel="Edit">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => OpenUpdateProductDialog(context.Id)"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>Нет данных в списке</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Загрузка...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] {  4, 10, 100, int.MaxValue }" HidePageNumber="true" RowsPerPageString="Строк на странице"/>
+        </PagerContent>
+    </MudTable>
+
+
+
+    <MudDrawer @bind-Open="@_visibleProductFilter" Anchor="@Anchor.Start" Elevation="1" Variant="@DrawerVariant.Temporary" Height="100VH" Width="50VW">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Фильтр</MudText>
+        </MudDrawerHeader>
+        <ProductFilterComponent/>
+    </MudDrawer>
+    <CreateProductDialog VisibleDialog="_visibleCreatedProductDialog"
+                         RefreshProductList="OnParametersSetAsync"
+                         Close="() => _visibleCreatedProductDialog = false"/>
+    <EditProductDialog VisibleDialog="_visibleEditProductDialog"
+                       ProductId="ProductId"
+                       RefreshProductList="OnParametersSetAsync"
+                       Close="() => _visibleEditProductDialog = false"/>
+
+@*<ProductDetailDialog VisibleDialog="_visibleDetailProductDialog"
+                   ProductId="ProductId"
+                   Close="() => _visibleDetailProductDialog=false" />*@
+
+
+    <MudDialog @bind-IsVisible="_visibleStorageDialog" Style="min-width: 900px" Options="new DialogOptions() { CloseButton = true }">
+        <DialogContent>
+            <StorageSettings/>
+        </DialogContent>
+    </MudDialog>
+
+@code {
+
+    //[Parameter]
+    //public string? Chapter { get; set; } = null;
+    IEnumerable<Product> data;
+    bool _visibleCreatedProductDialog; 
+    bool _visibleEditProductDialog;
+    bool _isOpenQuantityAtStorages; 
+    bool _visibleDetailProductDialog;
+   
+
+    private IEnumerable<Product>? pagedData;
+    private MudTable<Product>? table ;
+
+    private int totalItems;
+    private string searchString = null;
+
+    private async Task<TableData<Product>> ServerReload(TableState state)
+    {
+        var t = new SortPagedRequest<FilterProductTuple>()
+        {
+            PageIndex = state.Page,
+            PageSize = state.PageSize,
+            SearchString = searchString,
+            SortLabel = state.SortLabel,
+
+            SortDirection =state.SortDirection
+
+        };
+        var response = await ((ProductRepo)ProductRepo).GetBySortPagedSearchChapterAsync(t);
+        pagedData = response.Items;
+        return new TableData<Product>() { TotalItems = response.TotalItems, Items = response.Items };
+    }
+    private void OpenUpdateProductDialog(Guid id)
+    {
+        ProductId = id;
+        _visibleEditProductDialog = true;
+    }
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table!.ReloadServerData();
+    }
+    private void RowClickEvent(TableRowClickEventArgs<Product> tableRowClickEventArgs)
+    {
+        ProductId = tableRowClickEventArgs.Item.Id;
+        _visibleDetailProductDialog = true;
+    }
+
+
+
+
+        [Parameter] public Guid? ChapterId { get; set; }
+
+        private string? _currentCategoryName;
+        //private List<Product>? Elements { get; set; }
+
+        //private List<Brand>? Brands { get; set; }
+        //private List<Category>? Categories { get; set; }
+
+        private Product EditedProduct = null!;
+
+        public Guid ProductId;
+
+        private HashSet<Product> selectedItems = new HashSet<Product>();
+        private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.Start;
+
+        private StorageSettings? _storageSettings;
+        private bool _visibleProductFilter;
+
+
+
+        private string value { get; set; } = "Nothing selected";
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (table != null) await table.ReloadServerData();
+        }
+
+        
+        //private async Task<List<Product>> GetProductListByCategory()
+        //{
+        //    return await ProductManager.GetProductsByCategoryAsync(CategoryId);
+        //}
+
+
+        //private bool FilterFunc(Product element)
+        //{
+        //    if (string.IsNullOrWhiteSpace(_searchString))
+        //        return true;
+        //    if (element.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //        return true;
+        //    if (element.PartNumber != null && element.PartNumber.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //        return true;
+        //    if (element.Brand != null && element.Brand.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //        return true;
+        //    //if (element.Brand.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        //    //    return true;
+        //    if ($"{element.Id}".Contains(_searchString))
+        //        return true;
+        //    return false;
+        //}
+
+        [Inject] private IDialogService DialogService { get; set; }
+        private async void OnButtonDeleteClicked()
+        {
+            bool? result = await DialogService.ShowMessageBox(
+            "Внимание",
+            "Подтвердите удаление!",
+            yesText: "Удалить!  ", cancelText: "  Отменить");
+
+            if (result != null && (bool)result)
+            {
+                RemoveElement(selectedItems);
+            }
+            StateHasChanged();
+        }
+        private async void RemoveElement(HashSet<Product> selectedItems)
+        {
+            var tempList = new List<Product>(selectedItems);
+            foreach (var item in tempList)
+            {
+                await ProductService.DeleteAsync(item.Id);
+            }
+
+
+            await table!.ReloadServerData();
+        }
+
+}
+<style>
+    .mud-table-header {
+        background-color: #cbf0ee;
+        color: white !important;
+        font-weight: bold;
+    }
+</style>

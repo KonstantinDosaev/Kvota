@@ -2,6 +2,18 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+}
+@font-face {
+    font-family: "Inter";
+    /*src: url("_content/rcl/font/Comfortaa.ttf") format("truetype");*/
+    /*src: url("../font/Comfortaa.ttf") format("truetype");*/
+    /*src: url("../css/open-iconic/font/fonts/Comfortaa.ttf") format("truetype");*/
+    src: url("/css/Inter-VariableFont_slnt,wght.ttf") format("truetype");
+    /*src: url("Comfortaa.ttf") format("truetype");*/
+}
+html, body {
+    font-family: 'Inter';
 }
 
 h1:focus {
@@ -62,3 +74,49 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+/*.kvota__body-shadow {
+    background: #fff;
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
+    border-radius: 5px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.kvota__body-shadow:hover {
+    -moz-box-shadow: 0 0 10px #000;
+    -webkit-box-shadow: 0 0 10px #000;
+    box-shadow: 0 0 10px #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}*/
+.kvota__body-shadow {
+    /*  box-shadow: 0 20px 30px -17px rgba(30, 144, 255,0.55);*/
+    box-shadow: 0 0 10px rgba(30, 144, 255,0.9);
+    border-radius: 5px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+    .kvota__body-shadow:hover {
+        -moz-box-shadow: 0 0 10px #000;
+        -webkit-box-shadow: 0 0 10px #000;
+        box-shadow: 0 0 10px rgba(0, 0, 0,0.99);
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }
+
+.product-modal__closeBtn {
+    top: 0rem;
+    right: 0.5rem;
+    position: absolute;
+    font-size: 3rem;
+    padding: 0;
+}
+
+.product-modal__closeBtn:active {
+    transform: scale(0.8);
+}

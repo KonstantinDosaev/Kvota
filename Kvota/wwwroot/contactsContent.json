@@ -1,0 +1,26 @@
+{
+  "Id": "80beea30-3f74-42f3-812b-561cea25ec32",
+  "AddressOne": "Ул. Улица, д.898 ,  г. Город 1822596",
+  "AddressTwo": "",
+  "PhoneOne": "895554455",
+  "PhoneTwo": "999",
+  "PhoneThree": "",
+  "EmailOne": "sfdsaf@aettsgsh.c",
+  "EmailTwo": "sdg@sfgghshs.com",
+  "CallOperators": [
+    {
+      "Name": "Operator 1",
+      "Phone": "8911999999",
+      "Skype": "Op1",
+      "WhatsApp": "89111199889",
+      "Email": "aaaaaaaaaa@ss.com"
+    },
+    {
+      "Name": "Operator 2",
+      "Phone": "89774411474",
+      "Skype": "Op2",
+      "WhatsApp": "89222669966",
+      "Email": "bbbbb@ss.com"
+    }
+  ]
+}

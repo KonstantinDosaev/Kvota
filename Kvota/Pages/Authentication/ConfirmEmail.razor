@@ -1,0 +1,53 @@
+﻿@page "/Account/ConfirmEmail/{userId}/{code}"
+@using Kvota.Models.UserAuth
+@using Kvota.Services.Auth
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Text
+@using Kvota.Interfaces
+@inject NavigationManager NavigationManager
+@inject UserManager<KvotaUser> UserManager
+@inject AuthenticationStateProvider StateProvider
+@inject IAuthService AuthService
+@inject IEmailSender EmailSender
+<div style="padding: 4rem">
+    <h6>@Message</h6>
+    <MudButton Variant="Variant.Filled" Color="Color.Info" Href="/login">Войти</MudButton>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Code { get; set; } = null!;
+    [Parameter]
+    public string UserId { get; set; } = null!;
+
+    string Message { get; set; } = "Подтверждение профиля";
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnGetAsync();
+    }
+
+    public async Task OnGetAsync( ) 
+    {
+        //var requestString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+        //var arr = requestString.Split('/');
+
+        //var userId = arr[^2];
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+        var user = await UserManager.FindByIdAsync(UserId);
+
+        if (user == null)
+        {
+            Message = $"Пользователь не найден: '{UserId}'.";
+            return;
+        }
+        
+        var result = await UserManager.ConfirmEmailAsync(user, code);
+        if (result.Succeeded)
+        {
+            Message = "Проверка пройдена успешно";
+        }
+      
+    }
+}

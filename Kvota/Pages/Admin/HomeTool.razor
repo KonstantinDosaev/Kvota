@@ -1,0 +1,95 @@
+﻿@attribute [Authorize(Roles = RoleNames.Admin)]
+@page "/hometool"
+@using Kvota.Components.Admin
+@using Kvota.Constants
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject ISerializeService<Home> HomeSerialize
+
+
+@if (Tools != null)
+{
+    <NavAdmin></NavAdmin>
+    <div class ="admin_body" style="padding: 1rem;">
+        <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
+            <div class="form-group">
+                <label>Титульник на изображении</label>
+                <InputText class="form-control" @bind-Value="Tools.HomeImageTextOne" />
+            </div>
+            <div class="form-group">
+                <label>Саб-Титульник на изображдении</label>
+                <InputText class="form-control" @bind-Value="Tools.HomeImageTextTwo" />
+            </div>
+
+            <div class="form-group">
+                <label>Титульник производителей</label>
+                <InputText class="form-control" @bind-Value="Tools.PartnerTitle" />
+            </div>
+            <div class="form-group">
+            
+                <label>Текст о компании на главной странице</label>
+                <div>^  -новый абзац; ^~   -пустая строка</div>
+                <InputTextArea class="form-control" @bind-Value="Tools.AboutHomeText"/>
+            </div>
+        
+            <div class="form-group">
+                <label>Текст: страница О компании</label>
+                <InputTextArea class="form-control" @bind-Value="Tools.AboutText" />
+            </div>
+            <div class="form-group">
+                <label>Титульник слайдера с продуктами ГЭ</label>
+                <InputText class="form-control" @bind-Value="Tools.ProductTitle" />
+            </div>
+            <div class="form-group">
+                <label>Отобразить категории</label>
+                <Switch @bind-Value="Tools.CatalogView" Label="Отобразить категории" />
+            </div>
+            <div class="form-group">
+                <label>Отобразить категории</label>
+                <Switch @bind-Value="Tools.BrandView" Label="Включить бренд панель" />
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </EditForm>
+        <div class="imagetool__body">
+            <div class="imagetool__item">
+                <img src="image/background/homeImage.jpg" width="150" height="75"/>
+                <button class="btn btn-secondary " @onclick="@(e => ShowModalImage("background", "homeImage"))" role="button">Изменить главное изображение</button>
+            </div>
+            <div class="imagetool__item">
+                <img src="image/background/manufbg.jpg" width="150" height="75"/>
+                <button class="btn btn-secondary " @onclick="@(e => ShowModalImage("background", "manufbg"))" role="button">Изменить подложку производителей</button>
+            </div>
+            <div class ="imagetool__item">
+                <img src="image/background/feedback.jpg" width="150" height="75"/>
+                <button class="btn btn-secondary " @onclick="@(e => ShowModalImage("background", "feedback"))" role="button">Изменить подложку формы обратной связи</button>
+            </div>
+            <div class="imagetool__item">
+                <img src="image/background/aboutbg1.jpg" width="150" height="75"/>
+                <button class="btn btn-secondary " @onclick="@(e => ShowModalImage("background", "aboutbg1"))" role="button">Изменить 1 изображение страницы О компании</button>
+            </div>
+            <div class="imagetool__item">
+                <img src="image/background/aboutbg2.jpg" width="150" height="75"/>
+                <button class="btn btn-secondary " @onclick="@(e => ShowModalImage("background", "aboutbg2"))" role="button">Изменить 2 изображение страницы О компании</button>
+            </div>
+        </div>
+        <Modal @ref="_modalImage" title="ОК">
+            <BodyTemplate>
+                <FileUploads MyDirectory="@DirectoryImage" Name="@NameImage"></FileUploads>
+            </BodyTemplate>
+        </Modal>
+        
+        <Modal @ref="_modal" title="ОК">
+            <BodyTemplate>
+                Изменения сохранены
+            </BodyTemplate>
+         </Modal>
+    </div>
+}
+<style>
+    .imagetool__body {
+
+    }
+    .imagetool__item {
+        margin: 5px 0;
+    }
+</style>

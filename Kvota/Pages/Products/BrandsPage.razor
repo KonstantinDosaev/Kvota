@@ -1,0 +1,74 @@
+﻿@using Kvota.Interfaces
+@inject IRepo<Brand> BrandRepos
+@page "/brands"
+<div class="row brnd__container">
+    @if (BrandList != null)
+    {
+        foreach (var item in BrandList)
+        {
+           
+
+            <a title="@item.Name" class="brand__card" href="/categories/brand/@item.Id" >
+                @if (item.Image != null)
+                {
+                    var uri  = item.Image!.Replace("\\", "/");
+                    <div class="brand__img" style="background-image: url(@uri);"></div>
+                }
+                @item.Name
+            </a>
+        }
+    }
+</div>
+@code
+{
+    private List<Brand>? BrandList { get; set; } = null!;
+    protected override async Task OnInitializedAsync()
+    {
+       
+        
+            BrandList = (List<Brand>)await BrandRepos.GetAllAsync();
+        BrandList= BrandList.OrderBy(o => o.Name).ToList();
+    //BrandList = BrandList.Where(w => !string.IsNullOrEmpty(w.Image)).Take(30).ToList();
+
+
+    }
+}
+<style>
+    .brnd__container {
+        padding: 2rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .brand__card {
+        border-radius: 3px;
+        margin: 0 14px 14px 0;
+        text-align: center;
+        width: 220px;
+        height: 150px;
+        background-color: white;
+        padding: 1rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0,0.99);
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+        .brand__card:hover {
+        width: 215px;
+        height: 147px;
+    }
+
+    .brand__img {
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100%,cover;
+        width: 180px;
+        height: 130px;
+        margin-bottom: 0.8rem;
+    }
+</style>

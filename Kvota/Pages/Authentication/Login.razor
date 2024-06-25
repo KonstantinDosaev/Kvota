@@ -1,0 +1,68 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components
+@using Kvota.Models.UserAuth
+@using Kvota.Services.Auth
+@layout AuthLayout
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+
+<a href="/" class="btn btn-lg btn-primary btn-block mb-6">
+    <i class="bi bi-arrow-left-square fs-4"></i>
+    Вернуться на главную страницу
+</a>
+<div class="d-flex justify-content-center align-items-center mt-6">
+    <MudPaper Width="500px" Class="p-3" Style="background-color: rgba(237, 237, 237, 0.522); border-radius: 5px"
+              Outlined="true">
+        <h1 class="h2 font-weight-normal login-title">
+            Вход
+        </h1>
+        <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="LoginRequest">
+            <DataAnnotationsValidator />
+            <label for="inputUsername" class="sr-only">E-mail</label>
+            <InputText id="inputUsername" class="form-control" @bind-Value="LoginRequest.UserName" autofocus placeholder="Логин" />
+            <ValidationMessage For="@(() => LoginRequest.UserName)" />
+            <label for="inputPassword" class="sr-only">Пароль</label>
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="Пароль" @bind-Value="LoginRequest.Password" />
+            <ValidationMessage For="@(() => LoginRequest.Password)" />
+            <div class="form-check m-3">
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@LoginRequest.RememberMe" />
+                <label class="form-check-label" for="inputRememberMe">Запомнить меня</label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+            <label class="text-danger">@Error</label>
+            @if (Error == "Подтверждение по электронной почте не пройдено")
+            {
+                <NavLink href="@($"/Account/SendConfirmEmail/{LoginRequest.UserName}")">
+                    <h6 style="cursor: pointer" class="font-weight-normal text-center">Повторно отправить письмо на почту для подтверждения</h6>
+                </NavLink>
+            }
+            <NavLink href="register">
+                <h6 class="font-weight-normal text-center">Создать аккаунт</h6>
+            </NavLink>
+        
+        
+        </EditForm>
+    </MudPaper>
+</div>
+@code{
+    LoginRequest LoginRequest { get; set; } = new LoginRequest();
+    string? Error { get; set; }
+    async Task OnSubmit()
+    {
+        Error = null;
+        try
+        {
+            await AuthService.Login(LoginRequest);
+            NavigationManager.NavigateTo("/",true);
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+    }
+
+    private void SendConfirm()
+    {
+        NavigationManager.NavigateTo($"/Account/SendConfirmEmail/{LoginRequest.UserName}", forceLoad: true);
+    }
+}

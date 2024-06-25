@@ -1,0 +1,115 @@
+﻿@page "/admin/user-manager"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Components.Admin
+@using Kvota.Constants
+@using Kvota.Models.UserAuth
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Identity
+@using Size = MudBlazor.Size
+@using SortDirection = MudBlazor.SortDirection
+@inject UserManager<KvotaUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject ISnackbar Snackbar
+<NavAdmin></NavAdmin>
+<div class="d-flex justify-content-end mx-3">
+    @if (selectedItems.Any())
+    {
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="OnButtonDeleteClicked" Style="margin-left: 1rem;">Удалить</MudButton>
+    }
+    <MudButton Variant="Variant.Filled" Size="Size.Medium"
+               Href="/register" Style="margin-left: 1rem;"
+               Color="Color.Tertiary">Создать пользователя
+        <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2"/></MudButton>
+
+    <MudButton Variant="Variant.Filled" Size="Size.Medium"
+               OnClick="GetNotEmailConfirmed" Style="margin-left: 1rem;"
+               Color="Color.Tertiary">@(!getNotEmailConfirmed ? "Показать не подтвердившие e-mail" : "Показать подтвержденные")</MudButton>
+
+</div>
+<MudTable Items="@Elements"
+          Dense="true"
+          Hover="true"
+          ReadOnly="false"
+          CanCancelEdit="true"
+          Filter="new Func<KvotaUser, bool>(FilterFunc)"
+          @bind-SelectedItems="selectedItems"
+          SortLabel="Sort By"
+          IsEditRowSwitchingBlocked="true"
+          ApplyButtonPosition="@applyButtonPosition"
+          EditButtonPosition="@editButtonPosition"
+          MultiSelection="true"
+          SelectOnRowClick="true"
+          ServerData="@(new Func<TableState, Task<TableData<KvotaUser>>>(ServerReload))"
+          Striped="true"
+          Bordered="true"
+          HeaderClass="mud-table-header table-head-bordered"
+          T="KvotaUser"
+          @ref="table"
+          >
+         
+    <ToolBarContent>
+        <MudText Class="my-3"Typo="Typo.h4">Управление пользователями</MudText>
+        <MudSpacer/>
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск/Компания/Фамилия/e-mail" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+  
+    </ToolBarContent>
+    <ColGroup>
+
+        <col/>
+        <col/>
+   
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortLabel="name_field" T="KvotaUser">Ник/Email</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="date_field" T="KvotaUser">Дата обновления</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="company_field" T="KvotaUser">Компания</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="employee_field" T="KvotaUser">Сотрудник</MudTableSortLabel></MudTh>
+        <MudTh>
+                <MudSelect Style="max-width: 10rem" T="string" Placeholder="Роли" OnOpen="LoadRoles" ValueChanged="@(s => OnFilter(s))">
+                <MudSelectItem T="string" Value="@("")">Все роли</MudSelectItem>
+                @foreach (var state in Roles ?? new())
+                {
+                    <MudSelectItem T="string" Value="@state.Name">@state.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudTh>
+
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Ник/Email">@context.UserName</MudTd>
+        <MudTd DataLabel="Дата обновления">@context.DateTimeUpdate</MudTd>
+        <MudTd DataLabel="Компания">@context.CompanyName</MudTd>
+        <MudTd DataLabel="Сотрудник">@context.LastName @context.FirstName @context.MiddleName</MudTd>
+        <MudTd DataLabel="Role"> <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => OpenRoleDialog(context)" Color="Color.Tertiary">Изменить роль</MudButton> </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] {  4, 10, 100, int.MaxValue }" RowsPerPageString="Строк на странице" />
+    </PagerContent>
+
+    <EditButtonContent Context="button">
+        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
+    </EditButtonContent>
+</MudTable>
+
+@*<MudDialog @bind-IsVisible="_visibleRegisterDialog" Options="_registerDialogOptions">
+    <DialogContent>
+        <Register/>
+    </DialogContent>
+</MudDialog>*@
+
+<MudDialog @bind-IsVisible="_visibleRoleDialog" Options="_roleDialogOptions">
+    <DialogContent>
+        <MudSelect T="string" Label="Роль"  @bind-Value="Value" >
+            @foreach (var state in Roles ?? new ())
+            {
+                <MudSelectItem T="string" Value="@state.Name">@state.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="UpdateRoles" Color="Color.Tertiary" Style="margin-top: 1rem;">Изменить роль</MudButton>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+}

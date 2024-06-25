@@ -1,0 +1,203 @@
+﻿@page "/admin/product"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Components.Admin.Products
+@using Kvota.Interfaces
+@using Kvota.Components.Admin
+@inject IRepo<Product> ProductRepo
+@inject ISerializeService<Home> HomeSerialize
+@inject IServiceScopeFactory ServiceScopeFactory
+@using Kvota.Components
+@using System.IO
+@using Kvota.Constants
+@using Kvota.Models.Content
+@using FileInfo = System.IO.FileInfo
+@using Size = MudBlazor.Size
+@using SortDirection = MudBlazor.SortDirection
+@inject IJSRuntime JsRuntime
+<div >
+    <NavAdmin></NavAdmin>
+    <div class="d-flex">
+        <MudButton Variant="Variant.Filled" Size="Size.Medium" Href="admin/product/create" Style="margin-left: 1rem;" Color="Color.Tertiary">
+            Добавить продукт
+            <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.Add" Class="pa-0 ml-2"/>
+        </MudButton>
+        <MudMenu Style="margin-left: 1rem;">
+            <ActivatorContent>
+                <MudButton Variant="Variant.Filled" Size="Size.Medium" Color="Color.Default">
+                    <span style="color: green; font-size:1rem; padding: 0 0.5rem; margin: 0 0.5rem 0 0; 
+                                 border: solid black 1px; border-radius: 50%;">X</span>
+                    Excel
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>
+                    <a class="btn btn-success btn-sm" @onclick="@OutputFilteredListToExcel" role="button">Выгрузить все согласно фильтру в Excel</a>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <a class="btn btn-success btn-sm" @onclick="@(OutputViewToExcel)" role="button">Выгрузить отображенные на экране продукты в Excel</a>
+                </MudMenuItem>
+                <MudMenuItem>
+                    <a class="btn btn-success btn-sm" @onclick="@(OutputAllToExcel)" role="button">Выгрузить все из базы в Excel</a>
+                </MudMenuItem>
+                <MudMenuItem>  
+                    <a class="btn btn-success btn-sm" href="/admin/product/excel" role="button">Загрузить из Excel</a>
+                </MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+        <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleStorageDialog=true" Style="margin-left: 1rem;" Color="Color.Warning">
+            Склады
+            <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.FilterAlt" Class="pa-0 ml-2"/>
+        </MudButton>
+        
+        @if (SelectedValues.Any())
+        {
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="(() => DeleteCheckedProduct(SelectedValues))" Style="margin-left: 1rem;">Удалить</MudButton>
+        }
+
+    </div>
+         
+    @if (_pagedList != null)
+    {
+        <div class="d-flex flex-wrap align-items-center my-4">
+          
+                <MudButton OnClick="OnSortDirection"
+                           Variant="Variant.Filled"
+                           Class=" p-0 mb-2"
+                           Style="width: 40px; height: 37px">
+                    @if (_sortDirection == SortDirection.Descending)
+                    {
+                        <i class="bi bi-sort-up" style="font-size: 30px"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-sort-down" style="font-size: 30px"></i>
+                    }
+                </MudButton>
+                <div style=" border-radius: 6px; margin: 0.1rem 1rem 0.5rem 0;height: 38px;">
+                    <select style="width: 250px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;height: 100%" title="Сортировка" class="form-control" @bind="_sortString" @onclick="OnSorted">
+                        <option value="@SortLabelsProduct.NameField">По имение</option>
+                        <option value="@SortLabelsProduct.CreateField">По дате</option>
+                        <option value="@SortLabelsProduct.PriceField">По цене</option>
+                    </select>
+                </div>
+                <MudButton Variant="Variant.Filled" Size="Size.Medium" OnClick="() => _visibleProductFilter=true" Style="margin: 0 1rem 0.5rem 0;" Color="Color.Warning">
+                    Фильтр
+                    <MudIcon Size="@Size.Medium" Color="Color.Default" Icon="@Icons.Material.Sharp.FilterAlt" Class="pa-0"/>
+                </MudButton>
+                <MudTextField Clearable="true" T="string" ValueChanged="@(OnSearch)" Placeholder="Поиск"
+                      Style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; border-radius: 6px; height: 2.4rem;margin: 0 1rem 0.5rem 0;"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Variant="Variant.Outlined"></MudTextField>
+            
+            <MudButton Variant="Variant.Filled" Size="Size.Medium"
+                   OnClick="GetHotProduct" Style="margin: 0 1rem 0.5rem 0; width: 150px"
+                       Color="Color.Tertiary">@(!_getHotProduct ? "На главной" : "Показать все")</MudButton>
+        </div>
+
+        <table class="table table-bordered table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Check</th>
+                <th></th>
+                <th>Имя</th>
+                <th>Парт-номер</th>
+                <th>Бренд</th>
+                <th>Подкатегория</th>
+                <th>Цена</th>
+                <th>Скидка</th>
+                <th>Количество</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in _pagedList)
+            {
+                _checked = false;
+                <tr>
+                    <td>
+                        
+                        @if (SelectedValues != null && SelectedValues.Contains(_value))  
+                        {  
+                            _checked = true;  
+                        }  
+                        <input type="checkbox" checked=@_checked  
+                       @onchange="eventArgs => { CheckboxClicked(item.Id, eventArgs.Value!); }" />  
+                    </td>
+                    <td>
+                        @if (item.Image == Links.DefaultImageProduct)
+                        {
+                            <img width="100" height="70" src="@Links.DefaultImageProduct" />
+                        }
+                        else
+                        {
+                            @if (Directory.Exists($"{Links.RootPath}{item.Image}"))
+                            {
+                                var imageFirst = Directory.GetFiles($"{Links.RootPath}{item.Image}").FirstOrDefault();
+                                var fileInfo = item.Image + "/" + (new FileInfo(imageFirst!).Name);
+                                <img width="100" height="70" src="@fileInfo"/>
+                            }
+                        }
+                        
+                    </td>
+                    <td>@item.Name</td>
+                    <td>@item.PartNumber</td>
+                    <td>
+                        @if (item.Brand != null)
+                        {@item.Brand.Name
+                        }
+                    </td>
+                    <td>
+                        @if (item.Category != null)
+                        {@item.Category.Name
+                        }
+                    </td>
+                    <td>@item.Price</td>
+                    <td>@item.SalePrice</td>
+                    <td>
+                        @if (item.ProductsInStorage != null)
+                        {
+                            @item.ProductsInStorage.Select(s => s.Quantity).Sum()
+                        }
+                    </td>
+                    <td class="text-right">
+                        <a class="btn btn-primary btn-sm" href="/admin/prodoptions/@item.Name/@item.CategoryId/@item.Id" role="button">Опции</a>
+                        <a class="btn btn-secondary btn-sm" href="/admin/product/edit/@item.Id" role="button">Изменить</a>
+                        @*  <a class="btn btn-secondary btn-sm" @onclick="()=>OpenUpdateProductDialog(item.Id)" role="button">Изменить</a>*@
+                        @if (_home?.ProductInHome != null && !_home.ProductInHome.Contains(item.Id))
+                        {
+                            <button class="btn btn-success btn-sm" @onclick="@(e =>  {AddProductToHome(item.Id); })" role="button">Добавить на главную</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger btn-sm" @onclick="@(e => { RemoveProductFromHome(item.Id); })" role="button">Удалить с главной</button>
+                        }
+                        @* <button class="btn btn-danger btn-sm" @onclick="@(e => DeleteProduct(item.Id, item.Image!))" role="button">Delete</button>*@
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <button class="btn btn-danger btn-sm" @onclick="@(e => LoadMore())" role="button">Загрузить еще</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('up_position').scrollIntoView({behavior:'smooth'})">Вверх</button>
+    }
+</div>
+
+<MudDrawer @bind-Open="@_visibleProductFilter" Anchor="@Anchor.Start" Elevation="1" Variant="@DrawerVariant.Temporary" Height="100VH" >
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">Фильтр</MudText>
+    </MudDrawerHeader>
+    <ProductFilterNVComponent IsSetOption="OnFilter"/>
+</MudDrawer>
+
+<MudDialog @bind-IsVisible="_visibleStorageDialog" Style="min-width: 900px" Options="new DialogOptions(){CloseButton = true}">
+    <DialogContent>
+        <StorageSettings/>
+    </DialogContent>
+</MudDialog>
+<CreateProductDialog VisibleDialog="_visibleCreatedProductDialog"
+                     RefreshProductList="OnParametersSetAsync"
+                     Close="() => _visibleCreatedProductDialog = false"/>
+<EditProductDialog VisibleDialog="_visibleEditProductDialog"
+                   ProductId="ProductId"
+                   RefreshProductList="OnParametersSetAsync"
+                   Close="() => _visibleEditProductDialog = false"/>

@@ -1,0 +1,106 @@
+﻿@page "/admin/product/edit/{id:guid}"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Interfaces
+@using Kvota.Constants
+@inject IRepo<Product> ProductRepo
+@inject IRepo<Category> CategoryRepo
+@inject IRepo<Brand> BrandRepo
+@inject IRepo<Storage> StorageRepo
+@*@inject IRepo<ProductsInStorage> ProductInStorageRepo*@
+
+<div class="row">
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Вернуться назад</a>
+    </div>
+</div>
+
+@if (Product != null)
+{
+   
+    <EditForm Model="@Product" OnValidSubmit="@SubmitProduct">
+        <div class="form-group">
+            <label>Part No</label>
+            <InputText class="form-control" @bind-Value="Product.PartNumber" />
+        </div>
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="form-group">
+            <label>Производитель</label>
+            <InputSelect @bind-Value="Product.BrandId" class="form-control">
+                <option value=""></option>
+                @if (BrandList != null)
+                {
+                    @foreach (var brand in BrandList)
+                    {
+                        <option value="@brand.Id">@brand.Name</option>
+                    }
+                }
+            </InputSelect>
+
+        </div>
+        <div class="form-group">
+            <label>Категория</label>
+            <select class="form-control" @bind="Product.CategoryId">
+                <option value=@Product.CategoryId>@if (Product.Category != null){@Product.Category.Name}</option>
+                @if (CategoryList != null)
+                {
+                    foreach (var category in CategoryList)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Описание</label>
+            <InputTextArea class="form-control" @bind-Value="Product.Description" />
+        </div>
+        <div class="form-group">
+            <label>Цена</label>
+            <InputNumber class="form-control" @bind-Value="Product.Price" />
+        </div>
+        <div class="form-group">
+            <label>Скидка %</label>
+            <InputNumber class="form-control" @bind-Value="Product.SalePrice" />
+        </div>
+        @if (Product.ProductsInStorage != null)
+        {
+            foreach (var productIn in Product.ProductsInStorage)
+            {
+                <div class="form-group d-flex m-1">
+                    <label>
+                        @if (productIn.Storage != null)
+                        {
+                            @productIn.Storage!.Name
+                        }
+                    </label>
+                    <InputNumber class="form-control" @bind-Value="@productIn.Quantity" /> 
+                </div>
+            }
+        }
+       
+        @if (Storages!= null)
+        {
+            foreach (var storage in Storages)
+            {
+                <div class="form-group d-flex m-1">
+                    <label>@storage.Name</label>
+                    <InputNumber class="form-control" @bind-Value="@Quantity" /> <button type="button" 
+                                                                                         @onclick="()=> { Product.ProductsInStorage ??=new List<ProductsInStorage>(); Product.ProductsInStorage.Add(new ProductsInStorage() { ProductId = Product.Id, StorageId = storage.Id, Quantity = Quantity }); }" class="btn btn-primary">Сохранить</button>
+                </div>
+            }
+        }
+       
+        <div class="form-group">
+            <label>Cрок поставки (дней)</label>
+            <InputNumber class="form-control" @bind-Value="Product.DayToDelivery" />
+        </div>
+        <FileUploads MyDirectory="products" Name="@Product.Id.ToString()" OnClickCallback="AddImagePatch"></FileUploads> <br />
+        
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </EditForm>
+ 
+
+}

@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Kvota.Constants
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject ProtectedSessionStorage ProtectedSessionStore
+<div class="prductlist__filters">
+    <div class="productlist__inputs">
+        <div class="productlist__sort">
+            <select title="Сортировка" class="form-control" @bind="_sortString" @onclick="GetList">
+                <option value="">Сортировка</option>
+                <option value="name">По имение A-z</option>
+                <option value="nameDesc">По имение Z-a</option>
+                <option value="dateNews">Сначала новые</option>
+                <option value="priceMin">Цена по убыванию</option>
+                <option value="priceMax">Цена по возрастанию</option>
+            </select>
+        </div>
+        <div class="productlist__categoryFilter">
+
+            @if (CategoryList != null && Category != GroupNames.GroupCategory)
+            {
+                <select class="form-control"
+                        @bind-value="CategoriesFilterId" @onchange="GetList" @bind-value:event="oninput">
+                    @foreach (var item in CategoryList)
+                    {
+                        if (item != null)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                    <option value=@Guid.Empty>Все категории</option>
+                </select>
+            }
+        </div>
+        <div class="productlist__brandFilter">
+            @if (BrandList != null && Category != GroupNames.GroupBrand)
+            {
+                <select class="form-control"
+                        @bind-value="BrandsFilterId" @onchange="GetList" @bind-value:event="oninput">
+                    @foreach (var item in BrandList)
+                    {
+                        if (item != null)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                    <option value=@Guid.Empty>Все производители</option>
+                </select>
+            }
+        </div>
+    </div>
+    <div class="productlist__search">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Быстрый поиск.." @bind="SearchString" @bind:event="oninput" @onkeyup="Search"/>
+            @if (SearchString.Length > 0)
+            {
+                <div class="input-group-append">
+                    <button class="btn " @onclick="ResetSearch">
+                        <i class="oi oi-x"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+

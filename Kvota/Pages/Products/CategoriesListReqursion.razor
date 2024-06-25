@@ -1,0 +1,52 @@
+﻿@using Kvota.Constants
+@if (Category!.Children == null || !Category.Children.Any())
+{
+    if (BrandId!=null)
+    {
+        <MudListItem Dense="true" Href=@($"{GroupNames.GroupCategory}/{Category.Name}/{Category.Id}/{BrandId}") OnClick="ChangeValue" Value="@Category">
+            @Category.Name (@Category.Products?.Where(w=>w.BrandId==BrandId).Count())
+        </MudListItem>
+
+    }
+    else
+    {
+        <MudListItem Dense="true" Href=@($"{GroupNames.GroupCategory}/{Category.Name}/{Category.Id}/") OnClick="ChangeValue" Value="@Category">
+        @Category.Name (@Category.Products?.Count)
+        </MudListItem>
+    }
+    
+
+}
+else
+{
+
+    <MudListItem Text="">
+        <ChildContent>
+            @Category.Name
+        </ChildContent>
+        <NestedList>
+            @foreach (var subCategory in @Category.Children.OrderBy(o => o.Name))
+            {
+                <CategoriesListReqursion Category="@subCategory"
+                                                 RefreshCategoryListCallback="RefreshCategoryListCallback"
+                                                 ChangeValue = "ChangeValue"
+                                                 BrandId="BrandId" />
+            }
+        </NestedList>
+
+    </MudListItem>
+}
+@code {
+    [Parameter]
+    public Category? Category { get; set; }
+    
+
+    [Parameter]
+    public EventCallback ChangeValue { get; set; }
+    
+
+    [Parameter]
+    public EventCallback RefreshCategoryListCallback { get; set; }
+    [Parameter]
+    public Guid? BrandId { get; set; }
+}

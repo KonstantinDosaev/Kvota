@@ -1,0 +1,251 @@
+﻿@using System.Net.Http.Headers
+@using Kvota.Constants
+@using Kvota.Components.SelectedCategoriesListComponents
+@using Kvota.Interfaces
+@using Microsoft.EntityFrameworkCore
+@inject IServiceScopeFactory ServiceScopeFactory
+
+<MudExpansionPanels Dense="false" Elevation="25" Style="background-color: #cbf0ee" MultiExpansion="false">
+    <MudExpansionPanel Text="КАТЕГОРИИ">
+        @if (Chapter != GroupNames.GroupCategory)
+        {
+            <div class="d-flex flex-column w-100">
+                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="ClearSelectedCategory">Сбросить</MudButton>
+                <SelectedCategoriesListComponent
+                    IsSetCategory="InitCategoryOptions" SelectedCategoryChanged="SetCategories"/>
+                        
+            </div>
+        }
+        else
+        {
+            <MudText>
+                @if (Category != null){@Category.Name}
+            </MudText>
+        }
+    </MudExpansionPanel>
+    
+    <MudExpansionPanel IsExpandedChanged="InitBrands" Text="ПРОИЗВОДИТЕЛИ">
+        @if (Category!=null)
+        {
+            @if (Brands != null )
+            {
+                <div class="d-flex flex-column w-100">
+                    <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="ClearSelectedBrands">Сбросить</MudButton>
+                    <MudPaper Class="p-3">
+                        @foreach (var brand in Brands)
+                        {
+                            BrandCheckBox = false;
+                            @if (SelectedBrands != null && SelectedBrands.Contains(brand))
+                            { BrandCheckBox = true;  } 
+                            <div class="d-flex my-1">
+                                <input type="checkbox" class="mr-2" checked="@BrandCheckBox"
+                                       @onchange="async eventArgs => { await CheckboxBrandClicked(brand, eventArgs.Value!); }" />
+                                <span>@brand.Name</span>
+                            </div>
+                        }
+                    </MudPaper>
+                </div>
+            }
+        }
+        
+        else
+        {
+        <MudText>Выберите категорию</MudText>
+        }
+        
+    </MudExpansionPanel>
+    
+    <MudExpansionPanel Text="ОПЦИИ ПРОДУКТА" IsExpandedChanged="InitCategoryOptions">
+        @if (CategoryOptions != null && Category !=null)
+        {
+            <div class="d-flex flex-column w-100">
+                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="ClearSelectedProductOptions">Сбросить</MudButton>
+                <p>@SelectedProductOptions.Count</p>
+                <MudExpansionPanels Elevation="25" Style="background-color: #cbf0ee" MultiExpansion="true">
+                    @foreach (var state in CategoryOptions)
+                    {
+                        <MudExpansionPanel  Text="@state.Name">
+                            @if (state.ProductOption != null)
+                            {
+                                @foreach (var option in state.ProductOption.GroupBy(g => g.Value))
+                                {
+                                    ProductOptionsCheckBox = false;
+                                    @if (SelectedProductOptions != null && SelectedProductOptions.Contains(option.FirstOrDefault()!.Id))
+                                    {  
+                                        ProductOptionsCheckBox = true;  
+                                    }
+                                    <div class="d-flex my-1">
+                                        <input type="checkbox" class="mr-2" checked="@ProductOptionsCheckBox"
+                                               @onchange="async eventArgs => { await CheckboxOptionClicked(option, eventArgs.Value!); }" />
+
+                                        <span>@($"{option.Key} ({option.Count()})")</span>
+                                    </div>
+                                }
+
+                            }
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>              
+            
+            </div>
+        }
+             
+        else
+        {
+            <MudText>Выберите категорию</MudText>
+        }
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+
+
+ 
+
+@code {
+    [Parameter]
+    public object? SelectedValue { get; set; } = 1;
+    public bool ProductOptionsCheckBox { get; set; } = false;
+    public bool BrandCheckBox { get; set; } = false;
+
+    [Parameter] public string? Chapter { get; set; }
+    [Parameter]public Guid? ChapterId { get; set; }
+    [Parameter] public Guid? ActivateBrandId { get; set; }
+    public List<Brand>? SelectedBrands { get; set; }
+    public Category? Category { get; set; }
+    private ICollection<CategoryOption>? CategoryOptions { get; set; }
+
+    [Parameter]public EventCallback<FilterProductTuple> IsSetOption { get; set; }
+    public List<Guid> SelectedProductOptions { get; set; } = new ();
+    private List<Category>? Categories { get; set; }
+    private List<Brand>? Brands { get; set; }
+  
+    protected override void OnInitialized()
+    {
+        if (Chapter != null && ChapterId != null)
+        {
+            switch (Chapter)
+            {
+                case GroupNames.GroupCategory:
+                {
+                    InitCategories();
+                    break;
+                }
+                case GroupNames.GroupBrand:
+                     InitBrands();
+                    break;
+
+            }
+        }
+    }
+    private async Task SetFilter()
+    {
+        await IsSetOption.InvokeAsync(new FilterProductTuple()
+        {
+            ProductOptions = SelectedProductOptions,
+            CategoryId = Category?.Id,
+            BrandIdList = SelectedBrands?.Select(s => s.Id).ToList()
+        });
+    }
+    private void InitCategories()
+    {
+        if (Category != null) return;
+        using var scope = ServiceScopeFactory.CreateScope();
+        var categoryService = scope.ServiceProvider.GetService<IRepo<Category>>();
+        Category = categoryService!.GetAllByQuery()
+            .Include(i=>i.CategoryOptions)!
+            .ThenInclude(t=>t.ProductOption).FirstOrDefault(f=>f.Id == ChapterId);
+
+    }
+    private async Task SetCategories(Category category)
+    {
+        Category = category;
+        CategoryOptions = null;
+        Brands = null;
+        await SetFilter();
+    }
+
+    private void InitBrands()
+    {
+        if (Brands != null) return;
+
+        if (Category != null)
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var categoryService = scope.ServiceProvider.GetService<IRepo<Category>>();
+            Brands = categoryService!.GetAllByQuery().FirstOrDefault(f => f.Id == Category.Id)!.Products!.Where(w => w.BrandId != null).Select(s => s.Brand).Distinct().ToList()!;
+        }
+   
+        if (Brands != null && ActivateBrandId != null) SelectedBrands ??= new List<Brand>() { Brands.FirstOrDefault(o => o.Id == ActivateBrandId)! };
+    }
+
+    private void InitCategoryOptions()
+    {
+        if (CategoryOptions!=null) return;
+        CategoryOptions = Category?.CategoryOptions;
+    }
+    
+
+    private async Task CheckboxOptionClicked(IGrouping<string, ProductOption> aSelectedId, object aChecked)
+    {
+        if ((bool)aChecked)
+        {
+            if (!SelectedProductOptions.Contains(aSelectedId.FirstOrDefault()!.Id))
+            {
+                SelectedProductOptions.AddRange(aSelectedId.Select(s => s).Select(s => s.Id));
+            }
+        }
+        else
+        {
+            if (SelectedProductOptions.Contains(aSelectedId.FirstOrDefault()!.Id))
+            {
+                foreach (var id in aSelectedId)
+                {
+                    SelectedProductOptions.Remove(id.Id);
+                }
+            }
+        }
+       await SetFilter();
+    }
+    private async Task CheckboxBrandClicked(Brand aSelected, object aChecked)
+    {
+        SelectedBrands ??= new List<Brand>();
+        if ((bool)aChecked)
+        {
+           
+            if (!SelectedBrands.Contains(aSelected))
+            {
+                SelectedBrands.Add(aSelected);
+            }
+        }
+        else
+        {
+            if (SelectedBrands.Contains(aSelected))
+            {
+                SelectedBrands.Remove(aSelected);
+            }
+        }
+       await SetFilter();
+    }
+
+    private async Task ClearSelectedProductOptions()
+    {
+        SelectedProductOptions.Clear();
+        StateHasChanged();
+        await SetFilter();
+    }
+    private async Task ClearSelectedBrands()
+    {
+        SelectedBrands?.Clear();
+        StateHasChanged();
+       await SetFilter();
+    }
+    private async Task ClearSelectedCategory()
+    {
+       Category=null;
+
+        StateHasChanged();
+       await SetFilter();
+    }
+
+}
+

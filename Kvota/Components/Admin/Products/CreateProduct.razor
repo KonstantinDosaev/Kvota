@@ -1,0 +1,88 @@
+﻿<h3>CreateProduct</h3>
+@page "/admin/product/create"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Interfaces
+@using Kvota.Constants
+@inject IRepo<Product> ProductRepo
+@inject IRepo<Category> CategoryRepo
+@inject IRepo<Brand> BrandRepo
+@inject IRepo<Storage> StorageRepo
+<div class="row">
+    <div class="col-lg-9">
+        <h1>Create</h1>
+    </div>
+    <div class="col-lg-3 text-right">
+        <a class="btn btn-secondary btn-sm" href="/admin/product" role="button">Назад</a>
+    </div>
+</div>
+ 
+@if (Product != null)
+{
+    <EditForm Model="@Product" OnValidSubmit="@SubmitProduct">
+        <div class="form-group">
+            <label>Part No</label>
+            <InputText class="form-control" @bind-Value="Product.PartNumber" />
+        </div>
+        <div class="form-group">
+            <label>Имя</label>
+            <InputText class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="form-group">
+            <label>Производитель</label>
+            <InputSelect @bind-Value="Product.BrandId" class="form-control">
+                <option value="">Выбрать производителя</option>
+                @if (BrandList != null)
+                {
+                    @foreach (var brand in BrandList)
+                    {
+                        <option value="@brand.Id">@brand.Name</option>
+                    }
+                }
+            </InputSelect>
+
+        </div>
+        <div class="form-group">
+            <label>Категория</label>
+            <select class="form-control" @bind="Product.CategoryId">
+                <option value=@Guid.Empty>Выбрать категорию</option>
+                @if (CategoryList != null)
+                {
+                    foreach (var category in CategoryList)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Описание</label>
+            <InputTextArea class="form-control" @bind-Value="Product.Description" />
+        </div>
+        <div class="form-group">
+            <label>Цена</label>
+            <InputNumber class="form-control" @bind-Value="Product.Price" />
+        </div>
+        <div class="form-group">
+            <label>Склад</label>
+            <select class="form-control" @bind="ProductsInStorage.StorageId">
+                <option value=@Guid.Empty>Выбрать склад</option>
+                @if (Storages != null)
+                {
+                    foreach (var storage in Storages)
+                    {
+                        <option value="@storage.Id">@storage.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Количество</label>
+            <InputNumber class="form-control" @bind-Value="ProductsInStorage.Quantity" />
+        </div>
+        
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
+
+}
+

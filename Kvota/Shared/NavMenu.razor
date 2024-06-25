@@ -1,45 +1,268 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Kvota.Models.Content
+@using Kvota.Constants
+@using System.Text.Json
+@using Kvota.Components.CategoryDrawer
+@using Kvota.Interfaces
+@using Kvota.Services.Auth
+@using Size = MudBlazor.Size
+@using System.Security.Claims
+@using Kvota.Models
+@using Kvota.Repositories.Products
+@using Microsoft.AspNetCore.Components.Server
+@inject ISerializeService<ContactsModel> ContactSerialize
+@inject IAuthService AuthService
+@inject IRepo<ApplicationOrderingProducts> OrderService
+@inject IServiceScopeFactory ServiceScopeFactory
+
+@inject AuthenticationStateProvider AuthenticationState
+@inject AuthenticationStateProvider ss
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         
-        <a class="navbar-brand" href=""><i style="margin-right: 10px"class="bi bi-cpu"></i>KVOTA.RU</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
+        <a class="navbar-brand" href=""><i style="margin-right: 10px" class="bi bi-cpu"></i>CINTY.RU</a>
+        <button title="Меню" class="navbar-toggler" @onclick="ToggleNavMenu">
+            @if (@collapseNavMenu)
+            {
+                <MudIcon Icon="@Icons.Material.TwoTone.Menu" Size="Size.Large" Color="Color.Primary"/>
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.TwoTone.Close" Size="Size.Large" Color="Color.Primary" />
+            }
         </button>
     </div>
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Главная
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="contacts">
-                <span class="oi oi-map-marker" aria-hidden="true"></span> Контакты
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="about">
-                <span class="oi oi-people" aria-hidden="true"></span> О компании
-            </NavLink>
-        </div>
-        <div class="nav-item px-3" style="margin-left: 1rem;">
+    <div  style="display: flex;
+                 flex-direction: column; min-height: 90vh;">
+        <nav class="flex-column" style="flex: 1 0 auto">
             
-        </div>
-        
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Главная
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                @if (CatalogView)
+                {
+                    <NavLink class="nav-link" style="cursor: pointer" href="categories">
+                        <span class="oi oi-book" aria-hidden="true"></span> Каталог
+                    </NavLink>
+                }
+                else
+                {
+                    <NavLink class="nav-link linkt" href="productlists">
+                        <span class="oi oi-book" aria-hidden="true"></span> Каталог
+                    </NavLink>
+                }
 
-    </nav>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="contacts">
+                    <span class="oi oi-map-marker" aria-hidden="true"></span> Контакты
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="about">
+                    <span class="oi oi-people" aria-hidden="true"></span> О компании
+                </NavLink>
+            </div>
+            <AuthorizeView Roles="@RoleNames.User">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="orders-buyer">
+                            <span class="oi oi-people" aria-hidden="true"></span> Заявки
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="@RoleNames.Admin">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="orders-admin">
+                            <span class="oi oi-people" aria-hidden="true"></span> Заявки
+                            @if (CountNewOrders > 0)
+                            {
+                                <MudSpacer/>
+                                <span class="nav-item__count">@CountNewOrders</span>
+                            }
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="" style="margin: 2rem 0.8rem; cursor: pointer; text-align: center;overflow-wrap:break-word;">
+                        <MudText Typo="Typo.button" Style="color: black; 
+                                                           font-size: 0.9rem; 
+                                                           font-weight: bold;">
+                            @context.User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Name)?.Value
+                        </MudText>
+                        <MudButtonGroup  Variant="Variant.Filled">
+                            <MudButton Style="padding: 0.5rem" Variant="Variant.Filled" class="" @onclick="LogoutClick">
+                                <span class="oi bi-box-arrow-right" aria-hidden="true"></span> <span style="color: black" >Выйти</span>
+                            </MudButton>
+                            <MudButton Style="padding:0.5rem" Href="/userprofile">
+                                <span class="oi bi-person-lines-fill" aria-hidden="true"></span> <span style="color: black">Профиль</span>
+                            </MudButton>
+                        </MudButtonGroup>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="nav-item px-3" style="margin-top: 2rem; cursor: pointer">
+                        <NavLink class="nav-link" href="/login">
+                            <span class="oi bi-box-arrow-in-right" aria-hidden="true"></span> Войти
+                        </NavLink>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="@RoleNames.Admin">
+                <Authorized>
+                    @*@if (@context.User.IsInRole("Administrators"))
+                    {*@
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="admin">
+                                <span class="oi oi-puzzle-piece" aria-hidden="true"></span> admin
+                            </NavLink>
+                        </div>
+
+                   @* }*@
+                </Authorized>
+            </AuthorizeView>
+
+        </nav>
+
+    @if (ContactContent != null)
+    {
+        <div class="nav__contakts contacts-nav">
+            <MudMenu ActivationEvent="@MouseEvent.MouseOver"
+                     AnchorOrigin="Origin.TopRight"
+                     TransformOrigin="Origin.TopLeft">
+                <ActivatorContent>
+                    <div class="contacts-nav__activator"><i style="font-size: 1.8rem; padding: 1rem" class="bi bi-skype"></i></div>
+                </ActivatorContent>
+                <ChildContent>
+                    <div class="contacts-nav__title"><i class="contacts-nav__titleicon bi bi-skype"></i>Skype</div>
+                    @if (ContactContent.CallOperators != null)
+                    {
+                        @foreach (var item in ContactContent.CallOperators)
+                        {
+                            <div class="px-3 py-2 fs-6 fw-bold">
+                                <a href="@($"skype:{item.Skype}?chat")">@item.Name</a>
+                            </div>
+                        }
+                    }
+                </ChildContent>
+            </MudMenu>
+            <MudMenu ActivationEvent="@MouseEvent.MouseOver"
+                     AnchorOrigin="Origin.TopRight"
+                     TransformOrigin="Origin.TopLeft">
+                <ActivatorContent>
+                    <div class="contacts-nav__activator"><i style="font-size: 1.8rem; padding: 1rem" class="bi bi-whatsapp"></i></div>
+                </ActivatorContent>
+                <ChildContent>
+                    <div class="contacts-nav__title"><i class="contacts-nav__titleicon bi bi-whatsapp"></i>WatsApp</div>
+                    @if (ContactContent.CallOperators != null)
+                    {
+                        @foreach (var item in ContactContent.CallOperators)
+                        {
+
+                            <div class="px-3 py-2 fs-6">
+                                <a href="@($"whatsapp://send?phone={item.WhatsApp}")">
+                                    <span class="fw-bold mr-2">@item.Name:</span>
+                                    @item.WhatsApp
+                                </a>
+                            </div>
+                        }
+                    }
+                </ChildContent>
+            </MudMenu>
+            <MudMenu ActivationEvent="@MouseEvent.MouseOver"
+                     AnchorOrigin="Origin.TopRight"
+                     TransformOrigin="Origin.TopLeft">
+                <ActivatorContent>
+                    <div class="contacts-nav__activator"><i style="font-size: 1.8rem; padding: 1rem" class="bi bi-envelope"></i></div>
+                </ActivatorContent>
+                <ChildContent>
+                    <div class="contacts-nav__title"><i class="contacts-nav__titleicon bi bi-envelope"></i>E-mail</div>
+                    @if (ContactContent.CallOperators != null)
+                    {
+
+                        @foreach (var item in ContactContent.CallOperators)
+                        {
+                            <div class="px-3 py-2 fs-6">
+                                <a href="@($"mailto:{item.Email}")">
+                                    <span class="fw-bold mr-2">@item.Name:</span>
+                                    @item.Email
+                                </a>
+                            </div>
+
+
+                        }
+                    }
+                </ChildContent>
+            </MudMenu>
+
+        </div>
+    }
+</div>
 </div>
 
 @code {
+
+    [Parameter]
+    public CategoryDrawerComponent? _categoryDrawerRef { get; set; }
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    private bool CatalogView { get; set; }
+    public Home? HomeContent { get; set; }
+    private ContactsModel? ContactContent { get; set; } = null!;
+    public int CountNewOrders { get; set; }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    protected override async Task OnInitializedAsync()
+    {
+        ContactContent = await ContactSerialize.DeSerialize($"{Links.RootPath}/{Links.ContactsJson}");
+        await using var openStream = File.OpenRead($"{Links.RootPath}/{Links.HomeContentJson}");
+        HomeContent = (await JsonSerializer.DeserializeAsync<Home>(openStream))!;
+        CatalogView = HomeContent.CatalogView;
+
+        
+        using var scope = ServiceScopeFactory.CreateScope();
+        OrderService = scope.ServiceProvider.GetService<IRepo<ApplicationOrderingProducts>>()!;
+        CountNewOrders = OrderService.GetAllByQuery().Count(w => w.InWork == false);
+    }
+    async Task Logout()
+    {
+        await AuthService.Logout();
+        ImpNavigationManager.NavigateTo("/",true);
+    }
+
+    [Inject] private IDialogService? DialogService { get; set; }
+
+    private async void LogoutClick()
+    {
+        var options = new DialogOptions() { ClassBackground = "my-custom-class",};
+        bool? result = await DialogService!.ShowMessageBox(
+            "Внимание",
+            "Подтвердите выход!",
+            yesText: "Выйти!  ", cancelText: "  Отменить", options: options);
+
+        if (result != null && (bool)result)
+        {
+           await Logout();
+        }
+    }
+   
 }
+<style>
+    .my-custom-class {
+        backdrop-filter: blur(10px);
+    }
+</style>

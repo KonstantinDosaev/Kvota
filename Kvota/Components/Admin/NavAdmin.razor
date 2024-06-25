@@ -1,0 +1,39 @@
+﻿<div class="nav_body">
+    <div class="nav_item"><NavLink Match="NavLinkMatch.All" href="/hometool" class="link"><span>Главная страница</span></NavLink> </div>
+    <div class="nav_item"><NavLink href="/admin/contacttool" class="link">Контакты</NavLink> </div>    
+    <div class="nav_item"><NavLink href="/admin/user-manager" class="link">Пользователи</NavLink> </div>
+    <div class="nav_item"><NavLink href="/admin/category" class="link">Категории</NavLink> </div>
+    <div class="nav_item"><NavLink href="/admin/brand" class="link">Производители</NavLink> </div>
+    <div class="nav_item"><NavLink href="/admin/product" class="link">Продукты</NavLink> </div>
+
+</div>
+
+<style>
+    .nav_body {
+        display: flex;
+        padding: 1rem;
+    }
+    .nav_item {
+      
+    }
+
+    .link {
+        color:dodgerblue;
+        text-decoration: none;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 20px;
+
+    }
+
+    .link.active {
+            height: 200px;
+        color: white;
+        font-weight: 700;
+        background-color:dodgerblue; 
+        
+    }
+</style>
+@code {
+
+}

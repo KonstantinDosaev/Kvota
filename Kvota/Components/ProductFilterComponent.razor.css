@@ -1,0 +1,31 @@
+﻿.prductlist__filters {
+    display: flex;
+    margin: 0 0 1rem 0;
+}
+.productlist__inputs {
+    display: flex;
+}
+.productlist__search {
+    flex: 1 1 auto;
+}
+.prductlist__pager {
+    display: flex;
+}
+.prductlist__quantitypg {
+    width: 75px;
+    height: 38px;
+    margin-left: 5px;
+}
+
+
+@media (max-width: 1200px) {
+    .prductlist__filters {
+        display: block;
+    }
+}
+@media (max-width: 620px) {
+    .productlist__inputs
+    {
+        display: block;
+    }
+}

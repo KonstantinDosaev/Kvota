@@ -1,0 +1,52 @@
+﻿
+
+<div class="search__block">
+   
+    <input type="search" class="search__input" placeholder="Поиск по парт-номеру" @bind="SearchString" @bind:event="oninput" @onkeyup="@Enter" />
+    <button type="submit" class="search__btn" @onclick="SearchProducts">найти </button>
+</div>
+
+                                
+<style>
+    .search__block {
+        /*position: relative;*/
+        display: flex;
+        width: 100%;
+        padding-left: 0px;
+        background: none;
+       
+       
+       
+    }
+    .search__input, .search__btn {
+        border: none;
+        outline: none;
+        background: transparent;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(178,34,34,0.8);
+    }
+
+    .search__input {
+        width: 100%;
+        height: 42px;
+        padding-left: 10px;
+        background: #fff;
+
+        
+        
+    }
+
+    .search__btn {
+        height: 42px;
+      
+       /* position: absolute;
+        top: 0;
+        right: 0;*/
+        background-color: rgba(178,34,34,1);
+        cursor: pointer;
+        color: white;
+        padding: 0 1rem;
+        font-weight: bold;
+        margin: 0 0 0 5px;
+    }
+</style>

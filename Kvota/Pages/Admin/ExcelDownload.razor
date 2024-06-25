@@ -1,0 +1,41 @@
+﻿@page "/admin/product/excel"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Kvota.Interfaces
+@using Kvota.Models.Products
+@using Kvota.Constants
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject IRepo<Brand> BrandService
+@inject IRepo<Category> CategoryService
+@inject IRepo<Product> ProductService
+@inject IRepo<Storage> StorageRepo
+
+
+<h3>Загрузить продукты из Excel</h3>
+
+<form @onsubmit="OnSubmit">
+    <p>@Message</p>
+    <InputFile OnChange="OnInputFileChange"/>
+    <br/><br/>
+    <button class="btn btn-secondary" type="submit">Загрузить</button>
+</form>
+<br/>
+<label>Выберите основной склад(В случае если в таблице не указан склад, он будет применен по умолчанию)</label>
+<select class="form-control" @bind="_mainStorageId">
+    @if (Storages != null)
+    {
+        foreach (var storage in Storages)
+        {
+            <option value="@storage.Id">@storage.Name</option>
+        }
+    }
+</select>
+
+<button class="btn btn-danger btn" @onclick="@(e => ReadExcel())" role="button">Интегрировать в базу</button>
+@if (_errors != null && _errors.Any())
+{
+    <h3 class="m-2">Ошибки!!!</h3>
+    @foreach (var error in _errors)
+    {
+        <p>@error</p>
+    }
+}

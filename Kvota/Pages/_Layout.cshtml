@@ -3,21 +3,27 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8" />
+    <title>Cinty - Каталог электронных компонентов, Актуальные цены и наличие </title>
+    <meta name="description" content="Компания Cinty занимается поставками ЭКБ импортного производства
+Номенклатура поставляемой продукции включает в себя компоненты как западных, так и азиатских производителей.">
+    <meta name="keywords" content="микросхема,плата,Батарейка,Вилка,соединитель,ВМИР,джампер,Диод,дроссель,Индикатор,Кварцевый генератор,Коммутуционный штепсельный разъем,Конденсатор ,
+Набор резисторов,осцилятор ,печатная плата,Резистор,Резонатор кварцевый,Реле,Розетка,Стабилитрон,Транзистор,Транзисторная матрица,трансформатор,чип резистор,Чип-конденсатор">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="~/" />
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="Kvota.styles.css" rel="stylesheet" />
 
-    <link href="_content/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
+    <link href="_content/Blazor.Bootstrap/Blazor.Bootstrap.bundle.scp.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
- 
-
-
 
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
@@ -35,25 +41,26 @@
         <a class="dismiss">🗙</a>
     </div>
 
-
-<script src="_framework/blazor.server.js"></script>
+@*<script src="_framework/blazor.server.js"></script>*@
+    <script src="_framework/blazor.server.js" autostart="false"></script>
     <script>
-        Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
-            document.location.reload();
-        }
+        Blazor.start().then(() => {
+            Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+                document.location.reload();
+            }
+        });
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.js" integrity="sha512-gQhCDsnnnUfaRzD8k1L5llCCV6O9HN09zClIzzeJ8OJ9MpGmIlCxm+pdCkqTwqJ4JcjbojFr79rl2F1mzcoLMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> <!-- Add chart.js reference if Chart components are used in the application. -->
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js"></script>
 
 
-<script src="js/script.js"></script>
-
-<script>
-
-    </script>
-    
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="js/slick.min.js"></script>
+<script src="js/script.js"> </script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 
 </body>
 </html>

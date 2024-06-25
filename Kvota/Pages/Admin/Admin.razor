@@ -1,0 +1,30 @@
+﻿@using Kvota.Components.Admin
+@page "/admin"
+
+
+<CascadingAuthenticationState>
+<AuthorizeView>
+    <Authorized>
+        @if (@context.User.IsInRole("Administrators"))
+        {
+            <NavAdmin></NavAdmin>
+        }
+        else
+        {
+            <p>Вы не имеете прав администратора</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>Вы не вошли как пользователь</p>
+        <NavLink href="/login">Войти</NavLink>
+    </NotAuthorized>
+</AuthorizeView>
+</CascadingAuthenticationState>
+@code {
+    
+}
+<style>
+    .admin_body {
+        padding: 1rem;
+    }
+</style>

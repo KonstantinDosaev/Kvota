@@ -1,0 +1,92 @@
+﻿@page "/admin/contacttool"
+@attribute [Authorize(Roles = RoleNames.Admin)]
+@using Microsoft.AspNetCore.Components
+@using Kvota.Components.Admin
+@using Kvota.Constants
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject ISerializeService<ContactsModel> ContactSerialize
+
+    @if (Tools != null)
+    {
+        <NavAdmin></NavAdmin>
+    <EditForm Model="@Tools" OnValidSubmit="@SubmitPlayer">
+        <MudPaper Class="p-3 mx-3">
+            
+                <div class="form-group">
+                    <label>Адрес</label>
+                    <InputText class="form-control" @bind-Value="Tools.AddressOne" />
+                </div>
+                <div class="form-group">
+                    <label>Доп адрес</label>
+                    <InputText class="form-control" @bind-Value="Tools.AddressTwo" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <InputText class="form-control" @bind-Value="Tools.EmailOne" />
+                </div>
+                <div class="form-group">
+                    <label>Email 2</label>
+                    <InputText class="form-control" @bind-Value="Tools.EmailTwo" />
+                </div>
+
+                <div class="form-group">
+                    <label>Телефон 1</label>
+                    <InputText class="form-control" @bind-Value="Tools.PhoneOne" />
+                </div>
+                <div class="form-group">
+                    <label>Телефон 2</label>
+                    <InputText class="form-control" @bind-Value="Tools.PhoneTwo" />
+                </div>
+                <div class="form-group">
+                    <label>Телефон 3</label>
+                    <InputText class="form-control" @bind-Value="Tools.PhoneThree" />
+                </div>
+               
+        
+        </MudPaper>
+        <MudPaper Class="p-3 mx-3">
+            <MudText Typo="Typo.h6">Операторы</MudText>
+            <MudButton Variant="Variant.Outlined" OnClick="AddOperator">Добавить</MudButton>
+            @if (Tools.CallOperators != null)
+            {
+               
+                <div class="d-flex flex-wrap">
+                    @foreach (var callOperator in Tools.CallOperators)
+                    {
+                        <MudPaper Class="m-1 p-2">
+                            <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="() => RemoveOperator(callOperator)"></MudIconButton>
+                            <div class="form-group text-nowrap d-flex justify-content-center align-items-center mb-1">
+                                <MudText Typo="Typo.body1">Имя:</MudText>
+                                <InputText class="form-control" @bind-Value="@callOperator.Name"/>
+                            </div>
+                            <div class="form-group text-nowrap d-flex justify-content-center align-items-center mb-1">
+                                <MudText Typo="Typo.body1">Телефон: </MudText>
+                                <InputText class="form-control" @bind-Value="@callOperator.Phone"/>
+                            </div>
+                            <div class="form-group text-nowrap d-flex justify-content-center align-items-center mb-1">
+                                <MudText Typo="Typo.body1">E-mail: </MudText>
+                                <InputText class="form-control" @bind-Value="@callOperator.Email"/>
+                            </div>
+                            <div class="form-group text-nowrap d-flex justify-content-center align-items-center mb-1">
+                                <MudText Typo="Typo.body1">Skype: </MudText>
+                                <InputText class="form-control" @bind-Value="@callOperator.Skype"/>
+                            </div>
+                            <div class="form-group text-nowrap d-flex justify-content-center align-items-center mb-1">
+                                <MudText Typo="Typo.body1">WhatsApp: </MudText>
+                                <InputText class="form-control" @bind-Value="@callOperator.WhatsApp"/>
+                            </div>
+                        </MudPaper>
+                    }
+                </div> 
+            }
+        </MudPaper>
+        <button type="submit" class="btn my-3 btn-primary">Сохранить</button>
+    </EditForm>
+        <Modal @ref="modal" title="ОК">
+            <BodyTemplate>
+                Изменения сохранены
+            </BodyTemplate>
+        </Modal>
+    }

@@ -1,43 +1,70 @@
 ﻿.row {
     --bs-gutter-x: 0;
     flex: 1 1 auto;
+   
 }
 .home_body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* background-image: linear-gradient(90deg, rgba(0, 0, 0,0.8) 70%, rgba(30, 144, 255,0.55) 100%);*/
+    background-image: linear-gradient(90deg, rgba(255, 255, 255,0.8) 70%, rgba(30, 144, 255,0.55) 100%);
 }
 .home_images {
     flex: 1 1 auto;
 }
 .home_image {
-    background: url(/image/vishnu-mohanan-pfR18JNEMv8-unsplash.jpg) 50%/cover no-repeat;
-    padding:0 1rem;
+    margin: 0.4rem 0.5rem 0.35rem 0.5rem;
+    background:url(/image/background/homeImage.jpg) 50%/cover no-repeat;
+    padding: 4rem 1rem 8rem 1rem;
 }
 .home_image_text1 {
     margin-top: 1rem;
     color: azure;
-    background-color: rgba(178,34,34,0.8);
+    /* background-color: rgba(178,34,34,1);*/
+    background-color: rgba(30, 144, 255,0.7);
     border-radius: 5px;
     padding: 0 1rem;
-  
     max-width: fit-content;
 }
 .home_image_text2 {
     margin-top: 1rem;
     color: azure;
-    background-color: rgba(178,34,34,0.8);
+    /*   background-color: rgba(178,34,34,1);*/
+    background-color: rgba(30, 144, 255,0.7);
     border-radius: 5px;
     padding: 0 1rem;
     max-width: fit-content;
 }
-
-.partner {
-   
-    padding: 1rem;
-    background: url(/image/manufbg.jpg)0 0/cover no-repeat;
-    
+.home_search {
+    border-radius: 5px;
+    margin: 0.5rem 0.55rem;
+    background-color: rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(10px);
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -o-sticky;
+    position: -ms-sticky;
+    position: sticky;
+  
+    top: 0;
+    z-index: 10;
 }
+.partner {
+    margin: 0.5rem 0.5rem;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+.partner__background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: url(/image//background/manufbg.jpg)0 0/contain repeat;
+    filter: blur(1px);
+    z-index: -1;
+}
+
 
 .partner__lables {
     padding-top: 1rem;
@@ -46,38 +73,116 @@
 }
 
 .partner__lable {
-    /*    display: inline-block;
-    position: relative;*/
-    padding: 10px 4px;
+    /* padding: 10px 4px;*/
     border-radius: 3px;
     margin: 0 14px 14px 0;
     text-align: center;
-    width: 86px;
-    height: 46px;
+    width: 126px;
+    height: 86px;
     background-color: white;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 70px 30px;
+    background-size: 100px 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0,0.99);
+    transition: all 0.2s ease;
 }
-.company {
-    display: flex;
-    
+    .partner__lable:hover {
+        width: 120px;
+        height: 80px;
+    }
+.partner__button {
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: blue solid 2px;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background: rgba(30, 144, 255,0.9);
+    color: aliceblue;
+ 
 }
+.partner__button:hover {
+    border: solid 3px;
+}
+    .company {
+        margin: 0.5rem 0.5rem;
+        border-radius: 5px;
+        display: flex;
+        /* background-image: linear-gradient(90deg, rgba(0, 0, 0,1) 12%, rgba(0, 0, 0,0.03) 100%);*/
+    }
 .company__text {
-    flex: 1 1 50%;
+    flex: 1 0 50%;
     padding: 1rem;
+  /*  margin: 0.5rem;*/
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    background: none;
+    backdrop-filter: blur(40px);
+    /*    color: ghostwhite;*/
+    color: rgba(0, 0, 0, 0.8);
+}
+.company__image {
+    /* margin: 0.5rem;*/
+    margin: 0.5rem 0 0.5rem 0.5rem;
+    flex: 1 1 50%;
+    background: url(/image/background/lab2.png)center/contain no-repeat;
+}
+
+.form {
+    margin: 0.5rem;
+    border-radius: 5px;
+    display: flex;
+    background-image: linear-gradient(90deg, rgba(0, 29, 102,1) 12%, rgba(0, 0, 0,0.03) 100%);
+    /* background-image: linear-gradient(90deg, rgba(0, 0, 0,1) 12%, rgba(0, 0, 0,0.03) 100%);*/
+}
+.form__text {
+    margin: 0.5rem;
+    flex: 1 1 30%;
+    padding: 1rem;
+    background: none;
+    color:white;
+    align-self: center;
 }
 .home__form {
-    flex: 1 1 50%;
+    margin: 0.5rem;
+    flex: 1 1 70%;
+    background: none;
     padding: 1rem;
-    background: url(/image/feedback.jpg)0 60%/cover no-repeat;
+    /* background: url(/image/background/feedback.jpg)0 0/cover no-repeat;*/
 }
-.home__form_body {
-    color: black;
+
+.home__slider {
+    margin: 0.5rem 0.5rem;
+    overflow: hidden;
 }
+.homeslider_item {
+    height: 600px;
+    border-radius: 5px;
+}
+.homeslider_text {
+    font-size: 1.5rem;
+    height: 100%;
+    color: white;
+    width: 360px;
+    padding: 4rem 1rem 1rem 2rem;
+    /* backdrop-filter: blur(5px);*/
+    background-image: linear-gradient(90deg, rgba(0, 0, 0,1) 12%, rgba(0, 0, 0,0.03) 100%);
+}
+.homeslider_textup {
+    font-size: 2.8rem;
+    text-decoration: underline rgba(178,34,34,1);
+}
+
 
 @media (max-width: 1296px) {
     .company{
         display: block;
     }
+    .company__image {
+        height: 400px;
+    }
 }
+@media (max-width: 600px) {
+    .form {
+        display: block;
+    }
+}
+ 

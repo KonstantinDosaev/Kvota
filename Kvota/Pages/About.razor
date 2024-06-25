@@ -1,21 +1,41 @@
 ﻿@page "/about"
-
-<PageTitle>О компании</PageTitle>
-
-
-
-
-<h1>О компании</h1>
-
-<p> Текст ТекстТекстТекстТекстТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-    Текст Текст ТекстТекстТекстТекст Текст ТекстТекстТекстТекст Текст ТекстТекстТекст
-</p>
+@using Kvota.Models.Content
+@using Kvota.Constants
+@using Kvota.Interfaces
+@inject ISerializeService<Home> HomeSerialize
 
 
+@if ( Content!= null){
+<div class="about_body">
+    <h1 class="about_title">О Нашей Компании</h1>
+    <div class="about_row">
+        <div class="about_image1"></div>
+        <div class="about_text">
+            @foreach (var item in AboutArr)
+            {
+                if (!item.Contains('~'))
+                {
+                    <div>@item</div>
+                }
+                else
+                {
+                    <br/>
+                }
+            }
+        </div>
+            <div class="about_image2"></div>
+    </div>
+    
+</div>
+}
 
+@code
+{
+    private Home? Content { get; set; }
+    private string[] AboutArr { get; set; } = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        Content = await HomeSerialize.DeSerialize($"{Links.RootPath}/{Links.HomeContentJson}");
+        AboutArr = Content.AboutText!.Split('^');
+    }
+}

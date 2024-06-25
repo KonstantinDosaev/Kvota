@@ -1,0 +1,74 @@
+﻿@page "/register"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Identity
+@using Kvota.Models.UserAuth
+@using Kvota.Services.Auth
+@using Kvota.Interfaces
+@layout AuthLayout
+@inject NavigationManager NavigationManager
+@inject UserManager<KvotaUser> UserManager
+@inject AuthenticationStateProvider StateProvider
+@inject IAuthService AuthService
+@inject IEmailSender EmailSender
+
+<a href="/" class="btn btn-lg btn-primary btn-block mb-6">
+    <i class="bi bi-arrow-left-square fs-4"></i>
+    Вернуться на главную страницу
+</a>
+<div class="d-flex justify-content-center align-items-center mt-6">
+<MudPaper Width="500px" Class="p-3" Style="background-color: rgba(237, 237, 237, 0.522); border-radius: 5px"
+          Outlined="true">
+<h1 class="h2 font-weight-normal login-title">
+    Регистрация пользователя
+</h1>
+<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="RegisterRequest">
+    <DataAnnotationsValidator />
+    <label for="inputUsername" class="sr-only">E-mail</label>
+    <InputText id="inputUsername" class="form-control" placeholder="Логин" autofocus @bind-Value="@RegisterRequest.UserName" />
+    <ValidationMessage For="@(() => RegisterRequest.UserName)" />
+    <label for="inputPassword" class="sr-only">Пароль</label>
+    <InputText type="password" id="inputPassword" class="form-control" placeholder="Пароль" @bind-Value="@RegisterRequest.Password" />
+    <ValidationMessage For="@(() => RegisterRequest.Password)" />
+    <label for ="inputPasswordConfirm"class="sr-only">Повторите пароль</label>
+    <InputText type="password" id="inputPasswordConfirm" class="form-control" placeholder="Повторите пароль" @bind-Value="@RegisterRequest.PasswordConfirm" />
+    <ValidationMessage For="@(() => RegisterRequest.PasswordConfirm)" />
+    <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">Создать аккаунт</button>
+    <label class="text-danger">@Error</label>
+    @*    <NavLink href="login">
+        <h6 class="font-weight-normal text-center">У вас уже есть учетная запись? Нажмите здесь, чтобы войти в систему</h6>
+    </NavLink>*@
+
+</EditForm>
+</MudPaper>
+</div>
+@functions{
+    RegisterRequest RegisterRequest { get; set; } = new RegisterRequest();
+    string Error { get; set; }
+    async Task OnSubmit()
+    {
+        Error = null;
+        try
+        {
+
+            await AuthService.Register(RegisterRequest);
+            NavigationManager.NavigateTo($"/Account/SendConfirmEmail/{RegisterRequest.UserName}");
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+    }
+    //private async Task SendEmailToAskForEmailConfirmationAsync(KvotaUser user)
+    //{
+        
+    
+    //    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+    //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+    //    var callbackUrl = Url.Page("/Account/ConfirmEmail", pageHandler: null,
+    //        values: new { userId = user.Id, code = code }, protocol: Request.Scheme);
+
+    //    await _emailSender.SendAsync(Input.EmailAddress, "Confirm your email",
+    //        $"Please confirm your account by <a href='https://github.com/bartvanhoey/AbpUserVerificationByEmail/blob/gh-pages/{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+    //}
+    
+}

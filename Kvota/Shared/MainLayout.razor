@@ -1,31 +1,44 @@
 ﻿@inherits LayoutComponentBase
+@using Kvota.Components
+@using Kvota.Interfaces
+@using Kvota.Models.Content
+@inject IWebHostEnvironment Env
+@inject ISerializeService<ContactsModel> ContactSerialize
+@using Kvota.Components.CategoryDrawer
 
-<PageTitle>VpShop.UI</PageTitle>
-
+<PageTitle>Cinty</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 <div class="page">
+   @* <div style="z-index: 999">  <CategoryDrawerComponent @ref="_categoryDrawerRef" /></div>*@
+  
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu _categoryDrawerRef="_categoryDrawerRef"/>
     </div>
 
-    <main>
-        <div class="top-row px-4" >
-            
-            <div>
-                <a href="tel:+79998887766" target="_blank">
-                    <i class="bi bi-telephone" style="font-size: 1.5rem; margin-right: 1rem"></i>8-911-111-11-11
-                </a>
-            </div>
-            <div>
-                <a href="mailto:dosaevk@yandex.ru">
-                    <i class="bi bi-envelope-at" style="font-size: 1.5rem; margin-right: 1rem"></i>shop@mail.ru</a>
-            </div>
-            <span class=" text-wrap" style="font-weight: bold; margin-left:1rem;">Адрес: г.Город ул.Улица д.1fffffffffffffffffffff</span>
+    <main >
 
-        </div>
-
-        <article>
-            @Body
-        </article>
+        <div id="up_position"></div>
+        @if (Contact != null)
+        {
+            @if (UriCurrent.ToString() != UriHome)
+            {
+                <div class="top__container">
+                    <SerchCotactLineComponent/>
+                </div>
+            }
+        }
+        <ErrorBoundary>
+            <article >
+                @Body
+            </article>
+        </ErrorBoundary>
     </main>
 </div>
 
+@code
+{
+
+    private CategoryDrawerComponent? _categoryDrawerRef;
+}
