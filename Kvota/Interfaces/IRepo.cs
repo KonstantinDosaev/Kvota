@@ -11,6 +11,7 @@ namespace Kvota.Interfaces
         Task<T> GetOneAsync(Guid id);
         
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllContainsInIdsAsync(IEnumerable<Guid> ids);
         Task<IEnumerable<T>> GetAllByIdAsync(Guid id, string name);
         Task<bool> Update(T entity);
         Task<int> DeleteAsync(Guid id);

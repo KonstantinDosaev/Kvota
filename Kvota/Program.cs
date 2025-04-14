@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Kvota.Interfaces;
 using Kvota.Migrations;
 using Kvota.Models;
@@ -6,6 +7,7 @@ using Kvota.Models.Products;
 using Kvota.Models.UserAuth;
 using Kvota.Repositories;
 using Kvota.Repositories.Products;
+using Kvota.RepositoriesUi.Products;
 using Kvota.Services;
 using Kvota.Services.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -19,10 +21,16 @@ var connectionString = builder.Configuration.GetConnectionString("KvotaContextCo
 var connectionStringProduct = builder.Configuration.GetConnectionString("ProductContextConnection") ?? throw new InvalidOperationException("Connection string 'ProductContextConnection' not found.");
 builder.Services.AddServerSideBlazor();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddHttpClient("api", c =>
+{
+    c.BaseAddress = new Uri("https://localhost:7039/");
+    c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+});
 
 builder.Services.AddScoped<IRepo<Home>, HomeRepo>();
 builder.Services.AddScoped<IRepo<ContactsModel>, ContactRepo>();
 builder.Services.AddScoped<IRepo<Product>, ProductRepo>();
+//builder.Services.AddScoped<IRepo<Product>, ProductRepoUi>();
 builder.Services.AddScoped<IRepo<Category>, CategoryRepo>();
 builder.Services.AddScoped<IRepo<Brand>, BrandRepo>();
 builder.Services.AddScoped<IRepo<CategoryOption>, CategoryOptionsRepo>();

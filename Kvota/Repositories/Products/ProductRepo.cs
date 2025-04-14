@@ -49,13 +49,17 @@ namespace Kvota.Repositories.Products
                     .Include(i => i.Brand).Include(i => i.Category)
                     .Include(i => i.ProductOption).ToListAsync();
             }
-
             return null!;
+        }
+
+        public override async Task<IEnumerable<Product>> GetAllContainsInIdsAsync(IEnumerable<Guid> ids)
+        {
+            return await Table.Where(w => ids.Contains(w.Id)).OrderBy(o => o.Name).ToListAsync();
         }
         //public IQueryable<Product> GetAllByQuery() =>  Table.OrderBy(o => o.Name)
         //    .Include(i => i.Brand).Include(i => i.Category)
         //    .Include(i => i.ProductOption);
-      
+
 
         public async Task<SortPagedResponse<Product>> GetBySortPagedSearchChapterAsync(SortPagedRequest<FilterProductTuple> request)
         {
